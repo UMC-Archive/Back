@@ -6,6 +6,8 @@ import swaggerUiExpress from "swagger-ui-express";
 
 import { handleUserSignUp } from "./controllers/user.controller.js";
 
+BigInt.prototype.toJSON = function () { return this.toString() };
+
 dotenv.config();
 
 const app = express();
@@ -66,7 +68,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res, next) => {
     res.send('Hello World!')
 })
-app.post('/test', handleUserSignUp);
+app.post('/user/signup', handleUserSignUp);
 
 //--------------------------------
 
