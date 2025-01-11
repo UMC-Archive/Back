@@ -68,3 +68,18 @@ export const getUserGenreId = async (userId) => {
     });
     return preferences;
 };
+
+// finding user by email
+export const findEmail = async (req) => {
+    const email = await prisma.findFirst({
+        select: {email : true},
+        where: {email: req}
+    });
+    if (email[0].length === 0) {
+        console.log("email null");
+        return null;
+    } else {
+        console.log(email[0][0].email);
+        return email[0][0].email;
+    }
+};

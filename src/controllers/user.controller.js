@@ -1,6 +1,13 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser } from "../dtos/user.dto.js";
-import { userSignUp } from "../services/user.service.js";
+import { 
+  bodyToUser,
+  checkVerificationRequestDTO
+ } from "../dtos/user.dto.js";
+import {
+        userSignUp,
+        sendVerificationCode,
+        checkVerificationCode
+  } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
     /*
@@ -88,4 +95,41 @@ export const handleUserSignUp = async (req, res, next) => {
     } catch (err) {
         return next(err);
     }
+};
+
+//이메일 인증 전송
+// /users/signup/email/send-verification-code
+export const sendEmail = async (req, res) => {
+	try {
+		let encryptedCode = await sendVerificationCode(req.param("email"));
+
+		if (encryptedCode !== null) {
+			// if email doesn't exists
+			console.log(encryptedCode);
+
+			res.send(response(status.SUCCESS, encryptedCode));
+		} else {
+			// if email exists
+			res.send(response(status.EMAIL_ALREADY_EXIST, null));
+		}
+	} catch (err) {
+		console.log(err);
+		res.send(response(BaseError));
+	}
+};
+
+// 인증번호 확인
+export const checkVerification = async (req, res) => {
+	try {
+		if (await checkVerificationCode(checkVerificationRequestDTO(req.body))) {
+			// if code correct
+			res.send(response(status.SUCCESS, null));
+		} else {
+			// if code incorrect
+			res.send(response(status.CODE_NOT_CORRECT, null));
+		}
+	} catch (err) {
+		console.log(err);
+		res.send(response(BaseError));
+	}
 };
