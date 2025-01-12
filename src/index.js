@@ -7,7 +7,8 @@ import swaggerUiExpress from "swagger-ui-express";
 import { 
     handleUserSignUp,
     sendEmail,
-    checkVerification
+    checkVerification,
+    handleUserInfo
  } from "./controllers/user.controller.js";
 
 BigInt.prototype.toJSON = function () { return this.toString() };
@@ -79,6 +80,8 @@ app.get("/signup/email/send-verification-code", sendEmail);
 app.post("/signup/email/check-verification-code", checkVerification);
 
 
+//유저 정보를 불러오는 api
+app.get('/users/info', handleUserInfo);
 //--------------------------------
 
 app.use((err, req, res, next) => {

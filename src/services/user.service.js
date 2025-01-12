@@ -6,7 +6,8 @@ import {
     setUserArtist,
     getUserGenreId,
     setUserGenre,
-    findEmail
+    findEmail,
+    userInfoRep
 } from "../repositories/user.repository.js";
 import { DuplicateUserEmailError } from "../errors.js";
 
@@ -81,4 +82,12 @@ export const checkVerificationCode = async (req) => {
 	const code = req.code;
 
 	return bcrypt.compareSync(code.toString(), req.cipherCode);
+};
+export const userInfoService = async (userId) => {
+    try{
+        const userInfo = await userInfoRep(userId);
+        return userInfo;
+    } catch (err){
+        return next(err);
+    }
 };

@@ -83,3 +83,7 @@ export const findEmail = async (req) => {
         return email;
     }
 };
+export const userInfoRep = async (userId) => {
+    const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+    return user;
+};
