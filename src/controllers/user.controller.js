@@ -4,14 +4,16 @@ import { status } from "../../config/response.status.js";
 import { 
   bodyToUser,
   bodyToImageDTO,
-  checkVerificationRequestDTO
+  checkVerificationRequestDTO,
+  bodyToGenreDTO,
  } from "../dtos/user.dto.js";
 import {
         userSignUp,
         sendVerificationCode,
         userInfoService,
         checkVerificationCode,
-        userChangeImageService
+        userChangeImageService,
+        userChangeGenreService
   } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
@@ -294,6 +296,7 @@ export const handleUserInfo = async (req, res, next) => {
     console.log("유저 정보를 불러옵니다.");
     //토큰 사용전 임의로 사용
     const userId = req.params.id;
+    console.log(userId);
     const userInfo = await userInfoService(userId);
     res.status(StatusCodes.OK).success(userInfo);
   } catch (err){
@@ -305,9 +308,21 @@ export const handleUserInfo = async (req, res, next) => {
 export const handleUserChangeImage = async (req, res, next) => {
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
-    console.log("body:", req.body);
+    console.log("bodyController:", req.body);
     const changeImage = await userChangeImageService(bodyToImageDTO(req.body));
     res.status(StatusCodes.OK).success(changeImage);
+} catch (err) {
+    return next(err);
+}
+};
+
+// 유저의 장르 선택/수정
+export const handleUserGenre = async (req, res, next) => {
+  try {
+    console.log("유저가 장르 변경을 요청했습니다!");
+    console.log("bodyController:", req.body);
+    const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.body));
+    res.status(StatusCodes.OK).success(changeGenre);
 } catch (err) {
     return next(err);
 }

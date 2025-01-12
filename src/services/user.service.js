@@ -8,7 +8,8 @@ import {
     setUserGenre,
     findEmail,
     userInfoRep,
-    changeImageRep
+    changeImageRep,
+    changeGenreRep
 } from "../repositories/user.repository.js";
 import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 
@@ -96,7 +97,7 @@ export const userInfoService = async (userId) => {
 
 // 유저 프로필 이미지 변경 service
 export const userChangeImageService = async(data) =>{
-    console.log("body12:", data)
+    console.log("bodyService:", data)
     const ChangeImage = await changeImageRep({
         name: data.name,
         email: data.email,
@@ -106,4 +107,18 @@ export const userChangeImageService = async(data) =>{
         throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
     }
     return ChangeImage;
+};
+
+// 유저 장르 변경 service
+export const userChangeGenreService = async(data) =>{
+    console.log("bodyService:", data)
+    const ChangeGenre = await changeGenreRep({
+        name: data.name,
+        email: data.email,
+		genreId: data.genreId,
+    })
+    if(ChangeGenre == null){
+        throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
+    }
+    return ChangeGenre;
 };
