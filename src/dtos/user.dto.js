@@ -52,3 +52,12 @@ export const bodyToGenreDTO = (req) => {
         genreId: BigInt(req.genreId),
 	};
 };
+
+// 유저 장르 변경 DTO
+export const bodyToArtistDTO = (req) => {
+	return {
+		name: req.name,
+        email: req.email,
+        artistId: BigInt(req.artistId),
+	};
+};

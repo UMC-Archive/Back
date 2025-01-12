@@ -6,6 +6,7 @@ import {
   bodyToImageDTO,
   checkVerificationRequestDTO,
   bodyToGenreDTO,
+  bodyToArtistDTO,
  } from "../dtos/user.dto.js";
 import {
         userSignUp,
@@ -13,7 +14,8 @@ import {
         userInfoService,
         checkVerificationCode,
         userChangeImageService,
-        userChangeGenreService
+        userChangeGenreService,
+        userChangeArtistService
   } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
@@ -323,6 +325,18 @@ export const handleUserGenre = async (req, res, next) => {
     console.log("bodyController:", req.body);
     const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.body));
     res.status(StatusCodes.OK).success(changeGenre);
+} catch (err) {
+    return next(err);
+}
+};
+
+// 유저의 아티스트 선택/수정
+export const handleUserArtist = async (req, res, next) => {
+  try {
+    console.log("유저가 아티스트 변경을 요청했습니다!");
+    console.log("bodyController:", req.body);
+    const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.body));
+    res.status(StatusCodes.OK).success(changeArtist);
 } catch (err) {
     return next(err);
 }

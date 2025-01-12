@@ -122,7 +122,7 @@ export const changeImageRep = async (data) => {
         );
     }
 };
-
+// 유저의 장르 변경
 export const changeGenreRep = async (data) => {
     console.log("bodyRep:", data);
     try {
@@ -162,6 +162,53 @@ export const changeGenreRep = async (data) => {
 
         // 4. 업데이트된 회원 정보 반환
         return updatedUserGenre;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    }
+};
+
+//유저의 아티스트 변경
+export const changeArtistRep = async (data) => {
+    console.log("bodyRep:", data);
+    try {
+        // 1. userId로 회원 존재 여부 확인
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                name: data.name,
+                email: data.email,
+            },
+        });
+
+        if (!existingUser) {
+            throw new Error("해당 이름과 이메일로 등록된 사용자가 없습니다.");
+        }
+        console.log(existingUser);
+
+        const userId = Number(existingUser.id);
+
+        // 2. userId로 UserGenre의 고유 id 조회
+        const existingUserArtist = await prisma.userArtist.findFirst({
+            where: { userId: userId },
+        });
+
+        if (!existingUserArtist) {
+            throw new Error("해당 userId로 등록된 UserArtist를 찾을 수 없습니다.");
+        }
+        console.log("existingUserArtist:", existingUserArtist);
+
+        // 3. 프로필 정보 업데이트
+        const updatedUserArtist = await prisma.userArtist.update({
+            where: { id: existingUserArtist.id }, // 고유 id를 사용
+            data: {
+                artistId: BigInt(data.artistId), // BigInt 변환
+                updatedAt: new Date(),
+            },
+        });
+
+        // 4. 업데이트된 회원 정보 반환
+        return updatedUserArtist;
     } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
