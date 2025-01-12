@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { bodyToUser } from "../dtos/user.dto.js";
-import { userSignUp } from "../services/user.service.js";
+import { userSignUp, userInfoService} from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
     /*
@@ -89,3 +89,68 @@ export const handleUserSignUp = async (req, res, next) => {
         return next(err);
     }
 };
+
+export const handleUserInfo = async (req, res, next) => {
+  /*
+  #swagger.summary = '유저 정보 조회 API';
+  #swagger.parameters['id'] = {
+    in: 'path',
+    required: true,
+    description: '조회할 유저의 고유 ID',
+    schema: { type: 'string', example: '12345' }
+  };
+  #swagger.responses[200] = {
+    description: "유저 정보 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            id: { type: "string", example: "12345" },
+            name: { type: "string", example: "John Doe" },
+            nickname: { type: "string", example: "johnd" },
+            email: { type: "string", example: "john.doe@example.com" },
+            profileImage: { type: "string", example: "https://example.com/profile.jpg" },
+            status: { type: "string", example: "active" },
+            socialType: { type: "string", example: "google" },
+            inactiveDate: { type: "string", format: "date", example: "2025-01-01" },
+            createdAt : { type: "string", format: "date", example: "2025-01-01" },
+            updatedAt : { type: "string", format: "date", example: "2025-01-01" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "유저 정보를 찾을 수 없음",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U404" },
+                reason: { type: "string", example: "유저를 찾을 수 없습니다." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try{
+    console.log("유저 정보를 불러옵니다.");
+    //토큰 사용전 임의로 사용
+    const userId = req.params.id;
+    const userInfo = await userInfoService(userId);
+    res.status(StatusCodes.OK).success(userInfo);
+  } catch (err){
+    return next(err);
+  }
+}

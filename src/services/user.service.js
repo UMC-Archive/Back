@@ -6,6 +6,7 @@ import {
     setUserArtist,
     getUserGenreId,
     setUserGenre,
+    userInfoRep,
 } from "../repositories/user.repository.js";
 import { DuplicateUserEmailError } from "../errors.js";
 
@@ -42,3 +43,12 @@ export const userSignUp = async (data) => {
             genres
         });
 };
+
+export const userInfoService = async (userId) => {
+    try{
+        const userInfo = await userInfoRep(userId);
+        return userInfo;
+    } catch (err){
+        return next(err);
+    }
+}
