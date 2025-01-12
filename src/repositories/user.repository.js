@@ -151,7 +151,7 @@ export const changeGenreRep = async (data) => {
         }
         console.log("existingUserGenre:", existingUserGenre);
 
-        // 3. 프로필 정보 업데이트
+        // 3. 장르 정보 업데이트
         const updatedUserGenre = await prisma.userGenre.update({
             where: { id: existingUserGenre.id }, // 고유 id를 사용
             data: {
@@ -188,7 +188,7 @@ export const changeArtistRep = async (data) => {
 
         const userId = Number(existingUser.id);
 
-        // 2. userId로 UserGenre의 고유 id 조회
+        // 2. userId로 UserArtist의 고유 id 조회
         const existingUserArtist = await prisma.userArtist.findFirst({
             where: { userId: userId },
         });
@@ -198,7 +198,7 @@ export const changeArtistRep = async (data) => {
         }
         console.log("existingUserArtist:", existingUserArtist);
 
-        // 3. 프로필 정보 업데이트
+        // 3. 아티스트 정보 업데이트
         const updatedUserArtist = await prisma.userArtist.update({
             where: { id: existingUserArtist.id }, // 고유 id를 사용
             data: {

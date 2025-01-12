@@ -53,7 +53,7 @@ export const bodyToGenreDTO = (req) => {
 	};
 };
 
-// 유저 장르 변경 DTO
+// 유저 아티스트 변경 DTO
 export const bodyToArtistDTO = (req) => {
 	return {
 		name: req.name,
