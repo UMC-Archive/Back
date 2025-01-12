@@ -26,3 +26,10 @@ export const responseFromUser = ({ user, artists, genres }) => {
         genre: genrePreferences
     }
 };
+
+export const bodyToUserLogin = (body) => {
+    return {
+		email: body.email,
+		password: body.password,
+    }
+};

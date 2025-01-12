@@ -4,7 +4,9 @@ import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 
-import { handleUserSignUp } from "./controllers/user.controller.js";
+import { handleUserSignUp, 
+        handleUserLogin
+} from "./controllers/user.controller.js";
 
 BigInt.prototype.toJSON = function () { return this.toString() };
 
@@ -68,8 +70,11 @@ app.use((req, res, next) => {
 app.get('/', (req, res, next) => {
     res.send('Hello World!')
 })
-app.post('/user/signup', handleUserSignUp);
+// 회원가입 api
+app.post('/users/signup', handleUserSignUp);
 
+// 로그인 api
+app.post('users/login', handleUserLogin)
 //--------------------------------
 
 app.use((err, req, res, next) => {

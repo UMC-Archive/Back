@@ -6,7 +6,10 @@ import {
     setUserArtist,
     getUserGenreId,
     setUserGenre,
+    findEmail,
+    findUser,
 } from "../repositories/user.repository.js";
+import bcrypt from "bcrypt";
 import { DuplicateUserEmailError } from "../errors.js";
 
 export const userSignUp = async (data) => {
@@ -41,4 +44,30 @@ export const userSignUp = async (data) => {
             artists,
             genres
         });
+};
+
+//이메일이 이미 존재하는지 확인하는 메소드
+const findEmailAlreadyExists = async (email) => {
+	const user = await findEmail(email);
+	return user;
+};
+
+export const userLogin = async (req) => {
+	if (await findEmailAlreadyExists(req.email)) {
+		const user = await findUser(req.email);
+
+		if (bcrypt.compareSync(req.password, user.password)) {
+			// if password correct - success
+			user.password = "hidden";
+			return createJwt(user);
+		} else {
+			// if password doesn't correct - fail
+			console.log("password incorrect");
+			return 2;
+		}
+	} else {
+		// if email doesn't exists - fail
+		console.log("email doesn't exists");
+		return 1;
+	}
 };
