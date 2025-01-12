@@ -26,3 +26,11 @@ export const responseFromUser = ({ user, artists, genres }) => {
         genre: genrePreferences
     }
 };
+
+//인증번호 확인 DTO
+export const checkVerificationRequestDTO = (req) => {
+	return {
+		cipherCode: req.cipherCode,
+		code: req.code,
+	};
+};

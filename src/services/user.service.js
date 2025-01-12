@@ -6,9 +6,16 @@ import {
     setUserArtist,
     getUserGenreId,
     setUserGenre,
-    userInfoRep,
+    findEmail,
+    userInfoRep
 } from "../repositories/user.repository.js";
 import { DuplicateUserEmailError } from "../errors.js";
+
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
+import mailSender from "../middleware/email.js";
+import {encrypt} from "../middleware/encrypt.js";
 
 export const userSignUp = async (data) => {
     const userId = await addUser({
@@ -44,6 +51,38 @@ export const userSignUp = async (data) => {
         });
 };
 
+//인증번호 전송 service
+export const sendVerificationCode = async (req) => {
+	if (await findEmailAlreadyExists(req)) {
+		// logic of already exists
+		console.log("exists");
+		return null;
+	} else {
+		// logic of doesn't exists
+		console.log("doesn't exists");
+
+		// 이메일 인증코드 난수 생성
+		const randomNumber = Math.floor(Math.random() * 1000000);
+		mailSender.sendGmail(req, randomNumber.toString().padStart(6, "0"));
+
+		// 인증코드 암호화
+		const hashedCode = encrypt(randomNumber.toString().padStart(6, "0"));
+
+		return hashedCode;
+	}
+};
+
+const findEmailAlreadyExists = async (email) => {
+	const user = await findEmail(email);
+	return user;
+};
+
+//인증번호 확인 service
+export const checkVerificationCode = async (req) => {
+	const code = req.code;
+
+	return bcrypt.compareSync(code.toString(), req.cipherCode);
+};
 export const userInfoService = async (userId) => {
     try{
         const userInfo = await userInfoRep(userId);
@@ -51,4 +90,4 @@ export const userInfoService = async (userId) => {
     } catch (err){
         return next(err);
     }
-}
+};
