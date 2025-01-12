@@ -10,8 +10,9 @@ import {
     checkVerification,
     handleUserInfo,
     handleUserChangeImage,
-    handleUserGenre
- } from "./controllers/user.controller.js";
+    handleUserGenre,
+    handleUserArtist
+    } from "./controllers/user.controller.js";
 
 BigInt.prototype.toJSON = function () { return this.toString() };
 
@@ -86,8 +87,10 @@ app.post("/signup/email/check-verification-code", checkVerification);
 app.get('/users/info/:id', handleUserInfo);
 //유저 프로필 사진 변경
 app.post('/users/profile_image', handleUserChangeImage);
-// 장르 선택/수정 하는 api
+// 유저의 장르 선택/수정 하는 api
 app.post('/users/genre', handleUserGenre);
+// 유저의 아티스트 선택/수정 하는 api
+app.post('/users/artist', handleUserArtist);
 //--------------------------------
 
 app.use((err, req, res, next) => {

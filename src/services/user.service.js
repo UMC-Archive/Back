@@ -9,7 +9,8 @@ import {
     findEmail,
     userInfoRep,
     changeImageRep,
-    changeGenreRep
+    changeGenreRep,
+    changeArtistRep
 } from "../repositories/user.repository.js";
 import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 
@@ -121,4 +122,18 @@ export const userChangeGenreService = async(data) =>{
         throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
     }
     return ChangeGenre;
+};
+
+// 유저 아티스트 변경 service
+export const userChangeArtistService = async(data) =>{
+    console.log("bodyService:", data)
+    const ChangeArtist = await changeArtistRep({
+        name: data.name,
+        email: data.email,
+		artistId: data.artistId,
+    })
+    if(ChangeArtist == null){
+        throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
+    }
+    return ChangeArtist;
 };
