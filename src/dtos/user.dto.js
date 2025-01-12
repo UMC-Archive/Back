@@ -34,3 +34,12 @@ export const checkVerificationRequestDTO = (req) => {
 		code: req.code,
 	};
 };
+
+// 유저 프로필 파일 변경 DTO
+export const bodyToImageDTO = (req) => {
+	return {
+		name: req.name,
+        email: req.email,
+		profileImage: req.profileImage,
+	};
+};

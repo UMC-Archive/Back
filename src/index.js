@@ -8,7 +8,8 @@ import {
     handleUserSignUp,
     sendEmail,
     checkVerification,
-    handleUserInfo
+    handleUserInfo,
+    handleUserChangeImage
  } from "./controllers/user.controller.js";
 
 BigInt.prototype.toJSON = function () { return this.toString() };
@@ -73,7 +74,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res, next) => {
     res.send('Hello World!')
 })
-app.post('/user/signup', handleUserSignUp);
+app.post('/users/signup', handleUserSignUp);
 //이메일 인증 전송
 app.get("/signup/email/send-verification-code", sendEmail);
 //이메일 인증 확인
@@ -82,6 +83,8 @@ app.post("/signup/email/check-verification-code", checkVerification);
 
 //유저 정보를 불러오는 api
 app.get('/users/info', handleUserInfo);
+//유저 프로필 사진 변경
+app.post('/users/profile_image', handleUserChangeImage);
 //--------------------------------
 
 app.use((err, req, res, next) => {
