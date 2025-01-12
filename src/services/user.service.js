@@ -7,9 +7,10 @@ import {
     getUserGenreId,
     setUserGenre,
     findEmail,
-    userInfoRep
+    userInfoRep,
+    changeImageRep
 } from "../repositories/user.repository.js";
-import { DuplicateUserEmailError } from "../errors.js";
+import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -83,6 +84,7 @@ export const checkVerificationCode = async (req) => {
 
 	return bcrypt.compareSync(code.toString(), req.cipherCode);
 };
+// 유저 정보 불러오는 service
 export const userInfoService = async (userId) => {
     try{
         const userInfo = await userInfoRep(userId);
@@ -90,4 +92,18 @@ export const userInfoService = async (userId) => {
     } catch (err){
         return next(err);
     }
+};
+
+// 유저 프로필 이미지 변경 service
+export const userChangeImageService = async(data) =>{
+    console.log("body12:", data)
+    const ChangeImage = await changeImageRep({
+        name: data.name,
+        email: data.email,
+        profileImage: data.profileImage,
+    })
+    if(ChangeImage == null){
+        throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
+    }
+    return ChangeImage;
 };

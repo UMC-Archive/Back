@@ -3,13 +3,15 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import { 
   bodyToUser,
+  bodyToImageDTO,
   checkVerificationRequestDTO
  } from "../dtos/user.dto.js";
 import {
         userSignUp,
         sendVerificationCode,
         userInfoService,
-        checkVerificationCode
+        checkVerificationCode,
+        userChangeImageService
   } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
@@ -233,6 +235,7 @@ export const checkVerification = async (req, res) => {
 	}
 };
 
+// 유저 정보 불러오기
 export const handleUserInfo = async (req, res, next) => {
   /*
   #swagger.summary = '유저 정보 조회 API';
@@ -298,3 +301,14 @@ export const handleUserInfo = async (req, res, next) => {
   }
 }
 
+// 유저 프로필 이미지 변경
+export const handleUserChangeImage = async (req, res, next) => {
+  try {
+    console.log("유저의 프로필 이미지 변경을 요청했습니다!");
+    console.log("body:", req.body);
+    const changeImage = await userChangeImageService(bodyToImageDTO(req.body));
+    res.status(StatusCodes.OK).success(changeImage);
+} catch (err) {
+    return next(err);
+}
+};
