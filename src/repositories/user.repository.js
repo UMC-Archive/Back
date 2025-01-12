@@ -68,3 +68,8 @@ export const getUserGenreId = async (userId) => {
     });
     return preferences;
 };
+
+export const userInfoRep = async (userId) => {
+    const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+    return user;
+};

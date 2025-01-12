@@ -4,7 +4,7 @@ import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 
-import { handleUserSignUp } from "./controllers/user.controller.js";
+import { handleUserSignUp ,handleUserInfo} from "./controllers/user.controller.js";
 
 BigInt.prototype.toJSON = function () { return this.toString() };
 
@@ -70,6 +70,8 @@ app.get('/', (req, res, next) => {
 })
 app.post('/user/signup', handleUserSignUp);
 
+//유저 정보를 불러오는 api
+app.get('/users/info', handleUserInfo);
 //--------------------------------
 
 app.use((err, req, res, next) => {
