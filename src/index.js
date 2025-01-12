@@ -4,7 +4,7 @@ import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 
-import { 
+import {
     handleUserSignUp,
     sendEmail,
     checkVerification,
@@ -12,7 +12,16 @@ import {
     handleUserChangeImage,
     handleUserGenre,
     handleUserArtist
-    } from "./controllers/user.controller.js";
+} from "./controllers/user.controller.js";
+
+import {
+    handleMusicNomination,
+    handleAlbumNomination,
+    handleMusicHidden,
+    handleMusicInfo,
+    handleMusicAlbumInfo,
+    handleMusicArtistInfo
+} from "./controllers/music.controller.js"
 
 BigInt.prototype.toJSON = function () { return this.toString() };
 
@@ -76,6 +85,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res, next) => {
     res.send('Hello World!')
 })
+//회원 가입
 app.post('/users/signup', handleUserSignUp);
 //이메일 인증 전송
 app.get("/signup/email/send-verification-code", sendEmail);
@@ -91,6 +101,20 @@ app.post('/users/profile_image', handleUserChangeImage);
 app.post('/users/genre', handleUserGenre);
 // 유저의 아티스트 선택/수정 하는 api
 app.post('/users/artist', handleUserArtist);
+
+//추천곡
+app.get('/music/nomination', handleMusicNomination);
+//당신을 위한 앨범 추천
+app.get('/album/nomination', handleAlbumNomination);
+//숨겨진 명곡
+app.get('/music/hidden', handleMusicHidden);
+//노래 정보 가져오기
+app.get('/music/:music/info', handleMusicInfo);
+//앨범 정보 가져오기
+app.get('/music/album/:album/info', handleMusicAlbumInfo);
+//아티스트 정보 가져오기
+app.get('/music/artist/:artist/info', handleMusicArtistInfo);
+
 //--------------------------------
 
 app.use((err, req, res, next) => {
