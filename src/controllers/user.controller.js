@@ -1,4 +1,6 @@
 import { StatusCodes } from "http-status-codes";
+import { response } from "../response.js";
+import { status } from "../response.status.js";
 import { 
   bodyToUser,
   checkVerificationRequestDTO
@@ -107,10 +109,12 @@ export const sendEmail = async (req, res) => {
 			// if email doesn't exists
 			console.log(encryptedCode);
 
+      // res.status(StatusCodes.OK);
 			res.send(response(status.SUCCESS, encryptedCode));
 		} else {
 			// if email exists
 			res.send(response(status.EMAIL_ALREADY_EXIST, null));
+      // res.status(StatusCodes.OK);
 		}
 	} catch (err) {
 		console.log(err);

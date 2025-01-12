@@ -71,15 +71,15 @@ export const getUserGenreId = async (userId) => {
 
 // finding user by email
 export const findEmail = async (req) => {
-    const email = await prisma.findFirst({
+    const email = await prisma.user.findFirst({
         select: {email : true},
         where: {email: req}
     });
-    if (email[0].length === 0) {
+    if (email === null) {
         console.log("email null");
         return null;
     } else {
         console.log(email[0][0].email);
-        return email[0][0].email;
+        return email;
     }
 };
