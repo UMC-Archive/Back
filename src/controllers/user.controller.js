@@ -4,14 +4,18 @@ import { status } from "../../config/response.status.js";
 import { 
   bodyToUser,
   bodyToImageDTO,
-  checkVerificationRequestDTO
- } from "../dtos/user.dto.js";
+  checkVerificationRequestDTO,
+  bodyToGenreDTO,
+  bodyToArtistDTO,
+  } from "../dtos/user.dto.js";
 import {
         userSignUp,
         sendVerificationCode,
         userInfoService,
         checkVerificationCode,
-        userChangeImageService
+        userChangeImageService,
+        userChangeGenreService,
+        userChangeArtistService
   } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
@@ -260,8 +264,8 @@ export const handleUserInfo = async (req, res, next) => {
             status: { type: "string", example: "active" },
             socialType: { type: "string", example: "google" },
             inactiveDate: { type: "string", format: "date", example: "2025-01-01" },
-            createdAt : { type: "string", format: "date", example: "2025-01-01" },
-            updatedAt : { type: "string", format: "date", example: "2025-01-01" }
+            createdAt : { type: "string", format: "date", example: "2025-01-12T04:43:36.811Z" },
+            updatedAt : { type: "string", format: "date", example: "2025-01-12T10:26:40.610Z" }
           }
         }
       }
@@ -294,6 +298,7 @@ export const handleUserInfo = async (req, res, next) => {
     console.log("유저 정보를 불러옵니다.");
     //토큰 사용전 임의로 사용
     const userId = req.params.id;
+    console.log(userId);
     const userInfo = await userInfoService(userId);
     res.status(StatusCodes.OK).success(userInfo);
   } catch (err){
@@ -303,11 +308,270 @@ export const handleUserInfo = async (req, res, next) => {
 
 // 유저 프로필 이미지 변경
 export const handleUserChangeImage = async (req, res, next) => {
+  /*
+  #swagger.summary = '유저 프로필 이미지 변경 API';
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            name: { type: "string", example: "John Doe" },
+            email: { type: "string", example: "john.doe@example.com" },
+            profileImage: { type: "string", example: "https://example.com/new-profile.jpg" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[200] = {
+    description: "유저 프로필 이미지 변경 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            id: { type: "string", example: "12345" },
+            name: { type: "string", example: "John Doe" },
+            email: { type: "string", example: "john.doe@example.com" },
+            profileImage: { type: "string", example: "https://example.com/new-profile.jpg" },
+            updatedAt: { type: "string", format: "date-time", example: "2025-01-12T14:32:00Z" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "해당 이름과 이메일로 사용자를 찾을 수 없음",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U404" },
+                reason: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "요청 파라미터 오류",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U400" },
+                reason: { type: "string", example: "요청 파라미터를 확인해주세요." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
-    console.log("body:", req.body);
+    console.log("bodyController:", req.body);
     const changeImage = await userChangeImageService(bodyToImageDTO(req.body));
     res.status(StatusCodes.OK).success(changeImage);
+} catch (err) {
+    return next(err);
+}
+};
+
+// 유저의 장르 선택/수정
+export const handleUserGenre = async (req, res, next) => {
+  /*
+  #swagger.summary = '유저의 장르 선택/수정 API';
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            name: { type: "string", example: "John Doe" },
+            email: { type: "string", example: "john.doe@example.com" },
+            genreId: { type: "integer", example: 3 }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[200] = {
+    description: "유저 장르 선택/수정 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            id: { type: "string", example: "12345" },
+            userId: { type: "string", example: "67890" },
+            genreId: { type: "integer", example: 3 },
+            updatedAt: { type: "string", format: "date-time", example: "2025-01-12T15:45:00Z" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "해당 이름과 이메일 또는 장르 정보를 찾을 수 없음",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U404" },
+                reason: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "요청 파라미터 오류",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U400" },
+                reason: { type: "string", example: "요청 파라미터를 확인해주세요." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try {
+    console.log("유저가 장르 변경을 요청했습니다!");
+    console.log("bodyController:", req.body);
+    const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.body));
+    res.status(StatusCodes.OK).success(changeGenre);
+} catch (err) {
+    return next(err);
+}
+};
+
+// 유저의 아티스트 선택/수정
+export const handleUserArtist = async (req, res, next) => {
+  /*
+  #swagger.summary = '유저의 아티스트 선택/수정 API';
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            name: { type: "string", example: "John Doe" },
+            email: { type: "string", example: "john.doe@example.com" },
+            artistId: { type: "integer", example: 5 }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[200] = {
+    description: "유저 아티스트 선택/수정 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            id: { type: "string", example: "67890" },
+            userId: { type: "string", example: "12345" },
+            artistId: { type: "integer", example: 5 },
+            updatedAt: { type: "string", format: "date-time", example: "2025-01-12T15:45:00Z" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "해당 이름과 이메일 또는 아티스트 정보를 찾을 수 없음",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U404" },
+                reason: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "요청 파라미터 오류",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U400" },
+                reason: { type: "string", example: "요청 파라미터를 확인해주세요." },
+                data: { type: "object", example: {} }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try {
+    console.log("유저가 아티스트 변경을 요청했습니다!");
+    console.log("bodyController:", req.body);
+    const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.body));
+    res.status(StatusCodes.OK).success(changeArtist);
 } catch (err) {
     return next(err);
 }

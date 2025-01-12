@@ -9,7 +9,9 @@ import {
     sendEmail,
     checkVerification,
     handleUserInfo,
-    handleUserChangeImage
+    handleUserChangeImage,
+    handleUserGenre,
+    handleUserArtist
 } from "./controllers/user.controller.js";
 
 import {
@@ -92,9 +94,13 @@ app.post("/signup/email/check-verification-code", checkVerification);
 
 
 //유저 정보를 불러오는 api
-app.get('/users/info', handleUserInfo);
+app.get('/users/info/:id', handleUserInfo);
 //유저 프로필 사진 변경
 app.post('/users/profile_image', handleUserChangeImage);
+// 유저의 장르 선택/수정 하는 api
+app.post('/users/genre', handleUserGenre);
+// 유저의 아티스트 선택/수정 하는 api
+app.post('/users/artist', handleUserArtist);
 
 //추천곡
 app.get('/music/nomination', handleMusicNomination);
@@ -108,6 +114,7 @@ app.get('/music/:music/info', handleMusicInfo);
 app.get('/music/album/:album/info', handleMusicAlbumInfo);
 //아티스트 정보 가져오기
 app.get('/music/artist/:artist/info', handleMusicArtistInfo);
+
 //--------------------------------
 
 app.use((err, req, res, next) => {
