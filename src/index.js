@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
-
+import { spotifyApi } from "./auth.config.js"
 import {
     handleUserSignUp,
     sendEmail,
@@ -79,7 +79,46 @@ app.use((req, res, next) => {
     };
     next();
 });
+//--------------------------------
+//spotify api 토큰
+app.get('/spotify/login', (req, res) => {
+    const scopes = ['user-read-private', 'user-read-email', 'user-read-playback-state', 'user-modify-playback-state'];
+    res.redirect(spotifyApi.createAuthorizeURL(scopes));
+});
+app.get('/spotify/callback', (req, res) => {
+    const error = req.query.error;
+    const code = req.query.code;
 
+    if (error) {
+        console.error('Callback Error:', error);
+        res.send(`Callback Error: ${error}`);
+        return;
+    }
+
+    spotifyApi.authorizationCodeGrant(code).then(data => {
+        const accessToken = data.body['access_token'];
+        const refreshToken = data.body['refresh_token'];
+        const expiresIn = data.body['expires_in'];
+
+        spotifyApi.setAccessToken(accessToken);
+        spotifyApi.setRefreshToken(refreshToken);
+
+        console.log('The access token is ' + accessToken);
+        console.log('The refresh token is ' + refreshToken);
+
+        res.send('Login successful! You can now use the /search and /play endpoints.');
+
+        setInterval(async () => {
+            const data = await spotifyApi.refreshAccessToken();
+            const accessTokenRefreshed = data.body['access_token'];
+            spotifyApi.setAccessToken(accessTokenRefreshed);
+        }, expiresIn / 2 * 1000);
+
+    }).catch(error => {
+        console.error('Error getting Tokens:', error);
+        res.send('Error getting tokens');
+    });
+});
 //--------------------------------
 
 app.get('/', (req, res, next) => {
@@ -109,11 +148,11 @@ app.get('/album/nomination', handleAlbumNomination);
 //숨겨진 명곡
 app.get('/music/hidden', handleMusicHidden);
 //노래 정보 가져오기
-app.get('/music/:music/info', handleMusicInfo);
+app.get('/music/info', handleMusicInfo);
 //앨범 정보 가져오기
-app.get('/music/album/:album/info', handleMusicAlbumInfo);
+app.get('/music/album/info', handleMusicAlbumInfo);
 //아티스트 정보 가져오기
-app.get('/music/artist/:artist/info', handleMusicArtistInfo);
+app.get('/music/artist/info', handleMusicArtistInfo);
 
 //--------------------------------
 
