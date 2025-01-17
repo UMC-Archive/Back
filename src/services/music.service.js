@@ -18,6 +18,7 @@ import {
     getArtistDB,
     getArtistAPI,
     addArtist,
+    getAlbumItunesAPI
 } from "../repositories/music.repository.js";
 //숨겨진 명곡
 export const listHiddenMusics = async (date) => {
@@ -41,11 +42,14 @@ export const listMusic = async (artist_name, music_name) => {
 
     //DB에 음악이 저장 되어 있지 않을 때
     //앨범 정보
-    const albumName = await searchAlbumAPI(music_name, artist_name); // spotify api 사용
+    const albumName = (await searchAlbumAPI(music_name, artist_name)).collectionName;
     let album = {}
     album = await getAlbumDB(albumName);
     if (!album) {
-        const apiInfo = await getAlbumAPI(artist_name, albumName)
+        let apiInfo = await getAlbumAPI(artist_name, albumName)
+        if (!apiInfo) {
+            apiInfo = await getAlbumItunesAPI(artist_name, music_name)
+        }
         album = await addAlbum(apiInfo);
     }
     //음악 가사 정보
@@ -54,10 +58,8 @@ export const listMusic = async (artist_name, music_name) => {
     if (!lyrics) {
         lyrics = "none";
     }
-
     //음악 정보
     const apiInfo = await getMusicAPI(album, lyrics, artist_name, music_name);
-    console.log(apiInfo)
     const music = await addMusic(apiInfo);
 
     return responseFromMusic(music);
