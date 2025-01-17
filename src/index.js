@@ -30,7 +30,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors({ origin: '*' }));
+app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -54,12 +54,14 @@ app.get("/openapi.json", async (req, res, next) => {
     };
     const outputFile = "/dev/null";
     const routes = ["./src/index.js"];
+    const protocol = req.protocol; // http 또는 https
+    const host = req.get("host");
     const doc = {
         info: {
             title: "UMC 7th",
             description: "UMC 7th Node.js 테스트 프로젝트입니다.",
         },
-        host: "localhost:3000",
+        host: `${protocol}://${host}`,
     };
 
     const result = await swaggerAutogen(options)(outputFile, routes, doc);

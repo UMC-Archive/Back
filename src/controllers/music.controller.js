@@ -3,7 +3,8 @@ import { } from "../dtos/music.dto.js"
 import {
   listMusic,
   listArtist,
-  listAlbum
+  listAlbum,
+  listHiddenMusics
 } from "../services/music.service.js"
 //추천곡
 export const handleMusicNomination = async (req, res, next) => {
@@ -189,6 +190,15 @@ export const handleMusicHidden = async (req, res, next) => {
      }
    };
  */
+  try {
+    console.log("숨겨진 명곡 조회를 요청했습니다!");
+    const music = await listHiddenMusics(
+      req.query.date
+    );
+    res.status(StatusCodes.OK).success(music);
+  } catch (err) {
+    return next(err);
+  }
 }
 //노래 정보 가져오기
 export const handleMusicInfo = async (req, res, next) => {
