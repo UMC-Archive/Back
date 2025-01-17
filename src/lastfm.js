@@ -34,3 +34,15 @@ export const getMusicInfo = (artist_name, music_name) => {
         });
     });
 };
+
+export const getMusicSearch = (music_name) => {
+    return new Promise((resolve, reject) => {
+        lastfm.track.search({ track: music_name }, (err, music) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(music);
+            }
+        });
+    });
+};

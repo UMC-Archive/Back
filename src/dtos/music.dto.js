@@ -11,3 +11,7 @@ export const responseFromAlbum = (album) => {
 export const responseFromMusic = (music) => {
     return music;
 }
+
+export const responseFromHiddenMusics = (musics) => {
+    return musics
+}

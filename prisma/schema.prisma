@@ -15,8 +15,8 @@ datasource db {
 
 model User {
   id           BigInt        @id @default(autoincrement())
-  name         String        @db.VarChar(20)
-  nickname     String        @db.VarChar(20)
+  name         String        @db.VarChar(100)
+  nickname     String        @db.VarChar(100)
   email        String        @unique(map: "email") @db.VarChar(50)
   password     String        @db.VarChar(100)
   profileImage String        @map("profile_image") @db.VarChar(1000)
@@ -46,7 +46,7 @@ model TimeHistory {
 
 model Artist {
   id          BigInt        @id @default(autoincrement())
-  name        String        @db.VarChar(20)
+  name        String        @db.VarChar(100)
   image       String        @db.VarChar(1000)
   createdAt   DateTime?     @default(now()) @map("created_at") @db.DateTime(6)
   updatedAt   DateTime?     @default(now()) @map("updated_at") @db.DateTime(6)
@@ -59,7 +59,7 @@ model Artist {
 model Genre {
   id         BigInt       @id @default(autoincrement())
   image      String       @db.VarChar(1000)
-  name       String       @db.VarChar(20)
+  name       String       @db.VarChar(100)
   createdAt  DateTime?    @default(now()) @map("created_at") @db.DateTime(6)
   updatedAt  DateTime?    @default(now()) @map("updated_at") @db.DateTime(6)
   UserGenres UserGenre[]
@@ -98,9 +98,9 @@ model UserArtist {
 
 model Album {
   id          BigInt    @id @default(autoincrement())
-  title       String    @db.VarChar(20)
+  title       String    @db.VarChar(100)
   description String    @db.Text
-  releseTime  DateTime  @map("relese_time") @db.DateTime(6)
+  releaseTime DateTime  @map("release_time") @db.DateTime(6)
   image       String    @db.VarChar(1000)
   createdAt   DateTime? @default(now()) @map("created_at") @db.DateTime(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.DateTime(6)
@@ -113,8 +113,8 @@ model Music {
   id           BigInt        @id @default(autoincrement())
   album        Album         @relation(fields: [albumId], references: [id])
   albumId      BigInt        @map("Album_id")
-  title        String        @db.VarChar(20)
-  releseTime   DateTime      @map("relese_time") @db.DateTime(6)
+  title        String        @db.VarChar(100)
+  releaseTime  DateTime      @map("release_time") @db.DateTime(6)
   lyrics       String        @db.Text
   image        String        @db.VarChar(1000)
   createdAt    DateTime?     @default(now()) @map("created_at") @db.DateTime(6)
