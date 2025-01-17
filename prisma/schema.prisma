@@ -112,7 +112,7 @@ model Album {
 model Music {
   id           BigInt        @id @default(autoincrement())
   album        Album         @relation(fields: [albumId], references: [id])
-  albumId      BigInt        @map("Album_id")
+  albumId      BigInt        @map("album_id")
   title        String        @db.VarChar(100)
   releaseTime  DateTime      @map("release_time") @db.DateTime(6)
   lyrics       String        @db.Text
