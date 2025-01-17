@@ -10,5 +10,5 @@ export const lastfm = new LastfmAPI({
 export const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_ID,
     clientSecret: process.env.SPOTIFY_SECRET,
-    redirectUri: process.env.SPOTIFY_REDIRET_URI
+    redirectUri: process.env.SPOTIFY_REDIRECT_URI
 })
