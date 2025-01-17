@@ -13,7 +13,6 @@ import {
     handleUserGenre,
     handleUserArtist
 } from "./controllers/user.controller.js";
-
 import {
     handleMusicNomination,
     handleAlbumNomination,
@@ -23,6 +22,7 @@ import {
     handleMusicArtistInfo
 } from "./controllers/music.controller.js"
 
+import { getAlbumItunes } from "./itunes.js"
 BigInt.prototype.toJSON = function () { return this.toString() };
 
 dotenv.config();
@@ -123,6 +123,9 @@ app.get('/spotify/callback', (req, res) => {
 });
 //--------------------------------
 
+app.get('/test', async (req, res, next) => {
+    ares.send(getAlbumItunes(req.query.artist, req.query.music));
+})
 app.get('/', (req, res, next) => {
     res.send('Hello World!')
 })

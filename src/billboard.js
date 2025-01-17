@@ -1,7 +1,7 @@
 import request from "request";
 
 export const billboard = (path, date, range) => {
-    console.log(path, date, range)
+    // console.log(path, date, range)
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET',
@@ -20,8 +20,7 @@ export const billboard = (path, date, range) => {
             if (error) {
                 return reject(error);
             }
-            console.log(body)
-            resolve(body);
+            resolve(JSON.parse(body));
         });
     });
     //example
