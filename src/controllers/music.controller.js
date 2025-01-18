@@ -4,7 +4,9 @@ import {
   listMusic,
   listArtist,
   listAlbum,
-  listHiddenMusics
+  listHiddenMusics,
+  listNominationAlbum,
+  listNominationMusic
 } from "../services/music.service.js"
 //추천곡
 export const handleMusicNomination = async (req, res, next) => {
@@ -67,8 +69,17 @@ export const handleMusicNomination = async (req, res, next) => {
      }
    };
  */
+  try {
+    console.log("당신을 위한 노래 추천을 요청했습니다!");
+    const music = await listNominationMusic(
+      req.query.user_id,
+    );
+    res.status(StatusCodes.OK).success(music);
+  } catch (err) {
+    return next(err);
+  }
 }
-//당신을 위한 앨범 추천
+//당신을 위한 앨범 추천(연도)
 export const handleAlbumNomination = async (req, res, next) => {
   /*
    #swagger.summary = '당신을 위한 앨범 추천 조회 API';
@@ -128,6 +139,15 @@ export const handleAlbumNomination = async (req, res, next) => {
      }
    };
  */
+  try {
+    console.log("당신을 위한 앨범 추천을 요청했습니다!");
+    const album = await listNominationAlbum(
+      req.query.user_id,
+    );
+    res.status(StatusCodes.OK).success(album);
+  } catch (err) {
+    return next(err);
+  }
 }
 //숨겨진 명곡
 export const handleMusicHidden = async (req, res, next) => {

@@ -29,16 +29,16 @@ export const handleUserSignUp = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              name: { type: "string" },
-              nickname: { type: "string" },
-              email: { type: "string" },
-              password: { type: "string"},
-              profileImage: { type: "string" },
-              status: { type: "string" },
-              socialType: { type: "string" },
+              name: { type: "string", example: "이름" },
+              nickname: { type: "string", example: "닉네임" },
+              email: { type: "string", example: "example@email.com"},
+              password: { type: "string", example: "password"},
+              profileImage: { type: "string", example: "image.jpg"},
+              status: { type: "string", example: "active"},
+              socialType: { type: "string", example: "example"},
               inactiveDate: { type: "string",  format: "date"  },
-              artists: {type: "array", items: { type: "number" } },
-              genres: { type: "array", items: { type: "number" } }
+              artists: {type: "array", items: { type: "number", example: 1} },
+              genres: { type: "array", items: { type: "number",example: 1} }
             }
           }
         }

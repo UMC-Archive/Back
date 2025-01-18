@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
-import { spotifyApi } from "./auth.config.js"
 import {
     handleUserSignUp,
     sendEmail,
@@ -22,7 +21,6 @@ import {
     handleMusicArtistInfo
 } from "./controllers/music.controller.js"
 
-import { getAlbumItunes } from "./itunes.js"
 BigInt.prototype.toJSON = function () { return this.toString() };
 
 dotenv.config();
@@ -82,50 +80,6 @@ app.use((req, res, next) => {
     next();
 });
 //--------------------------------
-//spotify api 토큰
-app.get('/spotify/login', (req, res) => {
-    const scopes = ['user-read-private', 'user-read-email', 'user-read-playback-state', 'user-modify-playback-state'];
-    res.redirect(spotifyApi.createAuthorizeURL(scopes));
-});
-app.get('/spotify/callback', (req, res) => {
-    const error = req.query.error;
-    const code = req.query.code;
-
-    if (error) {
-        console.error('Callback Error:', error);
-        res.send(`Callback Error: ${error}`);
-        return;
-    }
-
-    spotifyApi.authorizationCodeGrant(code).then(data => {
-        const accessToken = data.body['access_token'];
-        const refreshToken = data.body['refresh_token'];
-        const expiresIn = data.body['expires_in'];
-
-        spotifyApi.setAccessToken(accessToken);
-        spotifyApi.setRefreshToken(refreshToken);
-
-        console.log('The access token is ' + accessToken);
-        console.log('The refresh token is ' + refreshToken);
-
-        res.send('Login successful! You can now use the /search and /play endpoints.');
-
-        setInterval(async () => {
-            const data = await spotifyApi.refreshAccessToken();
-            const accessTokenRefreshed = data.body['access_token'];
-            spotifyApi.setAccessToken(accessTokenRefreshed);
-        }, expiresIn / 2 * 1000);
-
-    }).catch(error => {
-        console.error('Error getting Tokens:', error);
-        res.send('Error getting tokens');
-    });
-});
-//--------------------------------
-
-app.get('/test', async (req, res, next) => {
-    ares.send(getAlbumItunes(req.query.artist, req.query.music));
-})
 app.get('/', (req, res, next) => {
     res.send('Hello World!')
 })
@@ -146,18 +100,18 @@ app.post('/users/genre', handleUserGenre);
 // 유저의 아티스트 선택/수정 하는 api
 app.post('/users/artist', handleUserArtist);
 
-//추천곡
-app.get('/music/nomination', handleMusicNomination);
-//당신을 위한 앨범 추천
-app.get('/album/nomination', handleAlbumNomination);
+//추천곡(연도)
+app.get('/music/year/nomination', handleMusicNomination);
+//당신을 위한 앨범 추천(연도)
+app.get('/album/year/nomination', handleAlbumNomination);
 //숨겨진 명곡
 app.get('/music/hidden', handleMusicHidden);
 //노래 정보 가져오기
-app.get('/music/info', handleMusicInfo);
+app.post('/music/info', handleMusicInfo);
 //앨범 정보 가져오기
-app.get('/music/album/info', handleMusicAlbumInfo);
+app.post('/music/album/info', handleMusicAlbumInfo);
 //아티스트 정보 가져오기
-app.get('/music/artist/info', handleMusicArtistInfo);
+app.post('/music/artist/info', handleMusicArtistInfo);
 
 //--------------------------------
 
