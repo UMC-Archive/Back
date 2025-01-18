@@ -5,9 +5,25 @@ const requestPromise = (url) => {
     return new Promise((resolve, reject) => {
         request(url, (error, response, body) => {
             if (error) {
-                reject(error);
+                return resolve(null);
+            }
+
+            // 응답 상태 코드가 200이 아닌 경우 에러 처리
+            if (response.statusCode !== 200) {
+                return resolve(null);
+            }
+
+            // 응답 본문이 비어 있지 않은지 확인
+            if (body && body.trim() !== '') {
+                try {
+                    // JSON 응답 파싱
+                    const data = JSON.parse(body);
+                    resolve(data);
+                } catch (e) {
+                    resolve(null);
+                }
             } else {
-                resolve(JSON.parse(body)); // JSON으로 응답을 반환
+                resolve(null);
             }
         });
     });
@@ -24,8 +40,24 @@ const searchItunes = async (query) => {
         return [];
     }
 };
-
 export const getAlbumItunes = async (music_name, artist_name) => {
     const results = await searchItunes(`${artist_name} ${music_name}`);
+    return results[0];
+};
+const searchItunesEntity = async (query, entity) => {
+    const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=${encodeURIComponent(entity)}&limit=1`;
+    try {
+        const data = await requestPromise(url);
+        return data.results; // 검색된 결과 반환
+    } catch (error) {
+        console.error('Error fetching data from iTunes API:', error);
+        return [];
+    }
+};
+export const getAlbumItunesEntity = async (album_name, artist_name, entity) => {
+    const results = await searchItunesEntity(`${artist_name} ${album_name}`, entity);
+    if (!results[0]) {
+        return null;
+    }
     return results[0];
 };

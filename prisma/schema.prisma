@@ -58,8 +58,8 @@ model Artist {
 
 model Genre {
   id         BigInt       @id @default(autoincrement())
-  image      String       @db.VarChar(1000)
   name       String       @db.VarChar(100)
+  image      String       @db.VarChar(1000)
   createdAt  DateTime?    @default(now()) @map("created_at") @db.DateTime(6)
   updatedAt  DateTime?    @default(now()) @map("updated_at") @db.DateTime(6)
   UserGenres UserGenre[]
