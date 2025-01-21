@@ -10,6 +10,7 @@ import {
     findEmail,
     userInfoRep,
     addHistoryRep,
+    userHistoryInfoRep,
     changeImageRep,
     changeGenreRep,
     changeArtistRep
@@ -135,6 +136,16 @@ export const userAddHistoryService = async(data) => {
         throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
     }
     return addHistory;
+};
+
+//유저의 히스토리를 불러오는 service
+export const userHistoryInfoService = async (userId) => {
+    try{
+        const userHistoryInfo = await userHistoryInfoRep(userId);
+        return userHistoryInfo;
+    } catch (err){
+        return next(err);
+    }
 };
 // 유저 프로필 이미지 변경 service
 export const userChangeImageService = async(data) =>{

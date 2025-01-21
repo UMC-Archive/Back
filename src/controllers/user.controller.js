@@ -17,6 +17,7 @@ import {
   userInfoService,
   checkVerificationCode,
   userAddHistoryService,
+  userHistoryInfoService,
   userChangeImageService,
   userChangeGenreService,
   userChangeArtistService
@@ -336,12 +337,26 @@ export const handleUserInfo = async (req, res, next) => {
 }
 
 // 유저 히스토리 추가하기
-export const handleHistory = async (req,res,next) => {
+export const handleAddHistory = async (req,res,next) => {
   try {
     console.log("유저의 히스토리 추가를 요청했습니다!");
     console.log("bodyController:", req.body);
     const addHistory = await userAddHistoryService(bodyToHistoryDTO(req.body));
     res.status(StatusCodes.OK).success(addHistory);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// 유저 히스토리 불러오기
+export const handleGetHistory = async (req,res,next) => {
+  try {
+    console.log("유저 히스토리 정보를 불러옵니다.");
+    //토큰 사용전 임의로 사용
+    const userId = req.params.id;
+    console.log(userId);
+    const userInfo = await userHistoryInfoService(userId);
+    res.status(StatusCodes.OK).success(userInfo);
   } catch (err) {
     return next(err);
   }

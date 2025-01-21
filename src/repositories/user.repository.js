@@ -136,6 +136,11 @@ export const addHistoryRep = async (data) => {
     }
     
 };
+// 유저의 히스토리를 불러오는 api
+export const userHistoryInfoRep = async (userId) => {
+    const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+    return user;
+};
 //유저의 프로필 이미지 변경
 export const changeImageRep = async (data) => {
     console.log("bodyRep:", data)
