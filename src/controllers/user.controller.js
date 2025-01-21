@@ -3,6 +3,7 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import {
   bodyToUser,
+  loginRequestDTO,
   bodyToImageDTO,
   checkVerificationRequestDTO,
   bodyToGenreDTO,
@@ -10,6 +11,7 @@ import {
 } from "../dtos/user.dto.js";
 import {
   userSignUp,
+  loginService,
   sendVerificationCode,
   userInfoService,
   checkVerificationCode,
@@ -18,6 +20,7 @@ import {
   userChangeArtistService
 } from "../services/user.service.js";
 
+//회원가입
 export const handleUserSignUp = async (req, res, next) => {
   /*
     #swagger.summary = '회원 가입 API';
@@ -107,6 +110,26 @@ export const handleUserSignUp = async (req, res, next) => {
   }
 };
 
+// 로그인
+export const handleLogin = async(req, res, next)=> {
+  try {
+		console.log("로그인");
+		const result = await loginService(loginRequestDTO(req.body));
+		if (result === 1) {
+			// ID = EMAIL
+			res.send(response(status.LOGIN_ID_NOT_EXIST, null));
+		} else if (result === 2) {
+			// if login fail by password incorrect
+			res.send(response(status.LOGIN_PASSWORD_WRONG, null));
+		} else {
+			// if login success
+			res.send(response(status.SUCCESS, result));
+		}
+	} catch (err) {
+		console.log(err);
+		return next(err);
+	}
+};
 //이메일 인증 전송
 // /users/signup/email/send-verification-code
 export const sendEmail = async (req, res) => {

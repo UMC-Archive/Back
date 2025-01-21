@@ -5,6 +5,7 @@ import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 import {
     handleUserSignUp,
+    handleLogin,
     sendEmail,
     checkVerification,
     handleUserInfo,
@@ -85,6 +86,8 @@ app.get('/', (req, res, next) => {
 })
 //회원 가입
 app.post('/users/signup', handleUserSignUp);
+//로그인
+app.post('/users/login', handleLogin);
 //이메일 인증 전송
 app.get("/signup/email/send-verification-code", sendEmail);
 //이메일 인증 확인

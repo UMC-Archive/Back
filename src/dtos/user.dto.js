@@ -35,6 +35,14 @@ export const checkVerificationRequestDTO = (req) => {
 	};
 };
 
+// 로그인 DTO
+export const loginRequestDTO = (req) => {
+    return {
+		email: req.email,
+		password: req.password,
+	};
+};
+
 // 유저 프로필 파일 변경 DTO
 export const bodyToImageDTO = (req) => {
 	return {
