@@ -18,6 +18,7 @@ import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+import { createJwt } from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import {encrypt} from "../middleware/encrypt.js";
 
@@ -108,8 +109,8 @@ export const loginService = async (req) => {
 		if (bcrypt.compareSync(req.password, user.password)) {
 			// 성공
 			user.password = "hidden";
-			//return createJwt(user);
-            console.log("로그인 성공");
+			return createJwt(user);
+            //console.log("로그인 성공");
             return user;
 		} else {
 			// 실패
