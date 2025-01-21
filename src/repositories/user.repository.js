@@ -79,7 +79,6 @@ export const findEmail = async (req) => {
         console.log("email null");
         return null;
     } else {
-        console.log(email[0][0].email);
         return email;
     }
 };
@@ -87,6 +86,27 @@ export const findEmail = async (req) => {
 export const userInfoRep = async (userId) => {
     const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
     return user;
+};
+
+// 유저 찾기
+export const findUser = async (email) => {
+    // Prisma로 유저 정보 조회
+    const user = await prisma.user.findFirst({
+        select: {
+        email: true, // email만 선택
+        password: true, // password도 가져오기
+        },
+        where: { email },
+    });
+
+    if (!user) {
+      // 유저가 없을 경우 예외 처리
+        console.log("findUser: 유저를 찾을 수 없습니다.");
+        throw new Error(`User with email ${email} not found`);
+    }
+
+    console.log("findUser: 조회된 유저 정보:", user);
+    return user; // 유저 객체 반환
 };
 
 //유저의 프로필 이미지 변경
