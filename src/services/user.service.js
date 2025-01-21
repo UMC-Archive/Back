@@ -2,6 +2,7 @@ import { responseFromUser } from "../dtos/user.dto.js";;
 import {
     addUser,
     getUser,
+    findUser,
     getUserArtistId,
     setUserArtist,
     getUserGenreId,
@@ -17,10 +18,12 @@ import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+import {createJwt} from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import {encrypt} from "../middleware/encrypt.js";
 
 export const userSignUp = async (data) => {
+    data.password = encrypt(data.password);
     const userId = await addUser({
         name: data.name,
         nickname: data.nickname,
@@ -95,6 +98,32 @@ export const userInfoService = async (userId) => {
         return next(err);
     }
 };
+
+// 로그인 전송 service
+export const loginService = async (req) => {
+    console.log("loginService 요청 데이터:", req);
+	if (await findEmailAlreadyExists(req.email)) {
+		// 이메일이 존재하면
+		const user = await findUser(req.email);
+
+		if (bcrypt.compareSync(req.password, user.password)) {
+			// 성공
+			user.password = "hidden";
+			//return createJwt(user);
+            console.log("로그인 성공");
+            return user;
+		} else {
+			// 실패
+			console.log("password incorrect");
+			return 2;
+		}
+	} else {
+		// 이메일 x
+		console.log("email doesn't exists");
+		return 1;
+	}
+};
+
 
 // 유저 프로필 이미지 변경 service
 export const userChangeImageService = async(data) =>{

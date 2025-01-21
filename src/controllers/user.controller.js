@@ -3,6 +3,7 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import {
   bodyToUser,
+  loginRequestDTO,
   bodyToImageDTO,
   checkVerificationRequestDTO,
   bodyToGenreDTO,
@@ -10,6 +11,7 @@ import {
 } from "../dtos/user.dto.js";
 import {
   userSignUp,
+  loginService,
   sendVerificationCode,
   userInfoService,
   checkVerificationCode,
@@ -110,12 +112,13 @@ export const handleUserSignUp = async (req, res, next) => {
 
 // 로그인
 export const handleLogin = async(req, res, next)=> {
+  console.log("handleLogin 요청 데이터:", req.body);
   try {
 		console.log("로그인");
 		const result = await loginService(loginRequestDTO(req.body));
 		if (result === 1) {
-			// if login fail by email doesn't exists
-			res.send(response(status.LOGIN_EMAIL_NOT_EXIST, null));
+			// ID = EMAIL
+			res.send(response(status.LOGIN_ID_NOT_EXIST, null));
 		} else if (result === 2) {
 			// if login fail by password incorrect
 			res.send(response(status.LOGIN_PASSWORD_WRONG, null));
@@ -125,7 +128,7 @@ export const handleLogin = async(req, res, next)=> {
 		}
 	} catch (err) {
 		console.log(err);
-		res.send(response(BaseError));
+		return next(err);
 	}
 };
 //이메일 인증 전송

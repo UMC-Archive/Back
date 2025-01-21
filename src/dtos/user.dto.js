@@ -27,6 +27,14 @@ export const responseFromUser = ({ user, artists, genres }) => {
     }
 };
 
+// 로그인 DTO
+export const loginRequestDTO = (req) => {
+    return {
+		email: req.email,
+		password: req.password,
+	};
+};
+
 //인증번호 확인 DTO
 export const checkVerificationRequestDTO = (req) => {
 	return {
