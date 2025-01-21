@@ -9,6 +9,7 @@ import {
     setUserGenre,
     findEmail,
     userInfoRep,
+    addHistoryRep,
     changeImageRep,
     changeGenreRep,
     changeArtistRep
@@ -98,7 +99,7 @@ export const userInfoService = async (userId) => {
     }
 };
 
-// 로그인 전송 service
+// 로그인 service
 export const loginService = async (req) => {
     console.log("loginService 요청 데이터:", req);
 	if (await findEmailAlreadyExists(req.email)) {
@@ -123,6 +124,18 @@ export const loginService = async (req) => {
 	}
 };
 
+// 유저의 히스토리를 저장하는 service
+export const userAddHistoryService = async(data) => {
+    console.log("bodyService:", data)
+    const addHistory = await addHistoryRep({
+        userId: data.userId,
+        history: data.history,
+    })    
+    if(addHistory == null){
+        throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
+    }
+    return addHistory;
+};
 // 유저 프로필 이미지 변경 service
 export const userChangeImageService = async(data) =>{
     console.log("bodyService:", data)

@@ -7,6 +7,7 @@ import {
     handleUserSignUp,
     handleLogin,
     sendEmail,
+    handleHistory,
     checkVerification,
     handleUserInfo,
     handleUserChangeImage,
@@ -96,6 +97,8 @@ app.post("/signup/email/check-verification-code", checkVerification);
 
 //유저 정보를 불러오는 api
 app.get('/users/info/:id', handleUserInfo);
+//유저 타입 히스토리 추가하는 api
+app.post('/users/history', handleHistory);
 //유저 프로필 사진 변경
 app.post('/users/profile_image', handleUserChangeImage);
 // 유저의 장르 선택/수정 하는 api

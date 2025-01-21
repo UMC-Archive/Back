@@ -4,6 +4,7 @@ import { status } from "../../config/response.status.js";
 import {
   bodyToUser,
   loginRequestDTO,
+  bodyToHistoryDTO,
   bodyToImageDTO,
   checkVerificationRequestDTO,
   bodyToGenreDTO,
@@ -15,6 +16,7 @@ import {
   sendVerificationCode,
   userInfoService,
   checkVerificationCode,
+  userAddHistoryService,
   userChangeImageService,
   userChangeGenreService,
   userChangeArtistService
@@ -333,6 +335,17 @@ export const handleUserInfo = async (req, res, next) => {
   }
 }
 
+// 유저 히스토리 추가하기
+export const handleHistory = async (req,res,next) => {
+  try {
+    console.log("유저의 히스토리 추가를 요청했습니다!");
+    console.log("bodyController:", req.body);
+    const addHistory = await userAddHistoryService(bodyToHistoryDTO(req.body));
+    res.status(StatusCodes.OK).success(addHistory);
+  } catch (err) {
+    return next(err);
+  }
+};
 // 유저 프로필 이미지 변경
 export const handleUserChangeImage = async (req, res, next) => {
   /*

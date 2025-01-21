@@ -43,6 +43,15 @@ export const loginRequestDTO = (req) => {
 	};
 };
 
+// 유저의 히스토리 추가하는 DTO
+export const bodyToHistoryDTO = (req) => {
+    console.log("bodyDTO:", req)
+    const history = new Date(req.history);
+    return{
+        userId: BigInt(req.userId),
+        history: history,
+    };
+};
 // 유저 프로필 파일 변경 DTO
 export const bodyToImageDTO = (req) => {
 	return {
