@@ -28,6 +28,7 @@ model User {
   UserGenres   UserGenre[]
   UserArtists  UserArtist[]
   TimeHistorys TimeHistory[]
+  Librarys     Library[]
 
   @@map("user")
 }
@@ -45,13 +46,14 @@ model TimeHistory {
 }
 
 model Artist {
-  id          BigInt        @id @default(autoincrement())
-  name        String        @db.VarChar(100)
-  image       String        @db.VarChar(1000)
-  createdAt   DateTime?     @default(now()) @map("created_at") @db.DateTime(6)
-  updatedAt   DateTime?     @default(now()) @map("updated_at") @db.DateTime(6)
-  UserArtists UserArtist[]
-  MusicArtist MusicArtist[]
+  id             BigInt          @id @default(autoincrement())
+  name           String          @db.VarChar(100)
+  image          String          @db.VarChar(1000)
+  createdAt      DateTime?       @default(now()) @map("created_at") @db.DateTime(6)
+  updatedAt      DateTime?       @default(now()) @map("updated_at") @db.DateTime(6)
+  UserArtists    UserArtist[]
+  MusicArtist    MusicArtist[]
+  LibraryArtists LibraryArtist[]
 
   @@map("artist")
 }
@@ -97,30 +99,32 @@ model UserArtist {
 }
 
 model Album {
-  id          BigInt    @id @default(autoincrement())
-  title       String    @db.VarChar(100)
-  description String    @db.Text
-  releaseTime DateTime  @map("release_time") @db.DateTime(6)
-  image       String    @db.VarChar(1000)
-  createdAt   DateTime? @default(now()) @map("created_at") @db.DateTime(6)
-  updatedAt   DateTime? @default(now()) @map("updated_at") @db.DateTime(6)
-  Musics      Music[]
+  id            BigInt         @id @default(autoincrement())
+  title         String         @db.VarChar(100)
+  description   String         @db.Text
+  releaseTime   DateTime       @map("release_time") @db.DateTime(6)
+  image         String         @db.VarChar(1000)
+  createdAt     DateTime?      @default(now()) @map("created_at") @db.DateTime(6)
+  updatedAt     DateTime?      @default(now()) @map("updated_at") @db.DateTime(6)
+  Musics        Music[]
+  LibraryAlbums LibraryAlbum[]
 
   @@map("album")
 }
 
 model Music {
-  id           BigInt        @id @default(autoincrement())
-  album        Album         @relation(fields: [albumId], references: [id])
-  albumId      BigInt        @map("album_id")
-  title        String        @db.VarChar(100)
-  releaseTime  DateTime      @map("release_time") @db.DateTime(6)
-  lyrics       String        @db.Text
-  image        String        @db.VarChar(1000)
-  createdAt    DateTime?     @default(now()) @map("created_at") @db.DateTime(6)
-  updatedAt    DateTime?     @default(now()) @map("updated_at") @db.DateTime(6)
-  MusicGenres  MusicGenre[]
-  MusicArtists MusicArtist[]
+  id            BigInt         @id @default(autoincrement())
+  album         Album          @relation(fields: [albumId], references: [id])
+  albumId       BigInt         @map("album_id")
+  title         String         @db.VarChar(100)
+  releaseTime   DateTime       @map("release_time") @db.DateTime(6)
+  lyrics        String         @db.Text
+  image         String         @db.VarChar(1000)
+  createdAt     DateTime?      @default(now()) @map("created_at") @db.DateTime(6)
+  updatedAt     DateTime?      @default(now()) @map("updated_at") @db.DateTime(6)
+  MusicGenres   MusicGenre[]
+  MusicArtists  MusicArtist[]
+  LibraryMusics LibraryMusic[]
 
   @@index([albumId], map: "album_id")
   @@map("music")
@@ -152,4 +156,54 @@ model MusicArtist {
   @@index([artistId], map: "artist_id")
   @@index([musicId], map: "music_id")
   @@map("music_artist")
+}
+
+model Library {
+  id             BigInt          @id @default(autoincrement())
+  user           User            @relation(fields: [userId], references: [id])
+  userId         BigInt          @map("user_id")
+  createdAt      DateTime?       @default(now()) @map("created_at") @db.DateTime(6)
+  updatedAt      DateTime?       @default(now()) @map("updated_at") @db.DateTime(6)
+  LibraryArtists LibraryArtist[]
+  LibraryAlbums  LibraryAlbum[]
+  LibraryMusics  LibraryMusic[]
+
+  @@index([userId], map: "user_id")
+  @@map("library")
+}
+
+model LibraryAlbum {
+  id        BigInt  @id @default(autoincrement())
+  library   Library @relation(fields: [libraryId], references: [id])
+  libraryId BigInt  @map("library_id")
+  album     Album   @relation(fields: [albumId], references: [id])
+  albumId   BigInt  @map("album_id")
+
+  @@index([albumId], map: "album_id")
+  @@index([libraryId], map: "library_id")
+  @@map("library_album")
+}
+
+model LibraryMusic {
+  id        BigInt  @id @default(autoincrement())
+  library   Library @relation(fields: [libraryId], references: [id])
+  libraryId BigInt  @map("library_id")
+  music     Music   @relation(fields: [musicId], references: [id])
+  musicId   BigInt  @map("music_id")
+
+  @@index([musicId], map: "music_id")
+  @@index([libraryId], map: "library_id")
+  @@map("library_music")
+}
+
+model LibraryArtist {
+  id        BigInt  @id @default(autoincrement())
+  library   Library @relation(fields: [libraryId], references: [id])
+  libraryId BigInt  @map("library_id")
+  artist    Artist  @relation(fields: [artistId], references: [id])
+  artistId  BigInt  @map("artist_id")
+
+  @@index([artistId], map: "artist_id")
+  @@index([libraryId], map: "library_id")
+  @@map("library_artist")
 }
