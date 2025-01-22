@@ -25,3 +25,16 @@ export const responseFromGenres = (genres) => {
     image: genre.image,
   }));
 };
+
+export const responseFromSpecificArtist = (artist) => {
+  return artist;
+};
+
+export const responseFromAllArtists = ({ AllArtists }) => {
+  return {
+    artists: AllArtists.map((artist) => ({
+      name: artist.name,
+      image: artist.image,
+    })),
+  };
+};

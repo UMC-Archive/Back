@@ -4,6 +4,8 @@ import {
   responseFromMusic,
   responseFromHiddenMusics,
   responseFromGenres,
+  responseFromSpecificArtist,
+  responseFromAllArtists,
 } from "../dtos/music.dto.js";
 import { getArtistInfo } from "../lastfm.js";
 import { getAlbumItunes, getAlbumItunesEntity } from "../itunes.js";
@@ -27,6 +29,8 @@ import {
   getUserHistory,
   getUserArtistPrefers,
   getAllStoreGenres,
+  getSpecificArtistAPI,
+  getallArtistsAPI,
 } from "../repositories/music.repository.js";
 //당신을 위한 앨범 추천(연도)
 // export const listNominationAlbum = async (user_id) => {
@@ -259,4 +263,16 @@ export const listArtist = async (artist_name) => {
 export const listGenre = async () => {
   const genres = await getAllStoreGenres();
   return responseFromGenres(genres);
+};
+
+// 검색한 특정 아티스트 정보 가져오기
+export const listSpecificArtistInfo = async (user_id, artist_name) => {
+  const specificArtist = await getSpecificArtistAPI(artist_name);
+  return responseFromSpecificArtist(specificArtist);
+};
+
+export const listAllArtistInfo = async (user_id) => {
+  const AllArtists = await getallArtistsAPI(user_id);
+
+  return responseFromAllArtists({ AllArtists });
 };
