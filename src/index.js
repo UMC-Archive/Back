@@ -11,7 +11,8 @@ import {
     handleUserInfo,
     handleUserChangeImage,
     handleUserGenre,
-    handleUserArtist
+    handleUserArtist,
+    handleUserProfile
 } from "./controllers/user.controller.js";
 import {
     handleMusicNomination,
@@ -102,6 +103,8 @@ app.post('/users/profile_image', handleUserChangeImage);
 app.post('/users/genre', handleUserGenre);
 // 유저의 아티스트 선택/수정 하는 api
 app.post('/users/artist', handleUserArtist);
+// 유저의 사진을 업로드 하는 api
+app.post('/users/profile', handleUserProfile);
 
 //추천곡(연도)
 app.get('/music/year/nomination', handleMusicNomination);
