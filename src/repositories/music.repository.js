@@ -4,6 +4,8 @@ import {
   getMusicInfo,
   getMusicSearch,
   getAlbumSearch,
+  searchArtist,
+  getGenreArtist,
 } from "../lastfm.js";
 import { prisma } from "../db.config.js";
 import lrclib from "lrclib-api";
@@ -179,4 +181,43 @@ export const addArtist = async (data) => {
 export const getAllStoreGenres = async () => {
   const genres = await prisma.genre.findMany();
   return genres;
+};
+
+export const getSpecificArtistAPI = async (artist_name) => {
+  const specificArtist = await searchArtist(artist_name);
+  return specificArtist;
+};
+
+export const getallArtistsAPI = async (user_id) => {
+  const userGenres = await prisma.userGenre.findMany({
+    where: { userId: user_id },
+    select: { genreId: true },
+  });
+
+  const genreIds = userGenres.map((ug) => ug.genreId);
+
+  const genreInfos = await prisma.genre.findMany({
+    where: {
+      id: {
+        in: genreIds,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const artistsPromises = genreInfos.map((genre) => getGenreArtist(genre));
+  const artistsByGenre = await Promise.all(artistsPromises);
+
+  // 모든 배열을 하나로 합치기
+  const allArtists = artistsByGenre.flat().filter((artist) => artist !== null); // null 값 제거
+
+  // 중복 제거
+  const uniqueArtists = Array.from(
+    new Map(allArtists.map((artist) => [artist.name, artist])).values()
+  );
+
+  return uniqueArtists;
 };

@@ -8,6 +8,8 @@ import {
   listNominationAlbum,
   listNominationMusic,
   listGenre,
+  listSpecificArtistInfo,
+  listAllArtistInfo,
 } from "../services/music.service.js";
 //추천곡
 export const handleMusicNomination = async (req, res, next) => {
@@ -406,6 +408,24 @@ export const handleMusicGenreInfo = async (req, res, next) => {
     console.log("장르 정보 가져오기를 요청했습니다!");
     const genre = await listGenre();
     res.status(StatusCodes.OK).success(genre);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const handleArtistsInfo = async (req, res, next) => {
+  try {
+    console.log("아티스트 정보 가져오기를 요청했습니다!");
+    const user_id = req.query.user_id;
+    const artist = req.query.artist_name;
+
+    if (!artist) {
+      const result = await listAllArtistInfo(user_id);
+      return res.status(StatusCodes.OK).success(result);
+    } else {
+      const result = await listSpecificArtistInfo(user_id, artist);
+      return res.status(StatusCodes.OK).success(result);
+    }
   } catch (err) {
     return next(err);
   }
