@@ -1,13 +1,14 @@
 import { StatusCodes } from "http-status-codes";
-import { } from "../dtos/music.dto.js"
+import {} from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
   listAlbum,
   listHiddenMusics,
   listNominationAlbum,
-  listNominationMusic
-} from "../services/music.service.js"
+  listNominationMusic,
+  listGenre,
+} from "../services/music.service.js";
 //추천곡
 export const handleMusicNomination = async (req, res, next) => {
   /*
@@ -71,14 +72,12 @@ export const handleMusicNomination = async (req, res, next) => {
  */
   try {
     console.log("당신을 위한 노래 추천을 요청했습니다!");
-    const music = await listNominationMusic(
-      req.query.user_id,
-    );
+    const music = await listNominationMusic(req.query.user_id);
     res.status(StatusCodes.OK).success(music);
   } catch (err) {
     return next(err);
   }
-}
+};
 //당신을 위한 앨범 추천(연도)
 export const handleAlbumNomination = async (req, res, next) => {
   /*
@@ -141,14 +140,12 @@ export const handleAlbumNomination = async (req, res, next) => {
  */
   try {
     console.log("당신을 위한 앨범 추천을 요청했습니다!");
-    const album = await listNominationAlbum(
-      req.query.user_id,
-    );
+    const album = await listNominationAlbum(req.query.user_id);
     res.status(StatusCodes.OK).success(album);
   } catch (err) {
     return next(err);
   }
-}
+};
 //숨겨진 명곡
 export const handleMusicHidden = async (req, res, next) => {
   /*
@@ -212,14 +209,12 @@ export const handleMusicHidden = async (req, res, next) => {
  */
   try {
     console.log("숨겨진 명곡 조회를 요청했습니다!");
-    const music = await listHiddenMusics(
-      req.query.date
-    );
+    const music = await listHiddenMusics(req.query.date);
     res.status(StatusCodes.OK).success(music);
   } catch (err) {
     return next(err);
   }
-}
+};
 //노래 정보 가져오기
 export const handleMusicInfo = async (req, res, next) => {
   /*
@@ -277,15 +272,12 @@ export const handleMusicInfo = async (req, res, next) => {
  */
   try {
     console.log("노래 정보 가져오기를 요청했습니다!");
-    const music = await listMusic(
-      req.query.artist_name,
-      req.query.music_name
-    );
+    const music = await listMusic(req.query.artist_name, req.query.music_name);
     res.status(StatusCodes.OK).success(music);
   } catch (err) {
     return next(err);
   }
-}
+};
 //앨범 정보 가져오기
 export const handleMusicAlbumInfo = async (req, res, next) => {
   /*
@@ -342,15 +334,12 @@ export const handleMusicAlbumInfo = async (req, res, next) => {
  */
   try {
     console.log("앨범 정보 가져오기를 요청했습니다!");
-    const album = await listAlbum(
-      req.query.artist_name,
-      req.query.album_name
-    );
+    const album = await listAlbum(req.query.artist_name, req.query.album_name);
     res.status(StatusCodes.OK).success(album);
   } catch (err) {
     return next(err);
   }
-}
+};
 //아티스트 정보 가져오기
 export const handleMusicArtistInfo = async (req, res, next) => {
   /*
@@ -405,11 +394,19 @@ export const handleMusicArtistInfo = async (req, res, next) => {
   */
   try {
     console.log("아티스트 정보 가져오기를 요청했습니다!");
-    const artist = await listArtist(
-      req.query.artist_name,
-    );
+    const artist = await listArtist(req.query.artist_name);
     res.status(StatusCodes.OK).success(artist);
   } catch (err) {
     return next(err);
   }
-}
+};
+
+export const handleMusicGenreInfo = async (req, res, next) => {
+  try {
+    console.log("장르 정보 가져오기를 요청했습니다!");
+    const genre = await listGenre();
+    res.status(StatusCodes.OK).success(genre);
+  } catch (err) {
+    return next(err);
+  }
+};
