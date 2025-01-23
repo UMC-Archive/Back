@@ -55,21 +55,39 @@ export const handleUserSignUp = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              resultType: { type: "string", example: "SUCCESS" },
-              error: { type: "object", nullable: true, example: null },
-              success: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message:{ type: "string", example: "success!" },
+              result: {
                 type: "object",
                 properties: {
-                  name: { type: "string" },
-                  nickname: { type: "string" },
-                  email: { type: "string" },
-                  password: { type: "string"},
-                  profileImage: { type: "string" },
-                  status: { type: "string" },
-                  socialType: { type: "string" },
-                  inactiveDate: { type: "string",  format: "date"  },
-                  artists: {type: "array", items: { type: "number" } },
-                  genres: { type: "array", items: { type: "number" } }
+                  user: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1"},
+                      name: { type: "string", example:"이름" },
+                      nickname: { type: "string", example: "닉네임" },
+                      email: { type: "string", example: "example@gmail.com"},
+                      password: { type: "string", example: "$2b$10$o8SHav4KiPRDtC0XEMyKm.EqVSZmALYfCH2lrrDaWqeR33j37vmoC"},
+                      profileImage: { type: "string", example: "https://example.com/image.jpg"},
+                      status: { type: "string", example: "active"},
+                      socialType: { type: "string", example: "local"},
+                      inactiveDate: { type: "string",  format: "date"  },
+                      createdAt: { type: "string",  format: "date" },
+                      updatedAt: { type: "string",  format: "date" },
+                    }
+                  },
+                  artists: {type: "array", items: { type: "string", example: "IU" } },
+                  genres: { type: "array", items: { type: "string", example: "pop" } },
+                  library: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1"},
+                      userId: { type: "string", example: "1"},
+                      createdAt: { type: "string",  format: "date" },
+                      updatedAt: { type: "string",  format: "date" },
+                    }
+                  }
                 }
               }
             }
@@ -105,9 +123,15 @@ export const handleUserSignUp = async (req, res, next) => {
     console.log("body:", req.body);
 
     const user = await userSignUp(bodyToUser(req.body));
-    res.status(StatusCodes.OK).success(user);
+    if (user) {
+      res.send(response(status.SUCCESS, user));
+
+    }
+    else {
+      res.send(response(status.EMAIL_ALREADY_EXIST, null));
+    }
   } catch (err) {
-    return next(err);
+    next(err)
   }
 };
 
@@ -610,8 +634,58 @@ export const handleUserArtist = async (req, res, next) => {
 
 // 유저의 사진을 업로드 하는 api
 export const handleUserProfile = async (req, res, next) => {
+  /*
+  #swagger.summary = '유저의 사진을 업로드하는 API';
+  #swagger.tags = ['User']
+  #swagger.consumes = ['multipart/form-data']
+  #swagger.parameters['image'] = {
+  in: 'formData',
+  type: 'file',
+  required: true,
+  description: '업로드할 이미지 파일 postman과 curl은 되는데 swagger에서만 작동을 안합니다... 테스트 방법: (curl -X POST http://localhost:3000/users/profile -F \"image=@c:\\example\\image.jpg\")'
+  };
+  #swagger.responses[200] = {
+    description: "업로드 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "number", example: 200 },
+            message: { type: "string", example: "success!" },
+            result: { type: "string", example: "https://music-archive-bucket.s3.ap-northeast-2.amazonaws.com/archive/1737601876496-icon.png" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "업로드 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U001" },
+                reason: { type: "string", example: "Invalid file format" },
+                data: { type: "object", nullable: true }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  */
+
   try {
-    console.log("저의 사진을 업로드를 요청했습니다!");
+    console.log("유저의 사진을 업로드를 요청했습니다!");
     const url = await userProfile(req, res);
     if (url) {
       res.send(response(status.SUCCESS, url));
@@ -620,6 +694,7 @@ export const handleUserProfile = async (req, res, next) => {
       res.send(response(status.NOT_FOUND, null));
     }
   } catch (err) {
-    return next(err);
+    console.log(err);
+    //res.send(response(BaseError));
   }
 }
