@@ -6,7 +6,7 @@ export const status = {
   SUCCESS: {
     status: StatusCodes.OK,
     isSuccess: true,
-    code: 200,
+    code: "200",
     message: "success!",
   },
 
