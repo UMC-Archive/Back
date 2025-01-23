@@ -1,3 +1,5 @@
+import { response } from "../../config/response.js";
+import { status } from "../../config/response.status.js";
 import {
   responseFromArtist,
   responseFromAlbum,
@@ -261,18 +263,39 @@ export const listArtist = async (artist_name) => {
 };
 
 export const listGenre = async () => {
-  const genres = await getAllStoreGenres();
-  return responseFromGenres(genres);
+  try {
+    const genres = await getAllStoreGenres();
+
+    if (!genres || genres.length === 0) {
+      return response(status.BAD_REQUEST, null);
+    }
+
+    return response(status.SUCCESS, responseFromGenres(genres));
+  } catch (error) {
+    return response(status.INTERNAL_SERVER_ERROR, null);
+  }
 };
 
 // 검색한 특정 아티스트 정보 가져오기
 export const listSpecificArtistInfo = async (user_id, artist_name) => {
-  const specificArtist = await getSpecificArtistAPI(artist_name);
-  return responseFromSpecificArtist(specificArtist);
+  try {
+    const specificArtist = await getSpecificArtistAPI(artist_name);
+    return response(status.SUCCESS, responseFromSpecificArtist(specificArtist));
+  } catch (error) {
+    return response(status.INTERNAL_SERVER_ERROR, null);
+  }
 };
 
 export const listAllArtistInfo = async (user_id) => {
-  const AllArtists = await getallArtistsAPI(user_id);
+  try {
+    const AllArtists = await getallArtistsAPI(user_id);
 
-  return responseFromAllArtists({ AllArtists });
+    if (!AllArtists) {
+      return response(status.LOGIN_ID_NOT_EXIST, null);
+    }
+
+    return response(status.SUCCESS, responseFromAllArtists({ AllArtists }));
+  } catch (error) {
+    return response(status.INTERNAL_SERVER_ERROR, null);
+  }
 };

@@ -406,8 +406,9 @@ export const handleMusicArtistInfo = async (req, res, next) => {
 export const handleMusicGenreInfo = async (req, res, next) => {
   try {
     console.log("장르 정보 가져오기를 요청했습니다!");
-    const genre = await listGenre();
-    res.status(StatusCodes.OK).success(genre);
+    const response = await listGenre();
+    const statusCode = response.isSuccess ? 200 : "COMMON001" ? 400 : 500;
+    return res.status(statusCode).json(response);
   } catch (err) {
     return next(err);
   }
@@ -421,10 +422,12 @@ export const handleArtistsInfo = async (req, res, next) => {
 
     if (!artist) {
       const result = await listAllArtistInfo(user_id);
-      return res.status(StatusCodes.OK).success(result);
+      const statusCode = result.isSuccess ? 200 : "SIGNIN4002" ? 400 : 500;
+      return res.status(statusCode).json(result);
     } else {
       const result = await listSpecificArtistInfo(user_id, artist);
-      return res.status(StatusCodes.OK).success(result);
+      const statusCode = result.isSuccess ? 200 : 500;
+      return res.status(statusCode).json(result);
     }
   } catch (err) {
     return next(err);

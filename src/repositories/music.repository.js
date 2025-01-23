@@ -194,6 +194,10 @@ export const getallArtistsAPI = async (user_id) => {
     select: { genreId: true },
   });
 
+  if (!userGenres || userGenres.length === 0) {
+    return null;
+  }
+
   const genreIds = userGenres.map((ug) => ug.genreId);
 
   const genreInfos = await prisma.genre.findMany({
