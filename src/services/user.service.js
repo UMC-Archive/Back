@@ -13,6 +13,8 @@ import {
     changeGenreRep,
     changeArtistRep,
     setLibrary,
+    setUserMusic,
+    getUserMusic,
 } from "../repositories/user.repository.js";
 import { profileUploader } from "../repositories/s3.repository.js"
 
@@ -52,7 +54,6 @@ export const userSignUp = async (data) => {
     const user = await getUser(userId);
     const artists = await getUserArtistId(userId);
     const genres = await getUserGenreId(userId);
-    console.log(artists, genres)
     return responseFromUser(
         {
             user,
@@ -130,12 +131,13 @@ export const loginService = async (req) => {
 };
 
 // 유저 프로필 이미지 변경 service
-export const userChangeImageService = async (data) => {
+export const userChangeImageService = async (req, res, data) => {
+    const url = await profileUploader(req, res);
     console.log("bodyService:", data)
     const ChangeImage = await changeImageRep({
         name: data.name,
         email: data.email,
-        profileImage: data.profileImage,
+        profileImage: url,
     })
     if (ChangeImage == null) {
         throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
@@ -176,3 +178,13 @@ export const userProfile = async (req, res) => {
     const url = await profileUploader(req, res);
     return url;
 }
+
+// 유저의 음악 재생 시 기록하기
+export const userPlay = async (data) => {
+    const userMusicId = await setUserMusic({
+        userId: data.userId,
+        musicId: data.musicId,
+    });
+    const userMusic = await getUserMusic(userMusicId);
+    return userMusic;
+};

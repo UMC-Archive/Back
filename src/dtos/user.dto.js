@@ -71,3 +71,11 @@ export const bodyToArtistDTO = (req) => {
         artistId: BigInt(req.artistId),
     };
 };
+
+// 유저의 음악 재생 시 기록하기
+export const bodyToUserMusic = (body) => {
+    return {
+        userId: body.userId,
+        musicId: body.musicId,
+    }
+}
