@@ -29,6 +29,7 @@ model User {
   UserArtists  UserArtist[]
   TimeHistorys TimeHistory[]
   Librarys     Library[]
+  UserMusics   UserMusic[]
 
   @@map("user")
 }
@@ -125,6 +126,7 @@ model Music {
   MusicGenres   MusicGenre[]
   MusicArtists  MusicArtist[]
   LibraryMusics LibraryMusic[]
+  UserMusics    UserMusic[]
 
   @@index([albumId], map: "album_id")
   @@map("music")
@@ -206,4 +208,16 @@ model LibraryArtist {
   @@index([artistId], map: "artist_id")
   @@index([libraryId], map: "library_id")
   @@map("library_artist")
+}
+
+model UserMusic {
+  id      BigInt @id @default(autoincrement())
+  user    User   @relation(fields: [userId], references: [id])
+  userId  BigInt @map("user_id")
+  music   Music  @relation(fields: [musicId], references: [id])
+  musicId BigInt @map("music_id")
+
+  @@index([userId], map: "user_id")
+  @@index([musicId], map: "music_id")
+  @@map("user_music")
 }

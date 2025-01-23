@@ -8,6 +8,7 @@ import {
   checkVerificationRequestDTO,
   bodyToGenreDTO,
   bodyToArtistDTO,
+  bodyToUserMusic,
 } from "../dtos/user.dto.js";
 import {
   userSignUp,
@@ -18,7 +19,8 @@ import {
   userChangeImageService,
   userChangeGenreService,
   userChangeArtistService,
-  userProfile
+  userProfile,
+  userPlay,
 } from "../services/user.service.js";
 
 //회원가입
@@ -119,13 +121,12 @@ export const handleUserSignUp = async (req, res, next) => {
     const user = await userSignUp(bodyToUser(req.body));
     if (user) {
       res.send(response(status.SUCCESS, user));
-
     }
     else {
       res.send(response(status.EMAIL_ALREADY_EXIST, null));
     }
   } catch (err) {
-    next(err)
+    res.send(response(status.EMAIL_ALREADY_EXIST, null));
   }
 };
 
@@ -346,7 +347,7 @@ export const handleUserInfo = async (req, res, next) => {
     const userId = req.params.id;
     console.log(userId);
     const userInfo = await userInfoService(userId);
-    res.status(StatusCodes.OK).success(userInfo);
+    res.send(response(status.SUCCESS, userInfo));
   } catch (err) {
     return next(err);
   }
@@ -437,8 +438,8 @@ export const handleUserChangeImage = async (req, res, next) => {
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
     console.log("bodyController:", req.body);
-    const changeImage = await userChangeImageService(bodyToImageDTO(req.body));
-    res.status(StatusCodes.OK).success(changeImage);
+    const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
+    res.send(response(status.SUCCESS, changeImage));
   } catch (err) {
     return next(err);
   }
@@ -529,7 +530,7 @@ export const handleUserGenre = async (req, res, next) => {
     console.log("유저가 장르 변경을 요청했습니다!");
     console.log("bodyController:", req.body);
     const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.body));
-    res.status(StatusCodes.OK).success(changeGenre);
+    res.send(response(status.SUCCESS, changeGenre));
   } catch (err) {
     return next(err);
   }
@@ -620,7 +621,7 @@ export const handleUserArtist = async (req, res, next) => {
     console.log("유저가 아티스트 변경을 요청했습니다!");
     console.log("bodyController:", req.body);
     const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.body));
-    res.status(StatusCodes.OK).success(changeArtist);
+    res.send(response(status.SUCCESS, changeArtist));
   } catch (err) {
     return next(err);
   }
@@ -631,13 +632,6 @@ export const handleUserProfile = async (req, res, next) => {
   /*
   #swagger.summary = '유저의 사진을 업로드하는 API';
   #swagger.tags = ['User']
-  #swagger.consumes = ['multipart/form-data']
-  #swagger.parameters['image'] = {
-  in: 'formData',
-  type: 'file',
-  required: true,
-  description: '업로드할 이미지 파일 postman과 curl은 되는데 swagger에서만 작동을 안합니다... 테스트 방법: (curl -X POST http://localhost:3000/users/profile -F \"image=@c:\\example\\image.jpg\")'
-  };
   #swagger.responses[200] = {
     description: "업로드 성공 응답",
     content: {
@@ -682,7 +676,36 @@ export const handleUserProfile = async (req, res, next) => {
       res.send(response(status.FILE_NOT_EXIST, null));
     }
   } catch (err) {
-    console.log(err);
-    //res.send(response(BaseError));
+    res.send(response(status.FILE_NOT_EXIST, null));
   }
 }
+
+// 유저의 음악 재생 시 기록하기
+export const handleUserPlay = async (req, res, next) => {
+  /*
+    #swagger.summary = '유저의 음악 재생 시 기록하기 API';
+    #swagger.tags = ['User']
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              userId: { type: "number", example: 1 },
+              musicId: {type: "number", example: 1 },
+            }
+          }
+        }
+      }
+    };
+  */
+  try {
+    console.log("유저의 음악 재생 시 기록하기를 요청했습니다!");
+    const userMusic = await userPlay(bodyToUserMusic(req.body))
+
+    res.send(response(status.SUCCESS, userMusic));
+  } catch (err) {
+    res.send(response(status.BAD_REQUEST, null));
+  }
+};

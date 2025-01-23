@@ -240,3 +240,14 @@ export const changeArtistRep = async (data) => {
         );
     }
 };
+
+// 유저의 음악 재생 시 기록하기
+export const setUserMusic = async (data) => {
+    const created = await prisma.userMusic.create({ data: data });
+    return created.id;
+}
+
+export const getUserMusic = async (userMusicId) => {
+    const userMusic = await prisma.userMusic.findFirstOrThrow({ where: { id: userMusicId } });
+    return userMusic;
+}
