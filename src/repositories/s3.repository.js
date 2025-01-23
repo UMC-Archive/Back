@@ -5,7 +5,7 @@ export const profileUploader = async (req, res) => {
     return new Promise((resolve, reject) => {
         upload.single('image')(req, res, async (err) => {
             if (!req.file) {
-                return reject(new Error('파일 업로드 실패'));
+                resolve(null);
             }
 
             const folderName = 'archive'; // 업로드할 폴더명
