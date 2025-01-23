@@ -11,7 +11,8 @@ import {
     userInfoRep,
     changeImageRep,
     changeGenreRep,
-    changeArtistRep
+    changeArtistRep,
+    setLibrary,
 } from "../repositories/user.repository.js";
 import { profileUploader } from "../repositories/s3.repository.js"
 
@@ -38,6 +39,8 @@ export const userSignUp = async (data) => {
     if (userId === null) {
         throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
     }
+    // 라이브러리 추가
+    const library = await setLibrary({ userId });
     for (const artistId of data.artists) {
         const artist = await setUserArtist(userId, artistId);
     }
@@ -49,12 +52,13 @@ export const userSignUp = async (data) => {
     const user = await getUser(userId);
     const artists = await getUserArtistId(userId);
     const genres = await getUserGenreId(userId);
-
+    console.log(artists, genres)
     return responseFromUser(
         {
             user,
             artists,
-            genres
+            genres,
+            library
         });
 };
 

@@ -13,7 +13,8 @@ export const bodyToUser = (body) => {
         genres: body.genres,
     }
 };
-export const responseFromUser = ({ user, artists, genres }) => {
+export const responseFromUser = ({ user, artists, genres, library }) => {
+    console.log(artists, genres)
     const artistPreferences = artists.map(
         (performance) => performance.artist.name
     );
@@ -22,50 +23,51 @@ export const responseFromUser = ({ user, artists, genres }) => {
     );
     return {
         user: user,
-        artist: artistPreferences,
-        genre: genrePreferences
+        artists: artistPreferences,
+        genres: genrePreferences,
+        library, library
     }
 };
 
 //인증번호 확인 DTO
 export const checkVerificationRequestDTO = (req) => {
-	return {
-		cipherCode: req.cipherCode,
-		code: req.code,
-	};
+    return {
+        cipherCode: req.cipherCode,
+        code: req.code,
+    };
 };
 
 // 로그인 DTO
 export const loginRequestDTO = (req) => {
     return {
-		email: req.email,
-		password: req.password,
-	};
+        email: req.email,
+        password: req.password,
+    };
 };
 
 // 유저 프로필 파일 변경 DTO
 export const bodyToImageDTO = (req) => {
-	return {
-		name: req.name,
+    return {
+        name: req.name,
         email: req.email,
-		profileImage: req.profileImage,
-	};
+        profileImage: req.profileImage,
+    };
 };
 
 // 유저 장르 변경 DTO
 export const bodyToGenreDTO = (req) => {
-	return {
-		name: req.name,
+    return {
+        name: req.name,
         email: req.email,
         genreId: BigInt(req.genreId),
-	};
+    };
 };
 
 // 유저 아티스트 변경 DTO
 export const bodyToArtistDTO = (req) => {
-	return {
-		name: req.name,
+    return {
+        name: req.name,
         email: req.email,
         artistId: BigInt(req.artistId),
-	};
+    };
 };

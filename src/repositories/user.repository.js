@@ -13,6 +13,11 @@ export const getUser = async (userId) => {
     return user;
 };
 
+export const setLibrary = async (userId) => {
+    const library = await prisma.library.create({ data: userId });
+    return library;
+}
+
 export const setUserArtist = async (userId, artistId) => {
     const artist = await prisma.artist.findFirst({ where: { id: artistId } });
     if (!artist) {
@@ -72,8 +77,8 @@ export const getUserGenreId = async (userId) => {
 // finding user by email
 export const findEmail = async (req) => {
     const email = await prisma.user.findFirst({
-        select: {email : true},
-        where: {email: req}
+        select: { email: true },
+        where: { email: req }
     });
     if (email === null) {
         console.log("email null");
@@ -93,14 +98,14 @@ export const findUser = async (email) => {
     // Prisma로 유저 정보 조회
     const user = await prisma.user.findFirst({
         select: {
-        email: true, // email만 선택
-        password: true, // password도 가져오기
+            email: true, // email만 선택
+            password: true, // password도 가져오기
         },
         where: { email },
     });
 
     if (!user) {
-      // 유저가 없을 경우 예외 처리
+        // 유저가 없을 경우 예외 처리
         console.log("findUser: 유저를 찾을 수 없습니다.");
         throw new Error(`User with email ${email} not found`);
     }
@@ -120,23 +125,23 @@ export const changeImageRep = async (data) => {
                 email: data.email,
             },
         });
-    
+
         if (!existingUser) {
             throw new Error("해당 이름과 이메일로 등록된 사용자가 없습니다.");
         }
-    
+
         // 2. 프로필 정보 업데이트
         const updatedUser = await prisma.user.update({
             where: { id: existingUser.id },
             data: {
-                profileImage : data.profileImage,
+                profileImage: data.profileImage,
                 updatedAt: new Date(), // Prisma가 자동으로 처리 가능
             },
         });
-    
+
         // 3. 업데이트된 회원 정보 반환
         return updatedUser;
-        } catch (err) {
+    } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
         );
