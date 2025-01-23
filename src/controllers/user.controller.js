@@ -102,16 +102,10 @@ export const handleUserSignUp = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              resultType: { type: "string", example: "FAIL" },
-              error: {
-                type: "object",
-                properties: {
-                  errorCode: { type: "string", example: "U001" },
-                  reason: { type: "string" },
-                  data: { type: "object" }
-                }
-              },
-              success: { type: "object", nullable: true, example: null }
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MEMBER4003" },
+              message: { type: "string", example: "이미 가입된 이메일이 존재합니다." },
+              result: { type: "object", nullable: true, example: null }
             }
           }
         }
@@ -661,27 +655,21 @@ export const handleUserProfile = async (req, res, next) => {
     }
   };
   #swagger.responses[400] = {
-    description: "업로드 실패 응답",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
-              properties: {
-                errorCode: { type: "string", example: "U001" },
-                reason: { type: "string", example: "Invalid file format" },
-                data: { type: "object", nullable: true }
-              }
-            },
-            success: { type: "object", nullable: true, example: null }
+      description: "업로드 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MEMBER4004" },
+              message: { type: "string", example: "파일이 존재하지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
+    };
   */
 
   try {
@@ -691,7 +679,7 @@ export const handleUserProfile = async (req, res, next) => {
       res.send(response(status.SUCCESS, url));
     }
     else {
-      res.send(response(status.NOT_FOUND, null));
+      res.send(response(status.FILE_NOT_EXIST, null));
     }
   } catch (err) {
     console.log(err);
