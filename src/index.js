@@ -124,11 +124,11 @@ app.get("/album/year/nomination", handleAlbumNomination);
 //숨겨진 명곡
 app.get("/music/hidden", handleMusicHidden);
 //노래 정보 가져오기
-app.post("/music/info", handleMusicInfo);
+app.post("/music", handleMusicInfo);
 //앨범 정보 가져오기
-app.post("/music/album/info", handleMusicAlbumInfo);
+app.post("/music/album", handleMusicAlbumInfo);
 //아티스트 정보 가져오기
-app.post("/music/artist/info", handleMusicArtistInfo);
+app.post("/music/artist", handleMusicArtistInfo);
 
 //--------------------------------
 
