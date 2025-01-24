@@ -80,7 +80,7 @@ export const status = {
     isSuccess: false,
     code: "MEMBER4006",
     message: "토큰의 형식이 올바르지 않습니다. 다시 확인해주세요.",
-}
+},
   FILE_NOT_EXIST: {
     status: StatusCodes.BAD_REQUEST,
     isSuccess: false,
