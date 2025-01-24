@@ -1,17 +1,40 @@
 //아티스트 정보 가져오기
 export const responseFromArtist = (artist) => {
-    return artist;
-}
+  return artist;
+};
 //앨범 정보 가져오기
 export const responseFromAlbum = (album) => {
-    return album;
-
-}
+  return album;
+};
 //음악 정보 가져오기
 export const responseFromMusic = (music) => {
-    return music;
-}
+  return music;
+};
 
 export const responseFromHiddenMusics = (musics) => {
-    return musics
-}
+  return musics;
+};
+
+export const responseFromGenres = (genres) => {
+  // 입력값을 항상 배열로 처리
+  const genreArray = Array.isArray(genres) ? genres : [genres];
+
+  return genreArray.map((genre) => ({
+    id: genre.id,
+    name: genre.name,
+    image: genre.image,
+  }));
+};
+
+export const responseFromSpecificArtist = (artist) => {
+  return artist;
+};
+
+export const responseFromAllArtists = ({ AllArtists }) => {
+  return {
+    artists: AllArtists.map((artist) => ({
+      name: artist.name,
+      image: artist.image,
+    })),
+  };
+};

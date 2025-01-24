@@ -3,21 +3,27 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import {
   bodyToUser,
+  loginRequestDTO,
   bodyToImageDTO,
   checkVerificationRequestDTO,
   bodyToGenreDTO,
   bodyToArtistDTO,
+  bodyToUserMusic,
 } from "../dtos/user.dto.js";
 import {
   userSignUp,
+  loginService,
   sendVerificationCode,
   userInfoService,
   checkVerificationCode,
   userChangeImageService,
   userChangeGenreService,
-  userChangeArtistService
+  userChangeArtistService,
+  userProfile,
+  userPlay,
 } from "../services/user.service.js";
 
+//회원가입
 export const handleUserSignUp = async (req, res, next) => {
   /*
     #swagger.summary = '회원 가입 API';
@@ -51,21 +57,39 @@ export const handleUserSignUp = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              resultType: { type: "string", example: "SUCCESS" },
-              error: { type: "object", nullable: true, example: null },
-              success: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message:{ type: "string", example: "success!" },
+              result: {
                 type: "object",
                 properties: {
-                  name: { type: "string" },
-                  nickname: { type: "string" },
-                  email: { type: "string" },
-                  password: { type: "string"},
-                  profileImage: { type: "string" },
-                  status: { type: "string" },
-                  socialType: { type: "string" },
-                  inactiveDate: { type: "string",  format: "date"  },
-                  artists: {type: "array", items: { type: "number" } },
-                  genres: { type: "array", items: { type: "number" } }
+                  user: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1"},
+                      name: { type: "string", example:"이름" },
+                      nickname: { type: "string", example: "닉네임" },
+                      email: { type: "string", example: "example@gmail.com"},
+                      password: { type: "string", example: "$2b$10$o8SHav4KiPRDtC0XEMyKm.EqVSZmALYfCH2lrrDaWqeR33j37vmoC"},
+                      profileImage: { type: "string", example: "https://example.com/image.jpg"},
+                      status: { type: "string", example: "active"},
+                      socialType: { type: "string", example: "local"},
+                      inactiveDate: { type: "string",  format: "date"  },
+                      createdAt: { type: "string",  format: "date" },
+                      updatedAt: { type: "string",  format: "date" },
+                    }
+                  },
+                  artists: {type: "array", items: { type: "string", example: "IU" } },
+                  genres: { type: "array", items: { type: "string", example: "pop" } },
+                  library: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1"},
+                      userId: { type: "string", example: "1"},
+                      createdAt: { type: "string",  format: "date" },
+                      updatedAt: { type: "string",  format: "date" },
+                    }
+                  }
                 }
               }
             }
@@ -80,16 +104,10 @@ export const handleUserSignUp = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              resultType: { type: "string", example: "FAIL" },
-              error: {
-                type: "object",
-                properties: {
-                  errorCode: { type: "string", example: "U001" },
-                  reason: { type: "string" },
-                  data: { type: "object" }
-                }
-              },
-              success: { type: "object", nullable: true, example: null }
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MEMBER4003" },
+              message: { type: "string", example: "이미 가입된 이메일이 존재합니다." },
+              result: { type: "object", nullable: true, example: null }
             }
           }
         }
@@ -101,12 +119,37 @@ export const handleUserSignUp = async (req, res, next) => {
     console.log("body:", req.body);
 
     const user = await userSignUp(bodyToUser(req.body));
-    res.status(StatusCodes.OK).success(user);
+    if (user) {
+      res.send(response(status.SUCCESS, user));
+    }
+    else {
+      res.send(response(status.EMAIL_ALREADY_EXIST, null));
+    }
   } catch (err) {
-    return next(err);
+    res.send(response(status.EMAIL_ALREADY_EXIST, null));
   }
 };
 
+// 로그인
+export const handleLogin = async (req, res, next) => {
+  try {
+    console.log("로그인");
+    const result = await loginService(loginRequestDTO(req.body));
+    if (result === 1) {
+      // ID = EMAIL
+      res.send(response(status.LOGIN_ID_NOT_EXIST, null));
+    } else if (result === 2) {
+      // if login fail by password incorrect
+      res.send(response(status.LOGIN_PASSWORD_WRONG, null));
+    } else {
+      // if login success
+      res.send(response(status.SUCCESS, result));
+    }
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+};
 //이메일 인증 전송
 // /users/signup/email/send-verification-code
 export const sendEmail = async (req, res) => {
@@ -304,7 +347,7 @@ export const handleUserInfo = async (req, res, next) => {
     const userId = req.params.id;
     console.log(userId);
     const userInfo = await userInfoService(userId);
-    res.status(StatusCodes.OK).success(userInfo);
+    res.send(response(status.SUCCESS, userInfo));
   } catch (err) {
     return next(err);
   }
@@ -395,8 +438,8 @@ export const handleUserChangeImage = async (req, res, next) => {
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
     console.log("bodyController:", req.body);
-    const changeImage = await userChangeImageService(bodyToImageDTO(req.body));
-    res.status(StatusCodes.OK).success(changeImage);
+    const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
+    res.send(response(status.SUCCESS, changeImage));
   } catch (err) {
     return next(err);
   }
@@ -487,7 +530,7 @@ export const handleUserGenre = async (req, res, next) => {
     console.log("유저가 장르 변경을 요청했습니다!");
     console.log("bodyController:", req.body);
     const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.body));
-    res.status(StatusCodes.OK).success(changeGenre);
+    res.send(response(status.SUCCESS, changeGenre));
   } catch (err) {
     return next(err);
   }
@@ -578,8 +621,91 @@ export const handleUserArtist = async (req, res, next) => {
     console.log("유저가 아티스트 변경을 요청했습니다!");
     console.log("bodyController:", req.body);
     const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.body));
-    res.status(StatusCodes.OK).success(changeArtist);
+    res.send(response(status.SUCCESS, changeArtist));
   } catch (err) {
     return next(err);
+  }
+};
+
+// 유저의 사진을 업로드 하는 api
+export const handleUserProfile = async (req, res, next) => {
+  /*
+  #swagger.summary = '유저의 사진을 업로드하는 API';
+  #swagger.tags = ['User']
+  #swagger.responses[200] = {
+    description: "업로드 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "number", example: 200 },
+            message: { type: "string", example: "success!" },
+            result: { type: "string", example: "https://music-archive-bucket.s3.ap-northeast-2.amazonaws.com/archive/1737601876496-icon.png" }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+      description: "업로드 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MEMBER4004" },
+              message: { type: "string", example: "파일이 존재하지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
+
+  try {
+    console.log("유저의 사진을 업로드를 요청했습니다!");
+    const url = await userProfile(req, res);
+    if (url) {
+      res.send(response(status.SUCCESS, url));
+    }
+    else {
+      res.send(response(status.FILE_NOT_EXIST, null));
+    }
+  } catch (err) {
+    res.send(response(status.FILE_NOT_EXIST, null));
+  }
+}
+
+// 유저의 음악 재생 시 기록하기
+export const handleUserPlay = async (req, res, next) => {
+  /*
+    #swagger.summary = '유저의 음악 재생 시 기록하기 API';
+    #swagger.tags = ['User']
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              userId: { type: "number", example: 1 },
+              musicId: {type: "number", example: 1 },
+            }
+          }
+        }
+      }
+    };
+  */
+  try {
+    console.log("유저의 음악 재생 시 기록하기를 요청했습니다!");
+    const userMusic = await userPlay(bodyToUserMusic(req.body))
+
+    res.send(response(status.SUCCESS, userMusic));
+  } catch (err) {
+    res.send(response(status.BAD_REQUEST, null));
   }
 };

@@ -6,7 +6,7 @@ export const status = {
   SUCCESS: {
     status: StatusCodes.OK,
     isSuccess: true,
-    code: 200,
+    code: "200",
     message: "success!",
   },
 
@@ -74,11 +74,18 @@ export const status = {
     code: "MEMBER4003",
     message: "이미 가입된 이메일이 존재합니다.",
   },
+
   TOKEN_FORMAT_INCORRECT: {
     status: StatusCodes.BAD_REQUEST,
     isSuccess: false,
     code: "MEMBER4006",
     message: "토큰의 형식이 올바르지 않습니다. 다시 확인해주세요.",
+}
+  FILE_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MEMBER4004",
+    message: "파일이 존재하지 않습니다.",
   },
 
   // db error
@@ -120,5 +127,26 @@ export const status = {
     isSuccess: false,
     code: "SIGNIN4005",
     message: "유효하지 않은 토큰입니다.",
+  },
+
+
+  //music err
+  MUSIC_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC4001",
+    message: "음악이 존재하지 않습니다.",
+  },
+  ALBUM_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC4002",
+    message: "앨범이 존재하지 않습니다.",
+  },
+  ARTIST_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC4003",
+    message: "아티스트가 존재하지 않습니다.",
   },
 };
