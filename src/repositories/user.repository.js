@@ -76,10 +76,8 @@ export const findEmail = async (req) => {
         where: {email: req}
     });
     if (email === null) {
-        console.log("email null");
         return null;
     } else {
-        console.log(email[0][0].email);
         return email;
     }
 };

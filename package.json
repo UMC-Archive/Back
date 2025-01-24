@@ -21,6 +21,7 @@
     "lastfmapi": "^0.1.1",
     "lrclib-api": "^1.2.2",
     "nodemailer": "^6.9.16",
+    "openai": "^4.80.0",
     "prisma": "^6.1.0",
     "request": "^2.88.2",
     "spotify-web-api-node": "^5.0.2",
