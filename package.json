@@ -23,6 +23,7 @@
     "lrclib-api": "^1.2.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
+    "openai": "^4.80.0",
     "prisma": "^6.1.0",
     "request": "^2.88.2",
     "spotify-web-api-node": "^5.0.2",

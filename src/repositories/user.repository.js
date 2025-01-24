@@ -81,7 +81,6 @@ export const findEmail = async (req) => {
         where: { email: req }
     });
     if (email === null) {
-        console.log("email null");
         return null;
     } else {
         return email;

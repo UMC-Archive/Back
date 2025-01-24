@@ -213,7 +213,7 @@ export const sendEmail = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send(response(BaseError));
+    res.send(response(status.BAD_REQUEST, null));
   }
 };
 
@@ -281,7 +281,7 @@ export const checkVerification = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send(response(BaseError));
+    res.send(response(status.AUTH_ERROR, null));
   }
 };
 
