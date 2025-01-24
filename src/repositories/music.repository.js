@@ -24,7 +24,7 @@ export const getUserArtistPrefers = async (user_id) => {
     select: { artist: true },
     where: { userId: user_id },
     orderBy: { createdAt: "asc" },
-    take: 5,
+    take: 3,
   });
   return userArtist;
 };
