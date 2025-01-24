@@ -5,16 +5,16 @@ dotenv.config();
 
 
 
-export const recommandArtist= async(data)=>{
-    try{
+export const recommandArtist = async (data) => {
+    try {
         const openai = new OpenAI({
             apiKey: process.env.GPT_KEY
         });
-        
+
         const assistant = await openai.beta.assistants.retrieve(
             process.env.GPT_ARTIST_ASSI
         )
-        
+
         const thread = await openai.beta.threads.create();
 
         await openai.beta.threads.messages.create(thread.id, {
@@ -29,7 +29,7 @@ export const recommandArtist= async(data)=>{
 
         await checkRunStatus(openai, thread.id, run.id);
         const message = await openai.beta.threads.messages.list(thread.id);
-        const contents= message.body.data[0].content[0].text.value;
+        const contents = message.body.data[0].content[0].text.value;
 
         async function checkRunStatus(client, threadId, runId) {
             let run = await client.beta.threads.runs.retrieve(threadId, runId);
@@ -39,24 +39,24 @@ export const recommandArtist= async(data)=>{
                 run = await client.beta.threads.runs.retrieve(threadId, runId);
             }
         }
-        const result = [contents.artist1,  contents.artist2,  contents.artist3];
+        const result = [JSON.parse(contents).artist1, JSON.parse(contents).artist2, JSON.parse(contents).artist3];
         return result
-    }catch(error){
+    } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
         throw error;
     }
 }
 
-export const recommandGerne= async(data)=>{
-    try{
+export const recommandGerne = async (data) => {
+    try {
         const openai = new OpenAI({
             apiKey: process.env.GPT_KEY
         });
-        
+
         const assistant = await openai.beta.assistants.retrieve(
             process.env.GPT_MUSIC_GERNE
         )
-        
+
         const thread = await openai.beta.threads.create();
 
         await openai.beta.threads.messages.create(thread.id, {
@@ -71,7 +71,7 @@ export const recommandGerne= async(data)=>{
 
         await checkRunStatus(openai, thread.id, run.id);
         const message = await openai.beta.threads.messages.list(thread.id);
-        const contents= message.body.data[0].content[0].text.value;
+        const contents = message.body.data[0].content[0].text.value;
 
         async function checkRunStatus(client, threadId, runId) {
             let run = await client.beta.threads.runs.retrieve(threadId, runId);
@@ -81,24 +81,24 @@ export const recommandGerne= async(data)=>{
                 run = await client.beta.threads.runs.retrieve(threadId, runId);
             }
         }
-        const result = contents.gerne;
+        const result = JSON.parse(contents).gerne;
         return result
-    }catch(error){
+    } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
         throw error;
     }
 }
 
-export const recommandCuration= async(data)=>{
-    try{
+export const recommandCuration = async (data) => {
+    try {
         const openai = new OpenAI({
             apiKey: process.env.GPT_KEY
         });
-        
+
         const assistant = await openai.beta.assistants.retrieve(
             process.env.GPT_CURATION
         )
-        
+
         const thread = await openai.beta.threads.create();
 
         await openai.beta.threads.messages.create(thread.id, {
@@ -113,7 +113,7 @@ export const recommandCuration= async(data)=>{
 
         await checkRunStatus(openai, thread.id, run.id);
         const message = await openai.beta.threads.messages.list(thread.id);
-        const contents= message.body.data[0].content[0].text.value;
+        const contents = message.body.data[0].content[0].text.value;
 
         async function checkRunStatus(client, threadId, runId) {
             let run = await client.beta.threads.runs.retrieve(threadId, runId);
@@ -123,9 +123,9 @@ export const recommandCuration= async(data)=>{
                 run = await client.beta.threads.runs.retrieve(threadId, runId);
             }
         }
-        const result = contents.curation;
+        const result = JSON.parse(contents).curation;
         return result
-    }catch(error){
+    } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
         throw error;
     }
