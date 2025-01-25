@@ -98,9 +98,9 @@ app.post("/users/signup", handleUserSignUp);
 //로그인
 app.post("/users/login", handleLogin);
 //이메일 인증 전송
-app.get("/signup/email/send-verification-code", sendEmail);
+app.get("/users/signup/email/send-verification-code", sendEmail);
 //이메일 인증 확인
-app.post("/signup/email/check-verification-code", checkVerification);
+app.post("/users/signup/email/check-verification-code", checkVerification);
 
 // 장르 정보 조회
 app.get("/music/genre/info", handleMusicGenreInfo);
