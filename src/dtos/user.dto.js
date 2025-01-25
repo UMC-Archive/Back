@@ -5,7 +5,6 @@ export const bodyToUser = (body) => {
         nickname: body.nickname,
         email: body.email,
         password: body.password,
-        profileImage: body.profileImage,
         status: body.status,
         socialType: body.socialType,
         inactiveDate: inactiveDate,

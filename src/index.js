@@ -116,7 +116,7 @@ app.post("/users/genre", handleUserGenre);
 // 유저의 아티스트 선택/수정 하는 api
 app.post("/users/artist", handleUserArtist);
 // 유저의 사진을 업로드 하는 api
-app.post("/users/profile", handleUserProfile);
+//app.post("/users/profile", handleUserProfile); // 회원가입이랑 통합으로 미사용
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
 

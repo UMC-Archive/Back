@@ -39,7 +39,6 @@ export const handleUserSignUp = async (req, res, next) => {
               nickname: { type: "string", example: "닉네임" },
               email: { type: "string", example: "example@email.com"},
               password: { type: "string", example: "password"},
-              profileImage: { type: "string", example: "image.jpg"},
               status: { type: "string", example: "active"},
               socialType: { type: "string", example: "example"},
               inactiveDate: { type: "string",  format: "date"  },
@@ -116,9 +115,8 @@ export const handleUserSignUp = async (req, res, next) => {
   */
   try {
     console.log("회원가입을 요청했습니다!");
-    console.log("body:", req.body);
 
-    const user = await userSignUp(bodyToUser(req.body));
+    const user = await userSignUp(req, res)//, bodyToUser(req.body));
     if (user) {
       res.send(response(status.SUCCESS, user));
     }
