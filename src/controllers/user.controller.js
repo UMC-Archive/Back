@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
+import { checkFormat } from "../middleware/jwt.js";
 import {
   bodyToUser,
   loginRequestDTO,
@@ -12,6 +13,7 @@ import {
 import {
   userSignUp,
   loginService,
+  logoutService,
   sendVerificationCode,
   userInfoService,
   checkVerificationCode,
@@ -128,6 +130,25 @@ export const handleLogin = async(req, res, next)=> {
 	} catch (err) {
 		console.log(err);
 		return next(err);
+	}
+};
+
+// 로그아웃
+export const handleLogout = async(req,res,next) => {
+  try {
+		const token = await checkFormat(req.get("Authorization"));
+
+		if (token !== null) {
+			// 토큰 맞으면
+			await logoutService(token);
+			res.send(response(status.SUCCESS, null));
+		} else {
+			// 토큰 다르면
+			res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+		}
+	} catch (err) {
+		console.log(err);
+		res.send(response(BaseError));
 	}
 };
 //이메일 인증 전송

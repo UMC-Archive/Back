@@ -6,6 +6,7 @@ import swaggerUiExpress from "swagger-ui-express";
 import {
     handleUserSignUp,
     handleLogin,
+    handleLogout,
     sendEmail,
     checkVerification,
     handleUserInfo,
@@ -88,6 +89,8 @@ app.get('/', (req, res, next) => {
 app.post('/users/signup', handleUserSignUp);
 //로그인
 app.post('/users/login', handleLogin);
+//로그아웃
+app.post('/users/logout', handleLogout);
 //이메일 인증 전송
 app.get("/signup/email/send-verification-code", sendEmail);
 //이메일 인증 확인

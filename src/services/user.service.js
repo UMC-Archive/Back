@@ -111,7 +111,6 @@ export const loginService = async (req) => {
 			user.password = "hidden";
 			return createJwt(user);
             //console.log("로그인 성공");
-            return user;
 		} else {
 			// 실패
 			console.log("password incorrect");
