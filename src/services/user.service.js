@@ -115,9 +115,8 @@ export const loginService = async (req) => {
         if (bcrypt.compareSync(req.password, user.password)) {
             // 성공
             user.password = "hidden";
-            //return createJwt(user);
             console.log("로그인 성공");
-            return user;
+            return createJwt(user);
         } else {
             // 실패
             console.log("password incorrect");
