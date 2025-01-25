@@ -23,6 +23,7 @@ import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+import { createJwt } from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import { encrypt } from "../middleware/encrypt.js";
 
