@@ -27,27 +27,30 @@ import { createJwt } from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import { encrypt } from "../middleware/encrypt.js";
 
-export const userSignUp = async (data) => {
-    data.password = encrypt(data.password);
+export const userSignUp = async (req, res) => {//, data) => {
+    const { url, data } = await profileUploader(req, res);
+    const jdata = JSON.parse(data)
+    const inactiveDate = new Date(jdata.inactiveDate);
+    jdata.password = encrypt(jdata.password);
     const userId = await addUser({
-        name: data.name,
-        nickname: data.nickname,
-        email: data.email,
-        password: data.password,
-        profileImage: data.profileImage,
-        status: data.status,
-        socialType: data.socialType,
-        inactiveDate: data.inactiveDate,
+        name: jdata.name,
+        nickname: jdata.nickname,
+        email: jdata.email,
+        password: jdata.password,
+        profileImage: url,
+        status: jdata.status,
+        socialType: jdata.socialType,
+        inactiveDate: inactiveDate,
     });
     if (userId === null) {
         throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
     }
     // 라이브러리 추가
     const library = await setLibrary({ userId });
-    for (const artistId of data.artists) {
+    for (const artistId of jdata.artists) {
         const artist = await setUserArtist(userId, artistId);
     }
-    for (const genreId of data.genres) {
+    for (const genreId of jdata.genres) {
         const genre = await setUserGenre(userId, genreId);
     }
 
@@ -132,11 +135,12 @@ export const loginService = async (req) => {
 
 // 유저 프로필 이미지 변경 service
 export const userChangeImageService = async (req, res, data) => {
-    const url = await profileUploader(req, res);
-    console.log("bodyService:", data)
+    const { url, data } = await profileUploader(req, res);
+    const jdata = json.parse(data)
+    console.log("bodyService:", jdata)
     const ChangeImage = await changeImageRep({
-        name: data.name,
-        email: data.email,
+        name: jdata.name,
+        email: jdata.email,
         profileImage: url,
     })
     if (ChangeImage == null) {
