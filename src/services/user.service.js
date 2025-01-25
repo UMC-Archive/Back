@@ -94,7 +94,7 @@ const findEmailAlreadyExists = async (email) => {
 export const checkVerificationCode = async (req) => {
     const code = req.code;
 
-    return bcrypt.compareSync(code.toString(), req.cipherCode);
+    return bcrypt.compareSync(code, req.cipherCode);
 };
 // 유저 정보 불러오는 service
 export const userInfoService = async (userId) => {
