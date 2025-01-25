@@ -231,7 +231,7 @@ export const checkVerification = async (req, res) => {
               type: "object",
               properties: {
                 cipherCode: { type: "string", description: "암호화된 인증 코드" },
-                code: { type: "number", description: "사용자가 입력한 인증 코드", example: 123456 }
+                code: { type: "string", description: "사용자가 입력한 인증 코드", example: "123456" }
               },
               required: ["cipherCode", "code"]
             }
