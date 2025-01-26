@@ -15,7 +15,6 @@ datasource db {
 
 model User {
   id           BigInt        @id @default(autoincrement())
-  name         String        @db.VarChar(100)
   nickname     String        @db.VarChar(100)
   email        String        @unique(map: "email") @db.VarChar(50)
   password     String        @db.VarChar(100)
@@ -50,6 +49,7 @@ model Artist {
   id             BigInt          @id @default(autoincrement())
   name           String          @db.VarChar(100)
   image          String          @db.VarChar(1000)
+  description    String          @db.Text
   createdAt      DateTime?       @default(now()) @map("created_at") @db.DateTime(6)
   updatedAt      DateTime?       @default(now()) @map("updated_at") @db.DateTime(6)
   UserArtists    UserArtist[]
@@ -121,6 +121,7 @@ model Music {
   releaseTime   DateTime       @map("release_time") @db.DateTime(6)
   lyrics        String         @db.Text
   image         String         @db.VarChar(1000)
+  musicUrl      String         @db.VarChar(1000)
   createdAt     DateTime?      @default(now()) @map("created_at") @db.DateTime(6)
   updatedAt     DateTime?      @default(now()) @map("updated_at") @db.DateTime(6)
   MusicGenres   MusicGenre[]

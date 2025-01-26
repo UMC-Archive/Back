@@ -33,7 +33,10 @@ import {
   getSpecificArtistAPI,
   getallArtistsAPI,
 } from "../repositories/music.repository.js";
-import { recommandArtist } from "../middleware/gpt.js"
+import {
+  recommandArtist,
+  recommandCuration
+} from "../middleware/gpt.js"
 export const listNominationMusic = async (user_id) => {
   const preferArtists = await getUserArtistPrefers(user_id);
   const userHistory = await getUserHistory(user_id);
@@ -128,7 +131,7 @@ export const listAlbum = async (artist_name, album_name) => {
     return responseFromAlbum(albumDB);
   }
   //DB에 앨범이 저장 되어 있지 않을 때
-  let apiInfo = await getAlbumAPI(artist_name, album_name);
+  const apiInfo = await getAlbumAPI(artist_name, album_name);
   const album = await addAlbum(apiInfo);
 
   return responseFromAlbum(album);
@@ -144,7 +147,8 @@ export const listArtist = async (artist_name) => {
 
   //DB에 아티스트가 저장 되어 있지 않을 때
   const apiInfo = await getArtistAPI(artist_name);
-  const artist = await addArtist(apiInfo);
+  const description = await recommandCuration(artist_name);
+  const artist = await addArtist(apiInfo, description);
 
   return responseFromArtist(artist);
 };

@@ -11,6 +11,7 @@ import { prisma } from "../db.config.js";
 import lrclib from "lrclib-api";
 import { billboard } from "../billboard.js";
 import { getAlbumItunes, getAlbumItunesEntity } from "../itunes.js";
+import { recommandCuration } from "../middleware/gpt.js"
 //당신을 위한 앨범 추천(연도)
 export const getUserHistory = async (user_id) => {
   const userHistory = prisma.timeHistory.findMany({
@@ -69,10 +70,12 @@ export const getLyricsAPI = async (artist_name, music_name) => {
     : lyrics[0].plainLyrics; //지금은 시간 있는 값으로 불러 와서 바꾸고 싶으면 여기 수정하면 됨
 };
 export const getMusicAPI = async (album, lyrics, artist_name, music_name) => {
+  const music = await getAlbumItunes(music_name, artist_name);
   const musicInfo = await getMusicInfo(artist_name, music_name);
   if (!album) return null;
   const data = {
     albumId: album.id,
+    musicUrl: music ? music.previewUrl : "",
     title: musicInfo ? musicInfo.name : music_name,
     lyrics: lyrics,
     releaseTime: album.releaseTime,
@@ -120,10 +123,11 @@ export const getAlbumAPI = async (artist_name, album_name) => {
     artist_name,
     "album"
   );
+  const description = await recommandCuration(`${artist_name} ${album_name}`)
   if (!(albumInfo && albumItunes)) return null;
   const data = {
     title: albumInfo.name ? albumInfo.name : albumItunes.collectionName,
-    description: albumInfo.wiki ? albumInfo.wiki.summary : "none",
+    description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo.wiki ? albumInfo.wiki.published : albumItunes.releaseDate
     ),
@@ -173,7 +177,12 @@ export const getArtistAPI = async (artist_name) => {
 };
 
 //prisma에 정보 추가하기
-export const addArtist = async (data) => {
+export const addArtist = async (artist, curation) => {
+  const data = {
+    name: artist.name,
+    image: artist.image,
+    description: curation
+  }
   const created = await prisma.artist.create({ data: data });
   return created;
 };

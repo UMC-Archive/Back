@@ -27,13 +27,12 @@ import { createJwt } from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import { encrypt } from "../middleware/encrypt.js";
 
-export const userSignUp = async (req, res) => {//, data) => {
+export const userSignUp = async (req, res) => {
     const { url, data } = await profileUploader(req, res);
     const jdata = JSON.parse(data)
     const inactiveDate = new Date(jdata.inactiveDate);
     jdata.password = encrypt(jdata.password);
     const userId = await addUser({
-        name: jdata.name,
         nickname: jdata.nickname,
         email: jdata.email,
         password: jdata.password,
@@ -134,7 +133,7 @@ export const loginService = async (req) => {
 };
 
 // 유저 프로필 이미지 변경 service
-export const userChangeImageService = async (req, res,)=>{// data) => {
+export const userChangeImageService = async (req, res,) => {// data) => {
     const { url, data } = await profileUploader(req, res);
     const jdata = json.parse(data)
     console.log("bodyService:", jdata)
