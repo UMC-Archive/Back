@@ -35,7 +35,6 @@ export const handleUserSignUp = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              name: { type: "string", example: "이름" },
               nickname: { type: "string", example: "닉네임" },
               email: { type: "string", example: "example@email.com"},
               password: { type: "string", example: "password"},
@@ -116,7 +115,7 @@ export const handleUserSignUp = async (req, res, next) => {
   try {
     console.log("회원가입을 요청했습니다!");
 
-    const user = await userSignUp(req, res)//, bodyToUser(req.body));
+    const user = await userSignUp(req, res);
     if (user) {
       res.send(response(status.SUCCESS, user));
     }
