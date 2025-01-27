@@ -65,7 +65,6 @@ export const handleUserSignUp = async (req, res, next) => {
                     type: "object",
                     properties: {
                       id: { type: "string", example: "1"},
-                      name: { type: "string", example:"이름" },
                       nickname: { type: "string", example: "닉네임" },
                       email: { type: "string", example: "example@gmail.com"},
                       password: { type: "string", example: "$2b$10$o8SHav4KiPRDtC0XEMyKm.EqVSZmALYfCH2lrrDaWqeR33j37vmoC"},
