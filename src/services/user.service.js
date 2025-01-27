@@ -100,12 +100,9 @@ export const checkVerificationCode = async (req) => {
 };
 // 유저 정보 불러오는 service
 export const userInfoService = async (userId) => {
-    try {
-        const userInfo = await userInfoRep(userId);
-        return userInfo;
-    } catch (err) {
-        return next(err);
-    }
+    const userInfo = await userInfoRep(userId);
+    userInfo.password = "hidden";
+    return userInfo;
 };
 
 // 로그인 전송 service

@@ -1,6 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
+import { checkFormat } from "../middleware/jwt.js";
+import { BaseError } from "../errors.js";
 import {
   bodyToUser,
   loginRequestDTO,
@@ -283,7 +285,8 @@ export const checkVerification = async (req, res) => {
 };
 
 // 유저 정보 불러오기
-export const handleUserInfo = async (req, res, next) => {
+export const handleUserInfo = async (req, res) => {
+  console.log("유저 정보를 불러옵니다.");
   /*
   #swagger.summary = '유저 정보 조회 API';
   #swagger.tags = ['User']
@@ -340,13 +343,19 @@ export const handleUserInfo = async (req, res, next) => {
 */
   try {
     console.log("유저 정보를 불러옵니다.");
-    //토큰 사용전 임의로 사용
-    const userId = req.params.id;
-    console.log(userId);
-    const userInfo = await userInfoService(userId);
-    res.send(response(status.SUCCESS, userInfo));
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(req.userId);
+    if (token !== null) {
+			// 토큰 이상없음
+			res.send(response(status.SUCCESS, await userInfoService(req.userId)));
+		} else {
+			// 토큰 이상감지
+			res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+		}
+    console.log("123123")
   } catch (err) {
-    return next(err);
+    console.log(err);
+    res.send(response(BaseError));
   }
 }
 

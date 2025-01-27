@@ -16,3 +16,9 @@ export class DuplicateUpdateError extends Error {
         this.data = data;
     }
 }
+export class BaseError extends Error {
+    constructor(data){
+        super(data.message);
+        this.data = data;
+    }
+}
