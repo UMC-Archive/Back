@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import {} from "../dtos/music.dto.js";
+import { } from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -40,6 +40,7 @@ export const handleMusicNomination = async (req, res, next) => {
                       releseTime : { type: "string", format: "date", example: "2021-03-25" },
                       lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
                       image: { type: "string", example: "https://example.com/music_image.jpg" },
+                      musicUrl: { type: "string", example: "https://example.com/preview_music.m4a"},
                       createdAt : { type: "string", format: "date", example: "2025-01-01" },
                       updatedAt : { type: "string", format: "date", example: "2025-01-01" }
                     }
@@ -167,6 +168,7 @@ export const handleMusicHidden = async (req, res, next) => {
                         releseTime : { type: "string", format: "date", example: "2021-03-25" },
                         lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
                         image: { type: "string", example: "https://example.com/music_image.jpg" },
+                        musicUrl: { type: "string", example: "https://example.com/preview_music.m4a"},
                         createdAt : { type: "string", format: "date", example: "2025-01-01" },
                         updatedAt : { type: "string", format: "date", example: "2025-01-01" }
                         }
@@ -285,6 +287,7 @@ export const handleMusicAlbumInfo = async (req, res, next) => {
                     description: { type: "string", example: "안녕 꽃잎 같은 안녕 내 맘에 아무 의문이 없어 난 이 다음으로 가요" },
                     releseTime : { type: "string", format: "date", example: "2021-03-25" },
                     image: { type: "string", example: "https://example.com/album_image.jpg" },
+                    musicUrl: { type: "string", example: "https://example.com/preview_music.m4a"}
                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
                     updatedAt : { type: "string", format: "date", example: "2025-01-01" }
                     }
