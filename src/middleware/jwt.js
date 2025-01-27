@@ -3,7 +3,12 @@ import dotenv from "dotenv";
 dotenv.config();
 // Create jwt token
 export const createJwt = (req) => {
-	const token = jwt.sign({ req }, process.env.JWT_SECRET, {
+	const payload = {
+		userId : req.id,
+		type: req.isAccess ? "AT" : "RT",
+		issuer: "ArchiveAPIServer",
+	};
+	const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
 		expiresIn: "20m", // 4시간(임시임)
 	});
 	return token;

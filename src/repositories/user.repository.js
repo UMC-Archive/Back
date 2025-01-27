@@ -97,6 +97,7 @@ export const findUser = async (email) => {
     // Prisma로 유저 정보 조회
     const user = await prisma.user.findFirst({
         select: {
+            id: true,
             email: true, // email만 선택
             password: true, // password도 가져오기
         },
