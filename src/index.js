@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
+import { verify } from "../src/middleware/jwt.js";
 import {
   handleUserSignUp,
   handleLogin,
@@ -93,6 +94,8 @@ app.use((req, res, next) => {
 app.get("/", (req, res, next) => {
   res.send("Hello World!");
 });
+
+app.use(verify);
 //회원 가입
 app.post("/users/signup", handleUserSignUp);
 //로그인
@@ -108,7 +111,7 @@ app.get("/music/genre/info", handleMusicGenreInfo);
 app.get("/music/artist/info", handleArtistsInfo);
 
 //유저 정보를 불러오는 api
-app.get("/users/info/:id", handleUserInfo);
+app.get("/users/info", handleUserInfo);
 //유저 프로필 사진 변경
 app.post("/users/profile_image", handleUserChangeImage);
 // 유저의 장르 선택/수정 하는 api
