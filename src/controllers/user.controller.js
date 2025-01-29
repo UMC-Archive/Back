@@ -715,7 +715,6 @@ export const handleUserPlay = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              userId: { type: "number", example: 1 },
               musicId: {type: "number", example: 1 },
             }
           }
@@ -725,7 +724,7 @@ export const handleUserPlay = async (req, res, next) => {
   */
   try {
     console.log("유저의 음악 재생 시 기록하기를 요청했습니다!");
-    const userMusic = await userPlay(bodyToUserMusic(req.body))
+    const userMusic = await userPlay(bodyToUserMusic(req.userId, req.body))
 
     res.send(response(status.SUCCESS, userMusic));
   } catch (err) {

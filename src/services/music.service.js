@@ -42,7 +42,6 @@ import {
 } from "../repositories/music.repository.js";
 import {
   recommandArtist,
-  recommandCuration
 } from "../middleware/gpt.js"
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
@@ -80,14 +79,16 @@ export const listNominationAlbum = async (user_id) => {
 };
 
 //숨겨진 명곡
-export const listHiddenMusics = async (date) => {
-  const billboardTop10 = await getBillboardAPI(date);
+export const listHiddenMusics = async (user_id) => {
+  const date = await getUserHistory(user_id);
+  const billboardTop10 = await getBillboardAPI(date[0].history.toISOString().split('T')[0]);
   const { titles, artists } = await extractBillboard(billboardTop10);
   const musics = await Promise.all(
     artists.map((artist, i) => listMusic(artist, titles[i]))
   );
   return responseFromHiddenMusics({
     musics,
+    artists,
   });
 };
 //음악 정보 가져오기
@@ -102,7 +103,6 @@ export const listMusic = async (artist_name, music_name) => {
   const artist = await listArtist(artist_name);
   //앨범 정보
   const album = await listAlbumSearch(music_name, artist_name);
-  console.log(album)
   //음악 가사 정보
   let lyrics = await getLyricsAPI(artist_name, music_name);
   //가사를 불러 올 수 없을 때가 존재함, 추후에 다른 api를 찾으면 none 대신 다른 api를 통해 찾기로 변경
@@ -209,9 +209,9 @@ export const albumCuration = async (album_id) => {
   const album = await getAlbumById(album_id);
   const artistName = await getArtistByAlbum(album);
   let albumCuration = await getAlbumCuration(album_id);
-  if (albumCuration) {
-    return albumCuration;
-  }
+  // if (albumCuration) {
+  //   return albumCuration;
+  // }
   albumCuration = await setAlbumCuration(album_id, album.title, artistName);
   if (!albumCuration) {
     return null;

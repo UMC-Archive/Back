@@ -19,8 +19,7 @@ export const verify = (req, res, next) => {
 		"/users/login",
 		"/users/signup",
 		"/users/signup/email/send-verification-code",
-		"/users/signup/email/check-verification-code",
-		"/music/artist"
+		"/users/signup/email/check-verification-code"
 	];
 	// 현재 요청 URL이 제외할 경로에 포함되는지 확인
 	if (excludedPaths.includes(req.path)) {
@@ -38,7 +37,7 @@ export const verify = (req, res, next) => {
 			if (err) {
 				return res.status(403).json({ message: "토큰이 유효하지 않습니다." });
 			}
-			req.userId = user.id; // 검증된 유저 정보를 요청 객체에 담음
+			req.userId = user.payload.userId; // 검증된 유저 정보를 요청 객체에 담음
 			next(); // 다음 미들웨어로 이동
 		});
 	} catch (err) {

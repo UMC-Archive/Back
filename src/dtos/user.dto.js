@@ -72,9 +72,9 @@ export const bodyToArtistDTO = (req) => {
 };
 
 // 유저의 음악 재생 시 기록하기
-export const bodyToUserMusic = (body) => {
+export const bodyToUserMusic = (userId, body) => {
     return {
-        userId: body.userId,
+        userId: userId,
         musicId: body.musicId,
     }
 }
