@@ -21,7 +21,7 @@ import {
   getAlbumDB,
   getAlbumAPI,
   addAlbum,
-  searchAlbumAPI,
+  //searchAlbumAPI,
   getArtistDB,
   getArtistAPI,
   addArtist,
@@ -32,11 +32,19 @@ import {
   getAllStoreGenres,
   getSpecificArtistAPI,
   getallArtistsAPI,
+  getAlbumCuration,
+  setAlbumCuration,
+  getArtistCuration,
+  setArtistCuration,
+  getArtistById,
+  getAlbumById,
+  getArtistByAlbum
 } from "../repositories/music.repository.js";
 import {
   recommandArtist,
   recommandCuration
 } from "../middleware/gpt.js"
+//추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
   const preferArtists = await getUserArtistPrefers(user_id);
   const userHistory = await getUserHistory(user_id);
@@ -54,6 +62,7 @@ export const listNominationMusic = async (user_id) => {
   }
   return recommendedMusics;
 };
+//당신을 위한 앨범 추천(연도)
 export const listNominationAlbum = async (user_id) => {
   const preferArtists = await getUserArtistPrefers(user_id);
   const userHistory = await getUserHistory(user_id);
@@ -93,6 +102,7 @@ export const listMusic = async (artist_name, music_name) => {
   const artist = await listArtist(artist_name);
   //앨범 정보
   const album = await listAlbumSearch(music_name, artist_name);
+  console.log(album)
   //음악 가사 정보
   let lyrics = await getLyricsAPI(artist_name, music_name);
   //가사를 불러 올 수 없을 때가 존재함, 추후에 다른 api를 찾으면 none 대신 다른 api를 통해 찾기로 변경
@@ -108,17 +118,21 @@ export const listMusic = async (artist_name, music_name) => {
 };
 // 앨범 정보 검색하기
 const listAlbumSearch = async (music_name, artist_name) => {
-  const albumApi = await searchAlbumAPI(music_name, artist_name);
+  const albumApi = await getAlbumItunesAPI(music_name, artist_name);
+
   if (albumApi) {
-    const albumName = albumApi.collectionName;
+
+    const albumName = albumApi.title;
     let album = {};
     album = await getAlbumDB(albumName);
     if (!album) {
       let apiInfo = await getAlbumAPI(artist_name, albumName);
-      if (!apiInfo) {
-        apiInfo = await getAlbumItunesAPI(artist_name, music_name);
+      if (apiInfo) {
+        album = await addAlbum(apiInfo);
       }
-      album = await addAlbum(apiInfo);
+      else {
+        album = await addAlbum(albumApi);
+      }
     }
     return album;
   }
@@ -147,8 +161,8 @@ export const listArtist = async (artist_name) => {
 
   //DB에 아티스트가 저장 되어 있지 않을 때
   const apiInfo = await getArtistAPI(artist_name);
-  const description = await recommandCuration(artist_name);
-  const artist = await addArtist(apiInfo, description);
+  //const description = await recommandCuration(artist_name); // 아티스트와 큐레이션 분리
+  const artist = await addArtist(apiInfo);
 
   return responseFromArtist(artist);
 };
@@ -189,4 +203,34 @@ export const listAllArtistInfo = async (user_id) => {
   } catch (error) {
     return response(status.INTERNAL_SERVER_ERROR, null);
   }
+};
+//앨범 큐레이션
+export const albumCuration = async (album_id) => {
+  const album = await getAlbumById(album_id);
+  const artistName = await getArtistByAlbum(album);
+  let albumCuration = await getAlbumCuration(album_id);
+  if (albumCuration) {
+    return albumCuration;
+  }
+  albumCuration = await setAlbumCuration(album_id, album.title, artistName);
+  if (!albumCuration) {
+    return null;
+  }
+  return albumCuration;
+}
+//아티스트 큐레이션
+export const artistCuration = async (artist_id) => {
+  let artistCuration = await getArtistCuration(artist_id);
+  if (artistCuration) {
+    return artistCuration;
+  }
+  const artist = await getArtistById(artist_id);
+  if (!artist) {
+    return null;
+  }
+  artistCuration = await setArtistCuration(artist_id, artist.name);
+  if (!artistCuration) {
+    return null;
+  }
+  return artistCuration;
 };

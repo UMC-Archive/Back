@@ -130,6 +130,24 @@ export const handleUserSignUp = async (req, res, next) => {
 
 // 로그인
 export const handleLogin = async (req, res, next) => {
+  /*
+  #swagger.summary = '로그인 API';
+  #swagger.tags = ['User']
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            email: { type: "string", example: "example@email.com" },
+            password: { type: "string", example: "password" },
+          }
+        }
+      }
+    }
+  };
+  */
   try {
     console.log("로그인");
     const result = await loginService(loginRequestDTO(req.body));
@@ -345,12 +363,12 @@ export const handleUserInfo = async (req, res) => {
     const token = await checkFormat(req.get("Authorization"));
     console.log(req.userId);
     if (token !== null) {
-			// 토큰 이상없음
-			res.send(response(status.SUCCESS, await userInfoService(req.userId)));
-		} else {
-			// 토큰 이상감지
-			res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
-		}
+      // 토큰 이상없음
+      res.send(response(status.SUCCESS, await userInfoService(req.userId)));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
     console.log("123123")
   } catch (err) {
     console.log(err);
