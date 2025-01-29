@@ -147,59 +147,62 @@ export const handleAlbumNomination = async (req, res, next) => {
 //숨겨진 명곡
 export const handleMusicHidden = async (req, res, next) => {
   /*
-   #swagger.summary = '숨겨진 명곡 조회 API';
-   #swagger.tags = ['Music']
-   #swagger.responses[200] = {
-     description: "숨겨진 명곡 조회 성공 응답",
-     content: {
-       "application/json": {
-         schema: {
-           type: "object",
-           properties: {
+    #swagger.summary = '숨겨진 명곡 조회 API';
+    #swagger.tags = ['Music']
+    #swagger.responses[200] = {
+    description: "숨겨진 명곡 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
             isSuccess: { type: "boolean", example: true },
             code: { type: "number", example: 200 },
             message: { type: "string", example: "success!" },
             result: {
-                  type: "object",
-                  properties: {
-                    musics: {
-                      type: "array", items: { 
-                        type: "object",  properties: {
-                        id: { type: "number", example: 1 },
-                        albumId: { type: "number", example: 1 },
-                        title: { type: "string", example: "Celebrity" },
-                        releseTime : { type: "string", format: "date", example: "2021-03-25" },
-                        lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
-                        image: { type: "string", example: "https://example.com/music_image.jpg" },
-                        musicUrl: { type: "string", example: "https://example.com/preview_music.m4a"},
-                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
-                        updatedAt : { type: "string", format: "date", example: "2025-01-01" }
-                        }
-                      }
-                    }
-                  } 
+              type: "array",
+              items: {
+               type: "object", 
+                properties: { 
+                  music: {
+                    type: "object",  
+                    properties: {
+                      id: { type: "number", example: 1 },
+                      albumId: { type: "number", example: 1 },
+                      title: { type: "string", example: "Celebrity" },
+                      releaseTime: { type: "string", format: "date", example: "2021-03-25" },
+                      lyrics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
+                      image: { type: "string", example: "https://example.com/music_image.jpg" },
+                     musicUrl: { type: "string", example: "https://example.com/preview_music.m4a" },
+                     createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                     updatedAt: { type: "string", format: "date", example: "2025-01-01" }
+                   }
+                 },
+                  artist: { type: "string", example: "IU" }
+                }
               }
-           }
-         }
+            }
+          }
        }
      }
-   };
-   #swagger.responses[400] = {
-     description: "숨겨진 명곡 정보를 찾을 수 없음",
-     content: {
-       "application/json": {
-         schema: {
-           type: "object",
-           properties: {
-              isSuccess: { type: "boolean", example: false },
-              code: { type: "string", example: "MUSIC4001" },
-              message: { type: "string", example: "음악이 존재하지 않습니다." },
-              result: { type: "object", nullable: true, example: null }
-           }
-         }
-       }
-     }
-   };
+    }
+  };
+  #swagger.responses[400] = {
+  description: "숨겨진 명곡 정보를 찾을 수 없음",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: false },
+          code: { type: "string", example: "MUSIC4001" },
+          message: { type: "string", example: "음악이 존재하지 않습니다." },
+          result: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
+};
  */
   try {
     console.log("숨겨진 명곡 조회를 요청했습니다!");
@@ -580,11 +583,10 @@ export const handleAlbumCuration = async (req, res, next) => {
              code: { type: "number", example: 200 },
              message: { type: "string", example: "success!" },
              result: {
-               type: "object",
-               properties: {
+               type: "array",
+               items: {
                  musics: {
-                   type: "array", items: { 
-                     type: "object",  properties: {
+                   type: "object", properties: { 
                      id: { type: "number", example: 1 },
                      albumId: { type: "number", example: 1 },
                      description: { type: "string", example: "앨범 소개" },
