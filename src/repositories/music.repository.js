@@ -267,7 +267,7 @@ export const getAlbumCuration = async (album_id) => {
 
 //앨범 큐레이션 생성
 export const setAlbumCuration = async (album_id, album_name, artistName) => {
-  const description = await recommandCuration(artistName, album_name)
+  const description = await recommandCuration(`${artistName} ${album_name}`)
   const data = {
     albumId: album_id,
     description: description,

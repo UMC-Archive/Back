@@ -209,9 +209,9 @@ export const albumCuration = async (album_id) => {
   const album = await getAlbumById(album_id);
   const artistName = await getArtistByAlbum(album);
   let albumCuration = await getAlbumCuration(album_id);
-  if (albumCuration) {
-    return albumCuration;
-  }
+  // if (albumCuration) {
+  //   return albumCuration;
+  // }
   albumCuration = await setAlbumCuration(album_id, album.title, artistName);
   if (!albumCuration) {
     return null;

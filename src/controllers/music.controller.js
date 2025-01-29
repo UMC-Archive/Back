@@ -587,7 +587,7 @@ export const handleAlbumCuration = async (req, res, next) => {
                      type: "object",  properties: {
                      id: { type: "number", example: 1 },
                      albumId: { type: "number", example: 1 },
-                     description: { type: "string", example: "이 앨범" },
+                     description: { type: "string", example: "앨범 소개" },
                      createdAt : { type: "string", format: "date", example: "2025-01-01" },
                      updatedAt : { type: "string", format: "date", example: "2025-01-01" }
                    }
@@ -620,7 +620,6 @@ export const handleAlbumCuration = async (req, res, next) => {
   try {
     console.log("앨범 큐레이션을 요청했습니다!");
     const album = await albumCuration(req.params.album_id);
-
     res.send(response(status.SUCCESS, album));
   } catch (err) {
     res.send(response(BaseError));
@@ -628,6 +627,57 @@ export const handleAlbumCuration = async (req, res, next) => {
 };
 //아티스트 큐레이션
 export const handleArtistCuration = async (req, res, next) => {
+  /*
+  #swagger.summary = '아티스트 큐레이션 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "아티스트 큐레이션 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+             isSuccess: { type: "boolean", example: true },
+             code: { type: "number", example: 200 },
+             message: { type: "string", example: "success!" },
+             result: {
+               type: "object",
+               properties: {
+                 musics: {
+                   type: "array", items: { 
+                     type: "object",  properties: {
+                     id: { type: "number", example: 1 },
+                     artistId: { type: "number", example: 1 },
+                     description: { type: "string", example: "아티스트 소개" },
+                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                     updatedAt : { type: "string", format: "date", example: "2025-01-01" }
+                   }
+                 }
+               } 
+             }
+            } 
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+     description: "아티스트 큐레이션 실패 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: false },
+             code: { type: "string", example: "MUSIC4003" },
+             message: { type: "string", example: "아티스트가 존재하지 않습니다." },
+             result: { type: "object", nullable: true, example: null }
+           }
+         }
+       }
+     }
+   };
+ */
   try {
     console.log("아티스트 큐레이션을 요청했습니다!");
     const artist = await artistCuration(req.params.artist_id);
