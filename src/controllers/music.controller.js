@@ -12,7 +12,10 @@ import {
   listGenre,
   listSpecificArtistInfo,
   listAllArtistInfo,
+  albumCuration,
+  artistCuration,
 } from "../services/music.service.js";
+import { BaseError } from "../errors.js";
 //추천곡 (연도)
 export const handleMusicNomination = async (req, res, next) => {
   /*
@@ -287,9 +290,9 @@ export const handleMusicAlbumInfo = async (req, res, next) => {
                     description: { type: "string", example: "안녕 꽃잎 같은 안녕 내 맘에 아무 의문이 없어 난 이 다음으로 가요" },
                     releseTime : { type: "string", format: "date", example: "2021-03-25" },
                     image: { type: "string", example: "https://example.com/album_image.jpg" },
-                    musicUrl: { type: "string", example: "https://example.com/preview_music.m4a"}
+                    musicUrl: { type: "string", example: "https://example.com/preview_music.m4a"},
                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
-                    updatedAt : { type: "string", format: "date", example: "2025-01-01" }
+                    updatedAt : { type: "string", format: "date", example: "2025-01-01" },
                     }
                 }
            }
@@ -557,5 +560,27 @@ export const handleArtistsInfo = async (req, res, next) => {
     }
   } catch (err) {
     return next(err);
+  }
+};
+
+//앨범 큐레이션
+export const handleAlbumCuration = async (req, res, next) => {
+  try {
+    console.log("앨범 큐레이션을 요청했습니다!");
+    const album = await albumCuration(req.params.album_id);
+
+    res.send(response(status.SUCCESS, album));
+  } catch (err) {
+    res.send(response(BaseError));
+  }
+};
+//아티스트 큐레이션
+export const handleArtistCuration = async (req, res, next) => {
+  try {
+    console.log("아티스트 큐레이션을 요청했습니다!");
+    const artist = await artistCuration(req.params.artist_id);
+    res.send(response(status.SUCCESS, artist));
+  } catch (err) {
+    res.send(response(BaseError));
   }
 };

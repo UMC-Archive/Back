@@ -25,6 +25,8 @@ import {
   handleMusicArtistInfo,
   handleMusicGenreInfo,
   handleArtistsInfo,
+  handleAlbumCuration,
+  handleArtistCuration,
 } from "./controllers/music.controller.js";
 
 BigInt.prototype.toJSON = function () {
@@ -71,6 +73,21 @@ app.get("/openapi.json", async (req, res, next) => {
       description: "UMC 7th Node.js 테스트 프로젝트입니다.",
     },
     host: `${protocol}://${host}`,
+    components: {
+      securitySchemes: {
+        Bearer: {
+          type: "apiKey",
+          in: "header",
+          name: "Authorization", // Authorization 헤더로 전달
+          description: "Bearer token을 사용한 인증",
+        },
+      },
+    },
+    security: [
+      {
+        Bearer: [], // 기본적으로 Bearer 인증을 적용
+      },
+    ],
   };
 
   const result = await swaggerAutogen(options)(outputFile, routes, doc);
@@ -135,7 +152,10 @@ app.post("/music", handleMusicInfo);
 app.post("/music/album", handleMusicAlbumInfo);
 //아티스트 정보 가져오기
 app.post("/music/artist", handleMusicArtistInfo);
-
+//앨범 큐레이션
+app.post("/music/album/:album_id/curation", handleAlbumCuration);
+//아티스트 큐레이션
+app.post("/music/artist/:artist_id/curation", handleArtistCuration);
 //--------------------------------
 
 app.use((err, req, res, next) => {
