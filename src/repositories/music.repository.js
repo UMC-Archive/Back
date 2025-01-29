@@ -127,16 +127,21 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   if (!albumInfo && !albumItunes) {
     return null
   }
-  console.log()
+  let image;
+  if (albumInfo) {
+    image = albumInfo.image[4]["#text"]
+    if (albumInfo == "") {
+      image = null;
+    }
+  }
   const data = {
     title: albumInfo ? albumInfo.name : albumItunes ? albumItunes.collectionName : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo ? albumInfo.wiki ? albumInfo.wiki.published : albumItunes ? albumItunes.releaseDate : "1970-01-01" : "1970-01-01"
     ),
-    image: albumInfo ? albumInfo.image[4]["#text"] : albumItunes ? albumItunes.artworkUrl100 : "none",
+    image: albumInfo ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
   };
-  console.log(data)
   return data;
 };
 export const getAlbumItunesAPI = async (artist_name, music_name) => {
