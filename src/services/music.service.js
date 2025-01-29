@@ -42,7 +42,6 @@ import {
 } from "../repositories/music.repository.js";
 import {
   recommandArtist,
-  recommandCuration
 } from "../middleware/gpt.js"
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
@@ -80,7 +79,8 @@ export const listNominationAlbum = async (user_id) => {
 };
 
 //숨겨진 명곡
-export const listHiddenMusics = async (date) => {
+export const listHiddenMusics = async (user_id) => {
+  const date = await getUserHistory(user_id);
   const billboardTop10 = await getBillboardAPI(date);
   const { titles, artists } = await extractBillboard(billboardTop10);
   const musics = await Promise.all(

@@ -75,7 +75,7 @@ export const handleMusicNomination = async (req, res, next) => {
   */
   try {
     console.log("당신을 위한 노래 추천을 요청했습니다!");
-    const music = await listNominationMusic(req.query.user_id);
+    const music = await listNominationMusic(req.userId);
     res.send(response(status.SUCCESS, music));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
@@ -138,7 +138,7 @@ export const handleAlbumNomination = async (req, res, next) => {
  */
   try {
     console.log("당신을 위한 앨범 추천을 요청했습니다!");
-    const album = await listNominationAlbum(req.query.user_id);
+    const album = await listNominationAlbum(req.userId);
     res.send(response(status.SUCCESS, album));
   } catch (err) {
     res.send(response(status.ALBUM_NOT_EXIST, null));
@@ -203,7 +203,7 @@ export const handleMusicHidden = async (req, res, next) => {
  */
   try {
     console.log("숨겨진 명곡 조회를 요청했습니다!");
-    const music = await listHiddenMusics(req.query.date);
+    const music = await listHiddenMusics(req.userId);
     res.send(response(status.SUCCESS, music));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
@@ -319,6 +319,7 @@ export const handleMusicAlbumInfo = async (req, res, next) => {
  */
   try {
     console.log("앨범 정보 가져오기를 요청했습니다!");
+    console.log(req.userId);
     const album = await listAlbum(req.query.artist_name, req.query.album_name);
     res.send(response(status.SUCCESS, album));
   } catch (err) {
