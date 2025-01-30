@@ -29,6 +29,9 @@ import { encrypt } from "../middleware/encrypt.js";
 
 export const userSignUp = async (req, res) => {
     const { url, data } = await profileUploader(req, res);
+    if (!data) {
+        return { info: false }
+    }
     const jdata = JSON.parse(data)
     const inactiveDate = new Date(jdata.inactiveDate);
     jdata.password = encrypt(jdata.password);
@@ -42,7 +45,7 @@ export const userSignUp = async (req, res) => {
         inactiveDate: inactiveDate,
     });
     if (userId === null) {
-        throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
+        return null
     }
     // 라이브러리 추가
     const library = await setLibrary({ userId });
