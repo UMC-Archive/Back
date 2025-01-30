@@ -151,7 +151,7 @@ export const getAlbumItunesAPI = async (artist_name, music_name) => {
 
   const data = {
     title: albumInfo.collectionName,
-    description: "none",
+    //description: "none",
     releaseTime: albumInfo.releaseDate,
     image: albumInfo.artworkUrl100,
   };
