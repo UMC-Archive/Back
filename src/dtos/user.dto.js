@@ -13,7 +13,6 @@ export const bodyToUser = (body) => {
     }
 };
 export const responseFromUser = ({ user, artists, genres, library }) => {
-    console.log(artists, genres)
     const artistPreferences = artists.map(
         (performance) => performance.artist.name
     );

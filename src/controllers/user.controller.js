@@ -33,18 +33,29 @@ export const handleUserSignUp = async (req, res, next) => {
     #swagger.requestBody = {
       required: true,
       content: {
-        "application/json": {
+        "multipart/form-data": {
           schema: {
             type: "object",
             properties: {
-              nickname: { type: "string", example: "닉네임" },
-              email: { type: "string", example: "example@email.com"},
-              password: { type: "string", example: "password"},
-              status: { type: "string", example: "active"},
-              socialType: { type: "string", example: "example"},
-              inactiveDate: { type: "string",  format: "date"  },
-              artists: {type: "array", items: { type: "number", example: 1} },
-              genres: { type: "array", items: { type: "number",example: 1} }
+              image: {
+                type: "string",
+                format: "binary",
+                description: "프로필 이미지 파일"
+              },
+              data: {
+                type: "object",
+                    properties: {
+                      nickname: { type: "string", example: "닉네임" },
+                      email: { type: "string", example: "email@email.com"},
+                      password: { type: "string", example: "password"},
+                      status: { type: "string", example: "active"},
+                      socialType: { type: "string", example: "local"},
+                      inactiveDate: { type: "string", format: "date" },
+                      artists: {type: "array", items: { type: "number", example: "1" } },
+                      genres: { type: "array", items: { type: "number", example: "1" } },
+                    },
+                    description: "사용자 정보(JSON 형태)"
+              }
             }
           }
         }
@@ -115,16 +126,18 @@ export const handleUserSignUp = async (req, res, next) => {
   */
   try {
     console.log("회원가입을 요청했습니다!");
-
     const user = await userSignUp(req, res);
-    if (user) {
-      res.send(response(status.SUCCESS, user));
-    }
-    else {
+    if (user === null) {
       res.send(response(status.EMAIL_ALREADY_EXIST, null));
     }
+    else if (user.info === false) {
+      res.send(response(status.MEMBER_NOT_FOUND, null));
+    }
+    else {
+      res.send(response(status.SUCCESS, user));
+    }
   } catch (err) {
-    res.send(response(status.EMAIL_ALREADY_EXIST, null));
+    //console.error(err)
   }
 };
 
@@ -307,12 +320,6 @@ export const handleUserInfo = async (req, res) => {
   /*
   #swagger.summary = '유저 정보 조회 API';
   #swagger.tags = ['User']
-  #swagger.parameters['id'] = {
-    in: 'path',
-    required: true,
-    description: '조회할 유저의 고유 ID',
-    schema: { type: 'string', example: '12345' }
-  };
   #swagger.responses[200] = {
     description: "유저 정보 조회 성공 응답",
     content: {
@@ -360,8 +367,10 @@ export const handleUserInfo = async (req, res) => {
 */
   try {
     console.log("유저 정보를 불러옵니다.");
+    console.log(req.get("Authorization"))
     const token = await checkFormat(req.get("Authorization"));
     console.log(req.userId);
+    console.log(token, ":test")
     if (token !== null) {
       // 토큰 이상없음
       res.send(response(status.SUCCESS, await userInfoService(req.userId)));

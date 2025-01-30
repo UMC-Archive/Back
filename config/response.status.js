@@ -48,7 +48,7 @@ export const status = {
     code: "COMMON005",
     message: "요청한 페이지를 찾을 수 없습니다. 관리자에게 문의 바랍니다.",
   },
-  AUTH_ERROR:{
+  AUTH_ERROR: {
     status: StatusCodes.AUTH_ERROR,
     isSuccess: false,
     code: "COMMON006",
@@ -80,7 +80,7 @@ export const status = {
     isSuccess: false,
     code: "MEMBER4006",
     message: "토큰의 형식이 올바르지 않습니다. 다시 확인해주세요.",
-},
+  },
   FILE_NOT_EXIST: {
     status: StatusCodes.BAD_REQUEST,
     isSuccess: false,
@@ -148,5 +148,12 @@ export const status = {
     isSuccess: false,
     code: "MUSIC4003",
     message: "아티스트가 존재하지 않습니다.",
+  },
+  //AWS err
+  IMAGE_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "AWS4001",
+    message: "이미지 파일이 존재하지 않습니다.",
   },
 };
