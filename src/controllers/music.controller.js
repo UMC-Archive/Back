@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import {} from "../dtos/music.dto.js";
+import { } from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -23,40 +23,43 @@ export const handleMusicNomination = async (req, res, next) => {
    #swagger.summary = '추천곡 조회 API';
    #swagger.tags = ['Music']
    #swagger.responses[200] = {
-     description: "추천곡 조회 성공 응답",
-     content: {
-       "application/json": {
-         schema: {
-           type: "object",
-           properties: {
-              isSuccess: { type: "boolean", example: true },
-              code: { type: "number", example: 200 },
-              message: { type: "string", example: "success!" },
-              result: {
-                type: "object",
-                properties: {
-                  musics: {
-                    type: "array", items: { 
-                      type: "object",  properties: {
-                      id: { type: "number", example: 1 },
-                      albumId: { type: "number", example: 1 },
-                      title: { type: "string", example: "Celebrity" },
-                      releseTime : { type: "string", format: "date", example: "2021-03-25" },
-                      lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
-                      image: { type: "string", example: "https://example.com/music_image.jpg" },
-                      music: { type: "string", example: "https://example.com/preview_music.m4a"},
-                      createdAt : { type: "string", format: "date", example: "2025-01-01" },
-                      updatedAt : { type: "string", format: "date", example: "2025-01-01" }
-                    }
+  description: "추천곡 조회 성공 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: true },
+          code: { type: "string", example: "200" },
+          message: { type: "string", example: "success!" },
+          result: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    albumId: { type: "string", example: "1" },
+                    title: { type: "string", example: "Love poem" },
+                    releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                    lyrics: { type: "string", example: "가사" },
+                    image: { type: "string", example: "https://image.png" },
+                    music: { type: "string", example: "https://music.m4a" },
+                    createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                    updatedAt: { type: "string", format: "date", example: "2025-01-01" }
                   }
-                } 
+                },
+                artist: { type: "string", example: "IU" }
               }
-             } 
-           }
-         }
-       }
-     }
-   };
+            }
+          }
+        }
+      }
+    }
+  }
+};
    #swagger.responses[400] = {
       description: "추천곡 조회 실패 응답",
       content: {
@@ -88,37 +91,40 @@ export const handleAlbumNomination = async (req, res, next) => {
    #swagger.summary = '당신을 위한 앨범 추천 조회 API';
    #swagger.tags = ['Music']
    #swagger.responses[200] = {
-     description: "당신을 위한 앨범 추천 조회 성공 응답",
-     content: {
-       "application/json": {
-         schema: {
-           type: "object",
-           properties: {
-              isSuccess: { type: "boolean", example: true },
-              code: { type: "number", example: 200 },
-              message: { type: "string", example: "success!" },
-              result: {
-                type: "object",
-                properties: {
-                  albums: {
-                    type: "array", items: { 
-                      type: "object",  properties: {
-                        id: { type: "number", example: 1 },
-                        title: { type: "string", example: "IU 5th Album 'LILAC'" },
-                        releseTime : { type: "string", format: "date", example: "2021-03-25" },
-                        image: { type: "string", example: "https://example.com/album_image.jpg" },
-                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
-                        updatedAt : { type: "string", format: "date", example: "2025-01-01" }
-                      }
-                    }
+  description: "당신을 위한 앨범 추천 조회 성공 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: true },
+          code: { type: "string", example: "200" },
+          message: { type: "string", example: "success!" },
+          result: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                album: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    title: { type: "string", example: "Love poem" },
+                    releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                    image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/28db3fdca036fb53c62754694a89d3fd.jpg" },
+                    createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                    updatedAt: { type: "string", format: "date", example: "2025-01-01" }
                   }
-                }
-              } 
-           }
-         }
-       }
-     }
-   };
+                },
+                artist: { type: "string", example: "IU" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
    #swagger.responses[400] = {
      description: "앨범 정보를 찾을 수 없음",
      content: {
@@ -608,21 +614,16 @@ export const handleAlbumCuration = async (req, res, next) => {
           type: "object",
           properties: {
              isSuccess: { type: "boolean", example: true },
-             code: { type: "number", example: 200 },
+             code: { type: "string", example: "200" },
              message: { type: "string", example: "success!" },
              result: {
-               type: "array",
-               items: {
-                 musics: {
-                   type: "object", properties: { 
-                     id: { type: "number", example: 1 },
-                     albumId: { type: "number", example: 1 },
-                     description: { type: "string", example: "앨범 소개" },
-                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
-                     updatedAt : { type: "string", format: "date", example: "2025-01-01" }
-                   }
-                 }
-               } 
+               type: "object",
+               properties: {
+                id: { type: "string", example: "1" },
+                albumId: { type: "string", example: "1" },
+                description: { type: "string", example: "앨범 소개" },
+                createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                updatedAt : { type: "string", format: "date", example: "2025-01-01" }
              }
             } 
           }
@@ -668,22 +669,16 @@ export const handleArtistCuration = async (req, res, next) => {
           type: "object",
           properties: {
              isSuccess: { type: "boolean", example: true },
-             code: { type: "number", example: 200 },
+             code: { type: "string", example: "200" },
              message: { type: "string", example: "success!" },
              result: {
                type: "object",
                properties: {
-                 musics: {
-                   type: "array", items: { 
-                     type: "object",  properties: {
-                     id: { type: "number", example: 1 },
-                     artistId: { type: "number", example: 1 },
-                     description: { type: "string", example: "아티스트 소개" },
-                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
-                     updatedAt : { type: "string", format: "date", example: "2025-01-01" }
-                   }
-                 }
-               } 
+                id: { type: "string", example: "1" },
+                artistId: { type: "string", example: "1" },
+                description: { type: "string", example: "아티스트 소개" },
+                createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                updatedAt : { type: "string", format: "date", example: "2025-01-01" }
              }
             } 
           }

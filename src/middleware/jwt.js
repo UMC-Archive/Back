@@ -9,7 +9,7 @@ export const createJwt = (req) => {
 		issuer: "ArchiveAPIServer",
 	};
 	const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
-		expiresIn: "20m", // 4시간(임시임)
+		expiresIn: "4h", // 4시간(임시임)
 	});
 	return token;
 };
