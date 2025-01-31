@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
 export const status = {
-
   // success
   SUCCESS: {
     status: StatusCodes.OK,
@@ -52,7 +51,7 @@ export const status = {
     status: StatusCodes.AUTH_ERROR,
     isSuccess: false,
     code: "COMMON006",
-    message: "인증번호가 잘못되었습니다. 다시 확인해 주세요."
+    message: "인증번호가 잘못되었습니다. 다시 확인해 주세요.",
   },
 
   // member err
@@ -128,7 +127,6 @@ export const status = {
     code: "SIGNIN4005",
     message: "유효하지 않은 토큰입니다.",
   },
-
 
   //music err
   MUSIC_NOT_EXIST: {

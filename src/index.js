@@ -29,6 +29,7 @@ import {
   handleAlbumCuration,
   handleArtistCuration,
 } from "./controllers/music.controller.js";
+import { handleLibraryMusic } from "./controllers/library.controller.js";
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -145,7 +146,7 @@ app.post("/users/play", handleUserPlay);
 app.get("/music/year/nomination", handleMusicNomination);
 //당신을 위한 앨범 추천(연도)
 app.get("/album/year/nomination", handleAlbumNomination);
-// 추천곡(일반)
+//추천곡(일반)
 app.get("/music/nomination", handleCommonMusicNomination);
 //숨겨진 명곡
 app.get("/music/hidden", handleMusicHidden);
@@ -159,6 +160,8 @@ app.post("/music/artist", handleMusicArtistInfo);
 app.post("/music/album/:album_id/curation", handleAlbumCuration);
 //아티스트 큐레이션
 app.post("/music/artist/:artist_id/curation", handleArtistCuration);
+//보관함 노래 조회
+app.get("/library/music", handleLibraryMusic);
 //--------------------------------
 
 app.use((err, req, res, next) => {
