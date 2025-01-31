@@ -1,4 +1,7 @@
-import { listLibraryMusics } from "../services/library.service.js";
+import {
+  listLibraryMusics,
+  listLibraryArtists,
+} from "../services/library.service.js";
 
 export const handleLibraryMusic = async (req, res, next) => {
   /*
@@ -67,10 +70,84 @@ export const handleLibraryMusic = async (req, res, next) => {
   try {
     console.log("보관함 음악 조회를 요청했습니다!");
     const musics = await listLibraryMusics(req.userId);
-    console.log("musics:", JSON.stringify(musics, null, 2));
-
     const statusCode = musics.isSuccess ? 200 : "SIGNIN4002" ? 404 : 500;
     return res.status(statusCode).json(musics);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const handleLibraryArtist = async (req, res, next) => {
+  /*
+  #swagger.summary = '보관함 아티스트 조회 API'
+  #swagger.tags = ['Library']
+  #swagger.security = [{
+     "Bearer": []
+  }]
+  #swagger.responses[200] = {
+    description: "보관함 아티스트 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", example: "Creed" },
+                  image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png" }
+                }
+              },
+              description: "사용자가 보관함에 아티스트를 추가하지 않았을 경우 null"
+            }
+          }
+        }
+      }
+    }
+  }
+  #swagger.responses[400] = {
+    description: "보관함 아티스트 조회 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "SIGNIN4002" },
+            message: { type: "string", example: "아이디를 찾을 수 없습니다." },
+            result: { type: "null", example: null }
+          }
+        }
+      }
+    }
+  }
+  #swagger.responses[500] = {
+    description: "서버 에러",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "COMMON000" },
+            message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
+            result: { type: "null", example: null }
+          }
+        }
+      }
+    }
+  }
+*/
+  try {
+    console.log("보관함 아티스트 조회를 요청했습니다!");
+    const artists = await listLibraryArtists(req.userId);
+    const statusCode = artists.isSuccess ? 200 : "SIGNIN4002" ? 400 : 500;
+    return res.status(statusCode).json(artists);
   } catch (err) {
     next(err);
   }

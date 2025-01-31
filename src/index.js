@@ -29,7 +29,10 @@ import {
   handleAlbumCuration,
   handleArtistCuration,
 } from "./controllers/music.controller.js";
-import { handleLibraryMusic } from "./controllers/library.controller.js";
+import {
+  handleLibraryMusic,
+  handleLibraryArtist,
+} from "./controllers/library.controller.js";
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -162,6 +165,8 @@ app.post("/music/album/:album_id/curation", handleAlbumCuration);
 app.post("/music/artist/:artist_id/curation", handleArtistCuration);
 //보관함 노래 조회
 app.get("/library/music", handleLibraryMusic);
+//보관함 아티스트 조회
+app.get("/library/artist", handleLibraryArtist);
 //--------------------------------
 
 app.use((err, req, res, next) => {
