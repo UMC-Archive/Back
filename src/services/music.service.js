@@ -5,7 +5,6 @@ import {
   responseFromAlbum,
   responseFromMusic,
   responseFromHiddenMusics,
-  responseFromGenres,
   responseFromSpecificArtist,
   responseFromAllArtists,
 } from "../dtos/music.dto.js";
@@ -29,7 +28,6 @@ import {
   addMusicGenre,
   getUserHistory,
   getUserArtistPrefers,
-  getAllStoreGenres,
   getSpecificArtistAPI,
   getallArtistsAPI,
   getSimMusicsAPI,
@@ -45,12 +43,8 @@ import {
   getGenreImage,
   setGenreImage,
 } from "../repositories/music.repository.js";
-import {
-  recommandArtist,
-} from "../middleware/gpt.js"
-import {
-  getGenrePngFiles,
-} from "../repositories/s3.repository.js"
+import { recommandArtist } from "../middleware/gpt.js";
+import { getGenrePngFiles } from "../repositories/s3.repository.js";
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
   const preferArtists = await getUserArtistPrefers(user_id);
@@ -89,7 +83,9 @@ export const listNominationAlbum = async (user_id) => {
 //숨겨진 명곡
 export const listHiddenMusics = async (user_id) => {
   const date = await getUserHistory(user_id);
-  const billboardTop10 = await getBillboardAPI(date[0].history.toISOString().split('T')[0]);
+  const billboardTop10 = await getBillboardAPI(
+    date[0].history.toISOString().split("T")[0]
+  );
   const { titles, artists } = await extractBillboard(billboardTop10);
   const musics = await Promise.all(
     artists.map((artist, i) => listMusic(artist, titles[i]))
@@ -129,7 +125,6 @@ const listAlbumSearch = async (music_name, artist_name) => {
   const albumApi = await getAlbumItunesAPI(music_name, artist_name);
 
   if (albumApi) {
-
     const albumName = albumApi.title;
     let album = {};
     album = await getAlbumDB(albumName);
@@ -137,8 +132,7 @@ const listAlbumSearch = async (music_name, artist_name) => {
       let apiInfo = await getAlbumAPI(artist_name, albumName);
       if (apiInfo) {
         album = await addAlbum(apiInfo);
-      }
-      else {
+      } else {
         album = await addAlbum(albumApi);
       }
     }
@@ -173,20 +167,6 @@ export const listArtist = async (artist_name) => {
   const artist = await addArtist(apiInfo);
 
   return responseFromArtist(artist);
-};
-
-export const listGenre = async () => {
-  try {
-    const genres = await getAllStoreGenres();
-
-    if (!genres || genres.length === 0) {
-      return response(status.BAD_REQUEST, null);
-    }
-
-    return response(status.SUCCESS, responseFromGenres(genres));
-  } catch (error) {
-    return response(status.INTERNAL_SERVER_ERROR, null);
-  }
 };
 
 // 검색한 특정 아티스트 정보 가져오기
@@ -234,7 +214,7 @@ export const albumCuration = async (album_id) => {
     return null;
   }
   return albumCuration;
-}
+};
 //아티스트 큐레이션
 export const artistCuration = async (artist_id) => {
   let artistCuration = await getArtistCuration(artist_id);
@@ -275,7 +255,8 @@ export const genreImage = async () => {
         };
         let genreImage = await getGenreImage(data);
         if (!genreImage) genreImage = await setGenreImage(data);
-        if (index === randomIndex) genreImages.push({ name: genreDB.name, image: genreImage.image }); // 출력 되는 값 지정
+        if (index === randomIndex)
+          genreImages.push({ name: genreDB.name, image: genreImage.image }); // 출력 되는 값 지정
       })
     );
   }

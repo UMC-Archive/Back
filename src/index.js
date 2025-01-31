@@ -129,7 +129,7 @@ app.get("/users/signup/email/send-verification-code", sendEmail);
 app.post("/users/signup/email/check-verification-code", checkVerification);
 
 // 장르 정보 조회
-app.get("/music/genre/info", handleMusicGenreInfo);
+app.get("/music/genre/info", handleGenreImage);
 // 아티스트 정보 조회
 app.get("/music/artist/info", handleArtistsInfo);
 
@@ -145,7 +145,6 @@ app.post("/users/artist", handleUserArtist);
 //app.post("/users/profile", handleUserProfile); // 회원가입이랑 통합으로 미사용
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
-
 
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);
@@ -165,8 +164,6 @@ app.post("/music/artist", handleMusicArtistInfo);
 app.post("/music/album/:album_id/curation", handleAlbumCuration);
 //아티스트 큐레이션
 app.post("/music/artist/:artist_id/curation", handleArtistCuration);
-//장르 이미지 가져오기
-app.post("/music/genre/image", handleGenreImage);
 //보관함 노래 조회
 app.get("/library/music", handleLibraryMusic);
 //보관함 아티스트 조회

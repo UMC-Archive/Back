@@ -23,17 +23,6 @@ export const responseFromHiddenMusics = (data) => {
   return combined;
 };
 
-export const responseFromGenres = (genres) => {
-  // 입력값을 항상 배열로 처리
-  const genreArray = Array.isArray(genres) ? genres : [genres];
-
-  return genreArray.map((genre) => ({
-    id: genre.id,
-    name: genre.name,
-    image: genre.image,
-  }));
-};
-
 export const responseFromSpecificArtist = (artist) => {
   return artist;
 };

@@ -16,7 +16,7 @@ import { prisma } from "../db.config.js";
 import lrclib from "lrclib-api";
 import { billboard } from "../billboard.js";
 import { getAlbumItunes, getAlbumItunesEntity } from "../itunes.js";
-import { recommandCuration } from "../middleware/gpt.js"
+import { recommandCuration } from "../middleware/gpt.js";
 //당신을 위한 앨범 추천(연도)
 export const getUserHistory = async (user_id) => {
   const userHistory = prisma.timeHistory.findMany({
@@ -130,20 +130,30 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   );
   //const description = await recommandCuration(`${artist_name} ${album_name}`) //앨범과 큐레이션 분리
   if (!albumInfo && !albumItunes) {
-    return null
+    return null;
   }
   let image;
   if (albumInfo) {
-    image = albumInfo.image[4]["#text"]
+    image = albumInfo.image[4]["#text"];
     if (albumInfo == "") {
       image = null;
     }
   }
   const data = {
-    title: albumInfo ? albumInfo.name : albumItunes ? albumItunes.collectionName : album_name,
+    title: albumInfo
+      ? albumInfo.name
+      : albumItunes
+      ? albumItunes.collectionName
+      : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
-      albumInfo ? albumInfo.wiki ? albumInfo.wiki.published : albumItunes ? albumItunes.releaseDate : "1970-01-01" : "1970-01-01"
+      albumInfo
+        ? albumInfo.wiki
+          ? albumInfo.wiki.published
+          : albumItunes
+          ? albumItunes.releaseDate
+          : "1970-01-01"
+        : "1970-01-01"
     ),
     image: albumInfo ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
   };
@@ -193,14 +203,9 @@ export const addArtist = async (artist) => {
   const data = {
     name: artist.name,
     image: artist.image,
-  }
+  };
   const created = await prisma.artist.create({ data: data });
   return created;
-};
-
-export const getAllStoreGenres = async () => {
-  const genres = await prisma.genre.findMany();
-  return genres;
 };
 
 export const getSpecificArtistAPI = async (artist_name) => {
@@ -280,79 +285,84 @@ export const getSimArtistsAPI = async (artist_name) => {
 export const getAlbumById = async (album_id) => {
   const album = await prisma.album.findFirst({ where: { id: album_id } });
   return album;
-}
+};
 export const getArtistByAlbum = async (album) => {
   let albumApi = await getAlbumSearch(album.title);
   let artist;
   if (albumApi) {
     artist = albumApi.trackmatches.track[0].artist;
-  }
-  else {
+  } else {
     albumApi = await getAlbumItunesEntity(album.title, "", "album");
-    artist = albumApi.artistName
+    artist = albumApi.artistName;
   }
   return artist;
-}
+};
 //앨범 큐레이션 얻기
 export const getAlbumCuration = async (album_id) => {
-  const albumCuration = await prisma.albumCuration.findFirst({ where: { albumId: album_id } })
+  const albumCuration = await prisma.albumCuration.findFirst({
+    where: { albumId: album_id },
+  });
   return albumCuration;
-}
+};
 
 //앨범 큐레이션 생성
 export const setAlbumCuration = async (album_id, album_name, artistName) => {
-  const description = await recommandCuration(`${artistName} ${album_name}`)
+  const description = await recommandCuration(`${artistName} ${album_name}`);
   const data = {
     albumId: album_id,
     description: description,
-  }
+  };
   const created = await prisma.albumCuration.create({ data: data });
   return created;
-}
+};
 //아티스트 큐레이션
 //아티스트 정보 얻기
 export const getArtistById = async (artist_id) => {
   const artist = await prisma.artist.findFirst({ where: { id: artist_id } });
   return artist;
-}
+};
 //아티스트 큐레이션 얻기
 export const getArtistCuration = async (artist_id) => {
-  const artistCuration = await prisma.artistCuration.findFirst({ where: { artistId: artist_id } })
+  const artistCuration = await prisma.artistCuration.findFirst({
+    where: { artistId: artist_id },
+  });
   return artistCuration;
-}
+};
 
 //아티스트 큐레이션 생성
 export const setArtistCuration = async (artist_id, artist_name) => {
-  const description = await recommandCuration(artist_name)
+  const description = await recommandCuration(artist_name);
   const data = {
     artistId: artist_id,
     description: description,
-  }
+  };
   const created = await prisma.artistCuration.create({ data: data });
   return created;
-}
+};
 
 //장르 이미지 가져오기
 //장르 얻기
 export const getGenreIdByName = async (name) => {
   const genre = await prisma.genre.findFirst({ where: { name: name } });
   return genre;
-}
+};
 //장르 생성
 export const setGenre = async (name) => {
   const data = {
-    name: name
-  }
+    name: name,
+  };
   const genre = await prisma.genre.create({ data: data });
-  return genre
-}
+  return genre;
+};
 //장르 이미지 얻기
 export const getGenreImage = async (data) => {
-  const genreImage = await prisma.genreImage.findFirst({ where: { genreId: data.genreId, image: data.image } });
+  const genreImage = await prisma.genreImage.findFirst({
+    where: { genreId: data.genreId, image: data.image },
+  });
   return genreImage;
-}
+};
 //장르 이미지 생성
 export const setGenreImage = async (data) => {
   const genre = await prisma.genreImage.create({ data: data });
-  return genre
-}
+  return genre;
+};
