@@ -13,3 +13,12 @@ export const responseFromAllArtists = (artists) => {
     image: data.artist.image,
   }));
 };
+
+export const responseFromAllAlbums = (albums) => {
+  console.log("dto albums : " + JSON.stringify(albums, null, 2));
+  return albums.map((data) => ({
+    title: data.album.title,
+    image: data.album.image,
+    artist: data.album.Musics[0].MusicArtists[0].artist.name,
+  }));
+};
