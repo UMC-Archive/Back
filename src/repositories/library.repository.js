@@ -50,7 +50,7 @@ export const getLibraryArtists = async (userId) => {
     const library = await prisma.library.findFirst({
       where: { userId: userId },
     });
-    console.log("library : " + JSON.stringify(library, null, 2));
+
     if (!library) {
       return null;
     }
@@ -69,12 +69,57 @@ export const getLibraryArtists = async (userId) => {
       },
     });
 
-    console.log("artists : " + JSON.stringify(artists, null, 2));
     if (!artists) {
       return null;
     }
 
     return artists;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getLibraryAlbums = async (userId) => {
+  try {
+    const library = await prisma.library.findFirst({
+      where: { userId: userId },
+    });
+    console.log("library : " + JSON.stringify(library, null, 2));
+
+    if (!library) {
+      return null;
+    }
+
+    const albums = await prisma.libraryAlbum.findMany({
+      where: { libraryId: library.id },
+      select: {
+        album: {
+          select: {
+            title: true,
+            image: true,
+            Musics: {
+              select: {
+                MusicArtists: {
+                  select: {
+                    artist: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!albums) {
+      return null;
+    }
+
+    return albums;
   } catch (err) {
     console.log(err);
     next(err);
