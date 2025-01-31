@@ -39,11 +39,18 @@ import {
   setArtistCuration,
   getArtistById,
   getAlbumById,
-  getArtistByAlbum
+  getArtistByAlbum,
+  getGenreIdByName,
+  setGenre,
+  getGenreImage,
+  setGenreImage,
 } from "../repositories/music.repository.js";
 import {
   recommandArtist,
 } from "../middleware/gpt.js"
+import {
+  getGenrePngFiles,
+} from "../repositories/s3.repository.js"
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
   const preferArtists = await getUserArtistPrefers(user_id);
@@ -245,3 +252,32 @@ export const artistCuration = async (artist_id) => {
   return artistCuration;
 };
 
+//장르 이미지 가져오기
+export const genreImage = async () => {
+  // AWS S3에서 genre/ 값 불러오기
+  const genres = await getGenrePngFiles();
+  const genreImages = [];
+
+  for (const genre in genres) {
+    // 장르 정보 DB에서 찾기
+    let genreDB = await getGenreIdByName(genre);
+
+    // DB에 없는 값은 장르 추가
+    if (!genreDB) genreDB = await setGenre(genre);
+    const randomIndex = Math.floor(Math.random() * 3); // 3개의 사진 중 1개 선택하기 위한 랜덤 값
+
+    // 장르 이미지 값 저장 및 불러오기
+    await Promise.all(
+      genres[genre].map(async (image, index) => {
+        const data = {
+          genreId: genreDB.id,
+          image: image.url,
+        };
+        let genreImage = await getGenreImage(data);
+        if (!genreImage) genreImage = await setGenreImage(data);
+        if (index === randomIndex) genreImages.push({ name: genreDB.name, image: genreImage.image }); // 출력 되는 값 지정
+      })
+    );
+  }
+  return genreImages;
+};

@@ -332,3 +332,27 @@ export const setArtistCuration = async (artist_id, artist_name) => {
   return created;
 }
 
+//장르 이미지 가져오기
+//장르 얻기
+export const getGenreIdByName = async (name) => {
+  const genre = await prisma.genre.findFirst({ where: { name: name } });
+  return genre;
+}
+//장르 생성
+export const setGenre = async (name) => {
+  const data = {
+    name: name
+  }
+  const genre = await prisma.genre.create({ data: data });
+  return genre
+}
+//장르 이미지 얻기
+export const getGenreImage = async (data) => {
+  const genreImage = await prisma.genreImage.findFirst({ where: { genreId: data.genreId, image: data.image } });
+  return genreImage;
+}
+//장르 이미지 생성
+export const setGenreImage = async (data) => {
+  const genre = await prisma.genreImage.create({ data: data });
+  return genre
+}
