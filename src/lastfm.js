@@ -115,3 +115,81 @@ export const getGenreArtist = async (genre) => {
     });
   });
 };
+
+export const getSimMusics = (music_name, artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.track.getSimilar(
+      {
+        artist: artist_name,
+        track: music_name,
+        limit: 50,
+        autocorrect: 1,
+      },
+      (err, data) => {
+        if (err) {
+          resolve(null);
+        }
+
+        console.log(data);
+        const tracks = data?.track;
+        const results = tracks.map((track) => ({
+          name: track.name,
+          artist: track.artist.name,
+          image: track.image?.[2]?.["#text"],
+        }));
+
+        resolve(results);
+      }
+    );
+  });
+};
+
+export const getPublishedYear = (music_name, artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.track.getInfo(
+      { artist: artist_name, track: music_name },
+      (err, data) => {
+        if (err) {
+          resolve(null);
+        }
+
+        const published = data?.wiki?.published;
+        resolve(published);
+      }
+    );
+  });
+};
+
+export const getSimArtists = (artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getSimilar({ artist: artist_name, limit: 1 }, (err, data) => {
+      if (err) {
+        resolve(null);
+      }
+
+      const artist = data?.artist?.[0];
+      const result = { name: artist.name };
+
+      resolve(result);
+    });
+  });
+};
+
+export const getArtistTopTrack = (artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopTracks(
+      { artist: artist_name, limit: 1 },
+      (err, data) => {
+        if (err) {
+          console.log("error", err);
+          resolve(null);
+          return;
+        }
+        console.log(data);
+        const result = data.track[0].name;
+        console.log(result.name);
+        resolve(result);
+      }
+    );
+  });
+};

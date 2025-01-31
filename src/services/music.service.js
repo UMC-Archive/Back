@@ -32,6 +32,7 @@ import {
   getAllStoreGenres,
   getSpecificArtistAPI,
   getallArtistsAPI,
+  getSimMusicsAPI,
   getAlbumCuration,
   setAlbumCuration,
   getArtistCuration,
@@ -211,6 +212,15 @@ export const listAllArtistInfo = async (user_id) => {
     return response(status.INTERNAL_SERVER_ERROR, null);
   }
 };
+
+export const listNomMusics = async (music_name, artist_name) => {
+  const tracks = await getSimMusicsAPI(music_name, artist_name);
+
+  const shuffledTracks = tracks.sort(() => Math.random() - 0.5).slice(1, 11);
+
+  return { shuffledTracks };
+};
+
 //앨범 큐레이션
 export const albumCuration = async (album_id) => {
   const album = await getAlbumById(album_id);
