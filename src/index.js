@@ -14,7 +14,7 @@ import {
   handleUserGenre,
   handleUserArtist,
   handleUserProfile,
-  handleUserPlay
+  handleUserPlay,
 } from "./controllers/user.controller.js";
 import {
   handleMusicNomination,
@@ -27,6 +27,7 @@ import {
   handleArtistsInfo,
   handleAlbumCuration,
   handleArtistCuration,
+  handleGenreImage,
 } from "./controllers/music.controller.js";
 
 BigInt.prototype.toJSON = function () {
@@ -140,6 +141,7 @@ app.post("/users/artist", handleUserArtist);
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
 
+
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);
 //당신을 위한 앨범 추천(연도)
@@ -156,6 +158,8 @@ app.post("/music/artist", handleMusicArtistInfo);
 app.post("/music/album/:album_id/curation", handleAlbumCuration);
 //아티스트 큐레이션
 app.post("/music/artist/:artist_id/curation", handleArtistCuration);
+//장르 이미지 가져오기
+app.post("/music/genre/image", handleGenreImage);
 //--------------------------------
 
 app.use((err, req, res, next) => {

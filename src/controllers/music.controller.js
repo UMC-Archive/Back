@@ -14,6 +14,7 @@ import {
   listAllArtistInfo,
   albumCuration,
   artistCuration,
+  genreImage,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -686,5 +687,19 @@ export const handleArtistCuration = async (req, res, next) => {
     res.send(response(status.SUCCESS, artist));
   } catch (err) {
     res.send(response(BaseError));
+  }
+};
+
+export const handleGenreImage = async (req, res, next) => {
+  try {
+    const urls = await genreImage();
+    if (urls) {
+      res.send(response(status.SUCCESS, urls));
+    }
+    else {
+      console.log(urls)
+    }
+  } catch (err) {
+    console.error(err)
   }
 };
