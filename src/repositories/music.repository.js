@@ -3,6 +3,7 @@ import {
   getAlbumInfo,
   getMusicInfo,
   getMusicSearch,
+  getArtistSearch,
   getAlbumSearch,
   searchArtist,
   getGenreArtist,
@@ -15,6 +16,7 @@ import { getTrackReleaseYear } from "../itunes.js";
 import { prisma } from "../db.config.js";
 import lrclib from "lrclib-api";
 import { billboard } from "../billboard.js";
+import { spotify } from "../spotify.js";
 import { getAlbumItunes, getAlbumItunesEntity } from "../itunes.js";
 import { recommandCuration } from "../middleware/gpt.js";
 //당신을 위한 앨범 추천(연도)
@@ -143,16 +145,16 @@ export const getAlbumAPI = async (artist_name, album_name) => {
     title: albumInfo
       ? albumInfo.name
       : albumItunes
-      ? albumItunes.collectionName
-      : album_name,
+        ? albumItunes.collectionName
+        : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo
         ? albumInfo.wiki
           ? albumInfo.wiki.published
           : albumItunes
-          ? albumItunes.releaseDate
-          : "1970-01-01"
+            ? albumItunes.releaseDate
+            : "1970-01-01"
         : "1970-01-01"
     ),
     image: albumInfo ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
@@ -191,9 +193,16 @@ export const getArtistDB = async (artist_name) => {
 //lastfm에서 정보 가저오기
 export const getArtistAPI = async (artist_name) => {
   const artistInfo = await getArtistInfo(artist_name);
+  const image = await spotify({
+    q: artist_name,
+    type: 'artists',
+    offset: '0',
+    limit: '1',
+    numberOfTopResults: '1'
+  }, "search");
   const data = {
     name: artistInfo.name,
-    image: artistInfo.image[4]["#text"],
+    image: image ? image.artists.items[0].data.visuals.avatarImage.sources[0].url : artistInfo.image[4]["#text"],
   };
   return data;
 };

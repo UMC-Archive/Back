@@ -10,7 +10,7 @@ export const billboard = (path, date, range) => {
                 range: range
             },
             headers: {
-                'x-rapidapi-key': process.env.BILLBOARD_API_KEY,
+                'x-rapidapi-key': process.env.RAPID_API_KEY,
                 'x-rapidapi-host': process.env.BILLBOARD_API_HOST
             }
         };
