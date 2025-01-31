@@ -11,8 +11,16 @@ export const responseFromMusic = (music) => {
   return music;
 };
 
-export const responseFromHiddenMusics = (musics) => {
-  return musics;
+export const responseFromHiddenMusics = (data) => {
+  const combined = [];
+  const length = Math.min(data.musics.length, data.artists.length);
+  for (let i = 0; i < length; i++) {
+    combined.push({
+      music: data.musics[i],
+      artist: data.artists[i],
+    });
+  }
+  return combined;
 };
 
 export const responseFromGenres = (genres) => {

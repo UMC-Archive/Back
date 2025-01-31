@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
+import { verify } from "../src/middleware/jwt.js";
 import {
   handleUserSignUp,
   handleLogin,
@@ -25,6 +26,8 @@ import {
   handleMusicGenreInfo,
   handleArtistsInfo,
   handleCommonMusicNomination,
+  handleAlbumCuration,
+  handleArtistCuration,
 } from "./controllers/music.controller.js";
 
 BigInt.prototype.toJSON = function () {
@@ -71,6 +74,21 @@ app.get("/openapi.json", async (req, res, next) => {
       description: "UMC 7th Node.js 테스트 프로젝트입니다.",
     },
     host: `${protocol}://${host}`,
+    components: {
+      securitySchemes: {
+        Bearer: {
+          type: "apiKey",
+          in: "header",
+          name: "Authorization", // Authorization 헤더로 전달
+          description: "Bearer token을 사용한 인증",
+        },
+      },
+    },
+    security: [
+      {
+        Bearer: [], // 기본적으로 Bearer 인증을 적용
+      },
+    ],
   };
 
   const result = await swaggerAutogen(options)(outputFile, routes, doc);
@@ -94,14 +112,16 @@ app.use((req, res, next) => {
 app.get("/", (req, res, next) => {
   res.send("Hello World!");
 });
+
+app.use(verify);
 //회원 가입
 app.post("/users/signup", handleUserSignUp);
 //로그인
 app.post("/users/login", handleLogin);
 //이메일 인증 전송
-app.get("/signup/email/send-verification-code", sendEmail);
+app.get("/users/signup/email/send-verification-code", sendEmail);
 //이메일 인증 확인
-app.post("/signup/email/check-verification-code", checkVerification);
+app.post("/users/signup/email/check-verification-code", checkVerification);
 
 // 장르 정보 조회
 app.get("/music/genre/info", handleMusicGenreInfo);
@@ -109,7 +129,7 @@ app.get("/music/genre/info", handleMusicGenreInfo);
 app.get("/music/artist/info", handleArtistsInfo);
 
 //유저 정보를 불러오는 api
-app.get("/users/info/:id", handleUserInfo);
+app.get("/users/info", handleUserInfo);
 //유저 프로필 사진 변경
 app.post("/users/profile_image", handleUserChangeImage);
 // 유저의 장르 선택/수정 하는 api
@@ -117,7 +137,7 @@ app.post("/users/genre", handleUserGenre);
 // 유저의 아티스트 선택/수정 하는 api
 app.post("/users/artist", handleUserArtist);
 // 유저의 사진을 업로드 하는 api
-app.post("/users/profile", handleUserProfile);
+//app.post("/users/profile", handleUserProfile); // 회원가입이랑 통합으로 미사용
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
 
@@ -135,7 +155,10 @@ app.post("/music", handleMusicInfo);
 app.post("/music/album", handleMusicAlbumInfo);
 //아티스트 정보 가져오기
 app.post("/music/artist", handleMusicArtistInfo);
-
+//앨범 큐레이션
+app.post("/music/album/:album_id/curation", handleAlbumCuration);
+//아티스트 큐레이션
+app.post("/music/artist/:artist_id/curation", handleArtistCuration);
 //--------------------------------
 
 app.use((err, req, res, next) => {

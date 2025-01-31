@@ -1,6 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
+import { checkFormat } from "../middleware/jwt.js";
+import { BaseError } from "../errors.js";
 import {
   bodyToUser,
   loginRequestDTO,
@@ -31,20 +33,29 @@ export const handleUserSignUp = async (req, res, next) => {
     #swagger.requestBody = {
       required: true,
       content: {
-        "application/json": {
+        "multipart/form-data": {
           schema: {
             type: "object",
             properties: {
-              name: { type: "string", example: "이름" },
-              nickname: { type: "string", example: "닉네임" },
-              email: { type: "string", example: "example@email.com"},
-              password: { type: "string", example: "password"},
-              profileImage: { type: "string", example: "image.jpg"},
-              status: { type: "string", example: "active"},
-              socialType: { type: "string", example: "example"},
-              inactiveDate: { type: "string",  format: "date"  },
-              artists: {type: "array", items: { type: "number", example: 1} },
-              genres: { type: "array", items: { type: "number",example: 1} }
+              image: {
+                type: "string",
+                format: "binary",
+                description: "프로필 이미지 파일"
+              },
+              data: {
+                type: "object",
+                    properties: {
+                      nickname: { type: "string", example: "닉네임" },
+                      email: { type: "string", example: "email@email.com"},
+                      password: { type: "string", example: "password"},
+                      status: { type: "string", example: "active"},
+                      socialType: { type: "string", example: "local"},
+                      inactiveDate: { type: "string", format: "date" },
+                      artists: {type: "array", items: { type: "number", example: "1" } },
+                      genres: { type: "array", items: { type: "number", example: "1" } },
+                    },
+                    description: "사용자 정보(JSON 형태)"
+              }
             }
           }
         }
@@ -67,7 +78,6 @@ export const handleUserSignUp = async (req, res, next) => {
                     type: "object",
                     properties: {
                       id: { type: "string", example: "1"},
-                      name: { type: "string", example:"이름" },
                       nickname: { type: "string", example: "닉네임" },
                       email: { type: "string", example: "example@gmail.com"},
                       password: { type: "string", example: "$2b$10$o8SHav4KiPRDtC0XEMyKm.EqVSZmALYfCH2lrrDaWqeR33j37vmoC"},
@@ -116,22 +126,41 @@ export const handleUserSignUp = async (req, res, next) => {
   */
   try {
     console.log("회원가입을 요청했습니다!");
-    console.log("body:", req.body);
-
-    const user = await userSignUp(bodyToUser(req.body));
-    if (user) {
-      res.send(response(status.SUCCESS, user));
-    }
-    else {
+    const user = await userSignUp(req, res);
+    if (user === null) {
       res.send(response(status.EMAIL_ALREADY_EXIST, null));
     }
+    else if (user.info === false) {
+      res.send(response(status.MEMBER_NOT_FOUND, null));
+    }
+    else {
+      res.send(response(status.SUCCESS, user));
+    }
   } catch (err) {
-    res.send(response(status.EMAIL_ALREADY_EXIST, null));
+    //console.error(err)
   }
 };
 
 // 로그인
 export const handleLogin = async (req, res, next) => {
+  /*
+  #swagger.summary = '로그인 API';
+  #swagger.tags = ['User']
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            email: { type: "string", example: "example@email.com" },
+            password: { type: "string", example: "password" },
+          }
+        }
+      }
+    }
+  };
+  */
   try {
     console.log("로그인");
     const result = await loginService(loginRequestDTO(req.body));
@@ -213,7 +242,7 @@ export const sendEmail = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send(response(BaseError));
+    res.send(response(status.BAD_REQUEST, null));
   }
 };
 
@@ -231,7 +260,7 @@ export const checkVerification = async (req, res) => {
               type: "object",
               properties: {
                 cipherCode: { type: "string", description: "암호화된 인증 코드" },
-                code: { type: "number", description: "사용자가 입력한 인증 코드", example: 123456 }
+                code: { type: "string", description: "사용자가 입력한 인증 코드", example: "123456" }
               },
               required: ["cipherCode", "code"]
             }
@@ -281,21 +310,16 @@ export const checkVerification = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send(response(BaseError));
+    res.send(response(status.AUTH_ERROR, null));
   }
 };
 
 // 유저 정보 불러오기
-export const handleUserInfo = async (req, res, next) => {
+export const handleUserInfo = async (req, res) => {
+  console.log("유저 정보를 불러옵니다.");
   /*
   #swagger.summary = '유저 정보 조회 API';
   #swagger.tags = ['User']
-  #swagger.parameters['id'] = {
-    in: 'path',
-    required: true,
-    description: '조회할 유저의 고유 ID',
-    schema: { type: 'string', example: '12345' }
-  };
   #swagger.responses[200] = {
     description: "유저 정보 조회 성공 응답",
     content: {
@@ -343,13 +367,21 @@ export const handleUserInfo = async (req, res, next) => {
 */
   try {
     console.log("유저 정보를 불러옵니다.");
-    //토큰 사용전 임의로 사용
-    const userId = req.params.id;
-    console.log(userId);
-    const userInfo = await userInfoService(userId);
-    res.send(response(status.SUCCESS, userInfo));
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(req.userId);
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      res.send(response(status.SUCCESS, await userInfoService(req.userId)));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+    console.log("123123")
   } catch (err) {
-    return next(err);
+    console.log(err);
+    res.send(response(BaseError));
   }
 }
 
@@ -692,7 +724,6 @@ export const handleUserPlay = async (req, res, next) => {
           schema: {
             type: "object",
             properties: {
-              userId: { type: "number", example: 1 },
               musicId: {type: "number", example: 1 },
             }
           }
@@ -702,7 +733,7 @@ export const handleUserPlay = async (req, res, next) => {
   */
   try {
     console.log("유저의 음악 재생 시 기록하기를 요청했습니다!");
-    const userMusic = await userPlay(bodyToUserMusic(req.body))
+    const userMusic = await userPlay(bodyToUserMusic(req.userId, req.body))
 
     res.send(response(status.SUCCESS, userMusic));
   } catch (err) {

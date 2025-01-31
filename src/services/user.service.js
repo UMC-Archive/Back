@@ -23,30 +23,36 @@ import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
+import { createJwt } from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import { encrypt } from "../middleware/encrypt.js";
 
-export const userSignUp = async (data) => {
-    data.password = encrypt(data.password);
+export const userSignUp = async (req, res) => {
+    const { url, data } = await profileUploader(req, res);
+    if (!data) {
+        return { info: false }
+    }
+    const jdata = JSON.parse(data)
+    const inactiveDate = new Date(jdata.inactiveDate);
+    jdata.password = encrypt(jdata.password);
     const userId = await addUser({
-        name: data.name,
-        nickname: data.nickname,
-        email: data.email,
-        password: data.password,
-        profileImage: data.profileImage,
-        status: data.status,
-        socialType: data.socialType,
-        inactiveDate: data.inactiveDate,
+        nickname: jdata.nickname,
+        email: jdata.email,
+        password: jdata.password,
+        profileImage: url,
+        status: jdata.status,
+        socialType: jdata.socialType,
+        inactiveDate: inactiveDate,
     });
     if (userId === null) {
-        throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
+        return null
     }
     // 라이브러리 추가
     const library = await setLibrary({ userId });
-    for (const artistId of data.artists) {
+    for (const artistId of jdata.artists) {
         const artist = await setUserArtist(userId, artistId);
     }
-    for (const genreId of data.genres) {
+    for (const genreId of jdata.genres) {
         const genre = await setUserGenre(userId, genreId);
     }
 
@@ -93,16 +99,13 @@ const findEmailAlreadyExists = async (email) => {
 export const checkVerificationCode = async (req) => {
     const code = req.code;
 
-    return bcrypt.compareSync(code.toString(), req.cipherCode);
+    return bcrypt.compareSync(code, req.cipherCode);
 };
 // 유저 정보 불러오는 service
 export const userInfoService = async (userId) => {
-    try {
-        const userInfo = await userInfoRep(userId);
-        return userInfo;
-    } catch (err) {
-        return next(err);
-    }
+    const userInfo = await userInfoRep(userId);
+    userInfo.password = "hidden";
+    return userInfo;
 };
 
 // 로그인 전송 service
@@ -115,9 +118,8 @@ export const loginService = async (req) => {
         if (bcrypt.compareSync(req.password, user.password)) {
             // 성공
             user.password = "hidden";
-            //return createJwt(user);
             console.log("로그인 성공");
-            return user;
+            return createJwt(user);
         } else {
             // 실패
             console.log("password incorrect");
@@ -131,12 +133,13 @@ export const loginService = async (req) => {
 };
 
 // 유저 프로필 이미지 변경 service
-export const userChangeImageService = async (req, res, data) => {
-    const url = await profileUploader(req, res);
-    console.log("bodyService:", data)
+export const userChangeImageService = async (req, res,) => {// data) => {
+    const { url, data } = await profileUploader(req, res);
+    const jdata = json.parse(data)
+    console.log("bodyService:", jdata)
     const ChangeImage = await changeImageRep({
-        name: data.name,
-        email: data.email,
+        name: jdata.name,
+        email: jdata.email,
         profileImage: url,
     })
     if (ChangeImage == null) {

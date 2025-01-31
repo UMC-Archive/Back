@@ -5,7 +5,6 @@ export const bodyToUser = (body) => {
         nickname: body.nickname,
         email: body.email,
         password: body.password,
-        profileImage: body.profileImage,
         status: body.status,
         socialType: body.socialType,
         inactiveDate: inactiveDate,
@@ -14,7 +13,6 @@ export const bodyToUser = (body) => {
     }
 };
 export const responseFromUser = ({ user, artists, genres, library }) => {
-    console.log(artists, genres)
     const artistPreferences = artists.map(
         (performance) => performance.artist.name
     );
@@ -73,9 +71,9 @@ export const bodyToArtistDTO = (req) => {
 };
 
 // 유저의 음악 재생 시 기록하기
-export const bodyToUserMusic = (body) => {
+export const bodyToUserMusic = (userId, body) => {
     return {
-        userId: body.userId,
+        userId: userId,
         musicId: body.musicId,
     }
 }
