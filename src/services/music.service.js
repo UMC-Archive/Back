@@ -55,9 +55,10 @@ export const listNominationMusic = async (user_id) => {
     for (const artist of artists) {
       const musics = await getAlbumItunes("", artist);
       if (musics) {
-        recommendedMusics.push(
-          await listMusic(artist, musics.trackName.split("(")[0])
-        );
+        recommendedMusics.push({
+          music: await listMusic(artist, musics.trackName.split("(")[0]),
+          artist: artist
+        });
       }
     }
   }
@@ -73,7 +74,10 @@ export const listNominationAlbum = async (user_id) => {
     for (const artist of artists) {
       const albums = await getAlbumItunesEntity("", artist, "album");
       if (albums) {
-        recommendedAlbums.push(await listAlbum(artist, albums.collectionName));
+        recommendedAlbums.push({
+          album: await listAlbum(artist, albums.collectionName),
+          artist: artist
+        });
       }
     }
   }
