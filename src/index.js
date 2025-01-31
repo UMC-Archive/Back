@@ -30,7 +30,10 @@ import {
   handleArtistCuration,
   handleGenreImage,
 } from "./controllers/music.controller.js";
-import { handleLibraryMusic } from "./controllers/library.controller.js";
+import {
+  handleLibraryMusic,
+  handleLibraryArtist,
+} from "./controllers/library.controller.js";
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -166,6 +169,8 @@ app.post("/music/artist/:artist_id/curation", handleArtistCuration);
 app.post("/music/genre/image", handleGenreImage);
 //보관함 노래 조회
 app.get("/library/music", handleLibraryMusic);
+//보관함 아티스트 조회
+app.get("/library/artist", handleLibraryArtist);
 //--------------------------------
 
 app.use((err, req, res, next) => {

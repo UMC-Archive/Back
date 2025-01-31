@@ -6,3 +6,10 @@ export const responseFromAllMusics = (musics) => {
     artist: data.music.MusicArtists[0].artist.name,
   }));
 };
+
+export const responseFromAllArtists = (artists) => {
+  return artists.map((data) => ({
+    name: data.artist.name,
+    image: data.artist.image,
+  }));
+};
