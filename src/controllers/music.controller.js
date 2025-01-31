@@ -236,6 +236,7 @@ export const handleMusicInfo = async (req, res, next) => {
                     releseTime : { type: "string", format: "date", example: "2021-03-25" },
                     lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
                     image: { type: "string", example: "https://example.com/music_image.jpg" },
+                    music: { type: "string", example: "https://example.com/preview_music.m4a"},
                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
                     updatedAt : { type: "string", format: "date", example: "2025-01-01" }
                     }
@@ -292,7 +293,6 @@ export const handleMusicAlbumInfo = async (req, res, next) => {
                     title: { type: "string", example: "IU 5th Album 'LILAC'" },
                     releseTime : { type: "string", format: "date", example: "2021-03-25" },
                     image: { type: "string", example: "https://example.com/album_image.jpg" },
-                    music: { type: "string", example: "https://example.com/preview_music.m4a"},
                     createdAt : { type: "string", format: "date", example: "2025-01-01" },
                     updatedAt : { type: "string", format: "date", example: "2025-01-01" },
                     }
