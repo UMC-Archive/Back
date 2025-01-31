@@ -12,6 +12,7 @@ import {
   listGenre,
   listSpecificArtistInfo,
   listAllArtistInfo,
+  listNomMusics,
   albumCuration,
   artistCuration,
 } from "../services/music.service.js";
@@ -564,6 +565,35 @@ export const handleArtistsInfo = async (req, res, next) => {
     }
   } catch (err) {
     return next(err);
+  }
+};
+
+// 음악 콘텐츠 추천
+export const handleCommonMusicNomination = async (req, res, next) => {
+  try {
+    console.log("추천곡 조회를 요청했습니다!");
+    const music_name = req.query.music;
+    const artist_name = req.query.artist;
+
+    if (!music_name || !artist_name) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        resultType: "FAIL",
+        error: {
+          errorCode: "BAD_REQUEST",
+          reason: "음악 제목과 아티스트 이름이 필요합니다",
+          data: null,
+        },
+        success: null,
+      });
+    }
+
+    const similarMusics = await listNomMusics(music_name, artist_name);
+
+    return res.status(StatusCodes.OK).json({
+      musics: similarMusics,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 

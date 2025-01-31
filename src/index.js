@@ -14,7 +14,7 @@ import {
   handleUserGenre,
   handleUserArtist,
   handleUserProfile,
-  handleUserPlay
+  handleUserPlay,
 } from "./controllers/user.controller.js";
 import {
   handleMusicNomination,
@@ -25,6 +25,7 @@ import {
   handleMusicArtistInfo,
   handleMusicGenreInfo,
   handleArtistsInfo,
+  handleCommonMusicNomination,
   handleAlbumCuration,
   handleArtistCuration,
 } from "./controllers/music.controller.js";
@@ -144,6 +145,8 @@ app.post("/users/play", handleUserPlay);
 app.get("/music/year/nomination", handleMusicNomination);
 //당신을 위한 앨범 추천(연도)
 app.get("/album/year/nomination", handleAlbumNomination);
+// 추천곡(일반)
+app.get("/music/nomination", handleCommonMusicNomination);
 //숨겨진 명곡
 app.get("/music/hidden", handleMusicHidden);
 //노래 정보 가져오기
