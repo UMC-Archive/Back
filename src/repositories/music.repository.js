@@ -6,7 +6,12 @@ import {
   getAlbumSearch,
   searchArtist,
   getGenreArtist,
+  getSimMusics,
+  getPublishedYear,
+  getSimArtists,
+  getArtistTopTrack,
 } from "../lastfm.js";
+import { getTrackReleaseYear } from "../itunes.js";
 import { prisma } from "../db.config.js";
 import lrclib from "lrclib-api";
 import { billboard } from "../billboard.js";
@@ -224,4 +229,33 @@ export const getallArtistsAPI = async (user_id) => {
   );
 
   return uniqueArtists;
+};
+
+export const getSimMusicsAPI = async (music_name, artist_name) => {
+  let simMusics = await getSimMusics(music_name, artist_name);
+
+  if (!simMusics || simMusics.length === 0) {
+    // 유사 음악이 없을 경우
+    const simArtist = await getSimArtistsAPI(artist_name); // 유사 아티스트 기반하여 음악 재추천
+    const artistTopTrack = await getArtistTopTrack(simArtist.name);
+    simMusics = await getSimMusics(artistTopTrack, simArtist.name);
+  }
+
+  const tracksWithDates = await Promise.all(
+    simMusics.map(async (track) => {
+      const releaseYear = await getTrackReleaseYear(track.name, track.artist);
+      return {
+        ...track,
+        releaseYear: releaseYear || getPublishedYear(track.name, track.artist),
+      };
+    })
+  );
+
+  return tracksWithDates;
+};
+
+export const getSimArtistsAPI = async (artist_name) => {
+  const simArtists = await getSimArtists(artist_name);
+
+  return simArtists;
 };
