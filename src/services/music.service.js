@@ -62,6 +62,8 @@ export const listNominationMusic = async (user_id) => {
       }
     }
   }
+  if (recommendedMusics.length === 0)
+    return await listNominationMusic(user_id)
   return recommendedMusics;
 };
 //당신을 위한 앨범 추천(연도)
@@ -71,6 +73,7 @@ export const listNominationAlbum = async (user_id) => {
   let recommendedAlbums = [];
   for (const prefer of preferArtists) {
     const artists = await recommandArtist(`${userHistory} ${prefer}`);
+    console.log(artists)
     for (const artist of artists) {
       const albums = await getAlbumItunesEntity("", artist, "album");
       if (albums) {
@@ -81,6 +84,8 @@ export const listNominationAlbum = async (user_id) => {
       }
     }
   }
+  if (recommendedAlbums.length === 0)
+    return await listNominationAlbum(user_id)
   return recommendedAlbums;
 };
 
