@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import { } from "../dtos/music.dto.js";
+import {} from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -9,7 +9,6 @@ import {
   listHiddenMusics,
   listNominationAlbum,
   listNominationMusic,
-  listGenre,
   listSpecificArtistInfo,
   listAllArtistInfo,
   listNomMusics,
@@ -721,15 +720,59 @@ export const handleArtistCuration = async (req, res, next) => {
 };
 
 export const handleGenreImage = async (req, res, next) => {
+  /*
+  #swagger.summary = '음악 장르 정보 조회 API'
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "장르 정보 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", example: "afrobeats" },
+                  image: { type: "string", example: "https://music-archive-bucket.s3.amazonaws.com/genre/Afrobeats_3.png" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #swagger.responses[500] = {
+    description: "서버 에러",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "COMMON000" },
+            message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
+            result: { type: "null", example: null }
+          }
+        }
+      }
+    }
+  }
+*/
   try {
     const urls = await genreImage();
     if (urls) {
       res.send(response(status.SUCCESS, urls));
-    }
-    else {
-      console.log(urls)
+    } else {
+      console.log(urls);
     }
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
 };
