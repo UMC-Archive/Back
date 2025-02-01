@@ -136,10 +136,8 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   }
   let image;
   if (albumInfo) {
-    image = albumInfo.image[4]["#text"];
-    if (albumInfo == "") {
-      image = null;
-    }
+    console.log(albumInfo.image[4]["#text"][0])
+    image = albumInfo.image[4]["#text"][0] ? albumInfo.image[4]["#text"] : false;
   }
   const data = {
     title: albumInfo
@@ -157,7 +155,7 @@ export const getAlbumAPI = async (artist_name, album_name) => {
             : "1970-01-01"
         : "1970-01-01"
     ),
-    image: albumInfo ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
+    image: image ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
   };
   return data;
 };
