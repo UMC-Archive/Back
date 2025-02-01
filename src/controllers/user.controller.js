@@ -778,6 +778,6 @@ export const handleUserPlay = async (req, res, next) => {
 
     res.send(response(status.SUCCESS, userMusic));
   } catch (err) {
-    res.send(response(status.BAD_REQUEST, null));
+    res.send(response(status.ALBUM_NOT_EXIST, null));
   }
 };
