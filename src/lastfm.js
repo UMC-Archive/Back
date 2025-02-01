@@ -108,7 +108,6 @@ export const getGenreArtist = async (genre) => {
 
       const results = artists.map((artist) => ({
         name: artist.name,
-        image: artist.image?.[2]?.["#text"],
       }));
 
       resolve(results);
