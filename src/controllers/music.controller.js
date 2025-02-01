@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import { } from "../dtos/music.dto.js";
+import {} from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -555,7 +555,7 @@ export const handleArtistsInfo = async (req, res, next) => {
 */
   try {
     console.log("아티스트 정보 가져오기를 요청했습니다!");
-    const user_id = req.query.user_id;
+    const user_id = req.user_id;
     const artist = req.query.artist_name;
 
     if (!artist) {
