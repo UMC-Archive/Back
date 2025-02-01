@@ -467,12 +467,6 @@ export const handleArtistsInfo = async (req, res, next) => {
   /*
    #swagger.summary = '아티스트 정보 조회 API';
    #swagger.tags = ['Music']
-   #swagger.parameters['user_id'] = {
-       in: 'query',
-       description: '사용자 ID',
-       required: true,
-       type: 'string'
-   }
    #swagger.parameters['artist_name'] = {
        in: 'query',
        description: '아티스트 이름',

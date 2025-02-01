@@ -31,7 +31,7 @@ export const responseFromAllArtists = ({ AllArtists }) => {
   return {
     artists: AllArtists.map((artist) => ({
       name: artist.name,
-      image: artist.image,
+      image: artist.imageUrl,
     })),
   };
 };
