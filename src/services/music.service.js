@@ -97,12 +97,17 @@ export const listHiddenMusics = async (user_id) => {
   const billboardTop10 = await getBillboardAPI(
     date[0].history.toISOString().split("T")[0]
   );
+  let albums = []
   const { titles, artists } = await extractBillboard(billboardTop10);
   const musics = await Promise.all(
     artists.map((artist, i) => listMusic(artist, titles[i]))
   );
+  for (const music of musics) {
+    albums.push(await getAlbumById(music.albumId));
+  }
   return responseFromHiddenMusics({
     musics,
+    albums,
     artists,
   });
 };
