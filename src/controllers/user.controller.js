@@ -730,6 +730,47 @@ export const handleUserPlay = async (req, res, next) => {
         }
       }
     };
+    #swagger.responses[200] = {
+        description: '유저의 음악 재생 시 기록하기 성공 응답',
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                isSuccess: { type: "boolean", example: true },
+                code: { type: "string", example: "200" },
+                message: { type: "string", example: "success!" },
+                result: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1"},
+                    userId: { type: "string", example: "1"},
+                    musicId: { type: "string", example: "1"},
+                    createdAt: { type: "string",  format: "date" },
+                    updatedAt: { type: "string",  format: "date" },
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+      #swagger.responses[400] = {
+        description: '유저의 음악 재생 시 기록하기 실패 응답',
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                isSuccess: { type: "boolean", example: false },
+                code: { type: "string", example: "MUSIC4002" },
+                message: { type: "string", example: "앨범이 존재하지 않습니다." },
+                result: { type: "object", nullable: true, example: null },
+              }
+            }
+          }
+        }
+      };
   */
   try {
     console.log("유저의 음악 재생 시 기록하기를 요청했습니다!");
