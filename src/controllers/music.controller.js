@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import {} from "../dtos/music.dto.js";
+import { } from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -47,6 +47,17 @@ export const handleMusicNomination = async (req, res, next) => {
                     lyrics: { type: "string", example: "가사" },
                     image: { type: "string", example: "https://image.png" },
                     music: { type: "string", example: "https://music.m4a" },
+                    createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                    updatedAt: { type: "string", format: "date", example: "2025-01-01" }
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    title: { type: "string", example: "Love poem" },
+                    releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                    image: { type: "string", example: "https://image.png" },
                     createdAt: { type: "string", format: "date", example: "2025-01-01" },
                     updatedAt: { type: "string", format: "date", example: "2025-01-01" }
                   }

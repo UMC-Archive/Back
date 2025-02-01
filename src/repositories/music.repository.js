@@ -145,16 +145,16 @@ export const getAlbumAPI = async (artist_name, album_name) => {
     title: albumInfo
       ? albumInfo.name
       : albumItunes
-      ? albumItunes.collectionName
-      : album_name,
+        ? albumItunes.collectionName
+        : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo
         ? albumInfo.wiki
           ? albumInfo.wiki.published
           : albumItunes
-          ? albumItunes.releaseDate
-          : "1970-01-01"
+            ? albumItunes.releaseDate
+            : "1970-01-01"
         : "1970-01-01"
     ),
     image: albumInfo ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
