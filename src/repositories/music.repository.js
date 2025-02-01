@@ -11,6 +11,7 @@ import {
   getPublishedYear,
   getSimArtists,
   getArtistTopTrack,
+  getArtistTopAlbum,
 } from "../lastfm.js";
 import { getTrackReleaseYear } from "../itunes.js";
 import { prisma } from "../db.config.js";
@@ -136,7 +137,6 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   }
   let image;
   if (albumInfo) {
-    console.log(albumInfo.image[4]["#text"][0])
     image = albumInfo.image[4]["#text"][0] ? albumInfo.image[4]["#text"] : false;
   }
   const data = {
@@ -187,24 +187,52 @@ export const getArtistDB = async (artist_name) => {
   });
   return artist;
 };
-
-//lastfm에서 정보 가저오기
-export const getArtistAPI = async (artist_name) => {
-  const artistInfo = await getArtistInfo(artist_name);
-  const image = await spotify(
+const getArtistIdsByMusic = async (artist_name, music_name) => {
+  const url = await spotify(
     {
-      q: artist_name,
-      type: "artists",
+      q: `${artist_name}, ${music_name}`,
+      type: "tracks",
       offset: "0",
       limit: "1",
       numberOfTopResults: "1",
     },
     "search"
   );
+  const ids = url.tracks.items[0].data.artists.items[0].uri.replace('spotify:artist:', '');
+  return ids;
+}
+const getArtistIdsByAlbum = async (artist_name, album_name) => { // 이상하게 작동함
+  const url = await spotify(
+    {
+      q: `${artist_name}, ${album_name}`,
+      type: "albums",
+      offset: "0",
+      limit: "1",
+      numberOfTopResults: "1",
+    },
+    "search"
+  );
+  const ids = url.albums.items[0].data.artists.items[0].uri.replace('spotify:artist:', '');
+  return ids;
+}
+const getArtistByIds = async (ids) => {
+  return await spotify(
+    {
+      ids: ids
+    },
+    "artists"
+  );
+}
+//lastfm에서 정보 가저오기
+export const getArtistAPI = async (artist_name, album_name) => {
+  const artistInfo = await getArtistInfo(artist_name);
+  const musicName = await getAlbumInfo(artist_name, album_name);
+  const ids = await getArtistIdsByMusic(artist_name, musicName.tracks.track[0].name);
+  const image = await getArtistByIds(ids)
   const data = {
     name: artistInfo.name,
     image: image
-      ? image.artists.items[0].data.visuals.avatarImage.sources[0].url
+      ? image.artists[0].images[0].url
       : artistInfo.image[4]["#text"],
   };
   return data;

@@ -21,6 +21,8 @@ export const verify = (req, res, next) => {
 		"/users/signup/email/send-verification-code",
 		"/users/signup/email/check-verification-code",
 		"/music/artist",
+		"/music/album",
+		"/music",
 		"/music/genre/info"
 	];
 	// 현재 요청 URL이 제외할 경로에 포함되는지 확인

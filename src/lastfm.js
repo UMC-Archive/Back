@@ -192,3 +192,20 @@ export const getArtistTopTrack = (artist_name) => {
     );
   });
 };
+
+export const getArtistTopAlbum = (artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopAlbums(
+      { artist: artist_name, limit: 1 },
+      (err, data) => {
+        if (err) {
+          console.log("error", err);
+          resolve(null);
+          return;
+        }
+        const result = data.album[0].name;
+        resolve(result);
+      }
+    );
+  });
+};
