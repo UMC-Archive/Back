@@ -405,7 +405,7 @@ export const handleMusicArtistInfo = async (req, res, next) => {
  */
   try {
     console.log("아티스트 정보 가져오기를 요청했습니다!");
-    const artist = await listArtist(req.query.artist_name);
+    const artist = await listArtist(req.query.artist_name, req.query.album_name);
     res.send(response(status.SUCCESS, artist));
   } catch (err) {
     res.send(response(status.ARTIST_NOT_EXIST, null));

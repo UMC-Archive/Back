@@ -75,7 +75,6 @@ export const listNominationAlbum = async (user_id) => {
   let recommendedAlbums = [];
   for (const prefer of preferArtists) {
     const artists = await recommandArtist(`${userHistory} ${prefer}`);
-    console.log(artists)
     for (const artist of artists) {
       const albums = await getAlbumItunesEntity("", artist, "album");
       if (albums) {
@@ -119,10 +118,10 @@ export const listMusic = async (artist_name, music_name) => {
     return responseFromMusic(musicDB);
   }
   //DB에 음악이 저장 되어 있지 않을 때
-  //아티스트 정보
-  const artist = await listArtist(artist_name);
   //앨범 정보
   const album = await listAlbumSearch(music_name, artist_name);
+  //아티스트 정보
+  const artist = await listArtist(artist_name, album.title);
   //음악 가사 정보
   let lyrics = await getLyricsAPI(artist_name, music_name);
   //가사를 불러 올 수 없을 때가 존재함, 추후에 다른 api를 찾으면 none 대신 다른 api를 통해 찾기로 변경
@@ -165,12 +164,12 @@ export const listAlbum = async (artist_name, album_name) => {
   //DB에 앨범이 저장 되어 있지 않을 때
   const apiInfo = await getAlbumAPI(artist_name, album_name);
   const album = await addAlbum(apiInfo);
-
+  await listArtist(artist_name, album_name)
   return responseFromAlbum(album);
 };
 
 //아티스트 정보 가져오기
-export const listArtist = async (artist_name) => {
+export const listArtist = async (artist_name, album_name) => {
   //DB에 아티스트가 저장 되어 있을 때
   const artistDB = await getArtistDB(artist_name);
   if (artistDB) {
@@ -178,7 +177,7 @@ export const listArtist = async (artist_name) => {
   }
 
   //DB에 아티스트가 저장 되어 있지 않을 때
-  const apiInfo = await getArtistAPI(artist_name);
+  const apiInfo = await getArtistAPI(artist_name, album_name);
   //const description = await recommandCuration(artist_name); // 아티스트와 큐레이션 분리
   const artist = await addArtist(apiInfo);
 
