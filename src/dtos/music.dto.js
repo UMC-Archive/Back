@@ -13,10 +13,11 @@ export const responseFromMusic = (music) => {
 
 export const responseFromHiddenMusics = (data) => {
   const combined = [];
-  const length = Math.min(data.musics.length, data.artists.length);
+  const length = Math.min(data.musics.length, data.artists.length, data.albums.length);
   for (let i = 0; i < length; i++) {
     combined.push({
       music: data.musics[i],
+      album: data.albums[i],
       artist: data.artists[i],
     });
   }

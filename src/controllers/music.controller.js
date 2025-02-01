@@ -174,7 +174,7 @@ export const handleMusicHidden = async (req, res, next) => {
           type: "object",
           properties: {
             isSuccess: { type: "boolean", example: true },
-            code: { type: "number", example: 200 },
+            code: { type: "string", example: "200" },
             message: { type: "string", example: "success!" },
             result: {
               type: "array",
@@ -184,15 +184,26 @@ export const handleMusicHidden = async (req, res, next) => {
                   music: {
                     type: "object",  
                     properties: {
-                      id: { type: "number", example: 1 },
-                      albumId: { type: "number", example: 1 },
-                      title: { type: "string", example: "Celebrity" },
-                      releaseTime: { type: "string", format: "date", example: "2021-03-25" },
-                      lyrics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
+                      id: { type: "string", example: "1" },
+                      albumId: { type: "string", example: "1" },
+                      title: { type: "string", example: "Love poem" },
+                      releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                      lyrics: { type: "string", example: "가사" },
                       image: { type: "string", example: "https://example.com/music_image.jpg" },
-                     music: { type: "string", example: "https://example.com/preview_music.m4a" },
-                     createdAt: { type: "string", format: "date", example: "2025-01-01" },
-                     updatedAt: { type: "string", format: "date", example: "2025-01-01" }
+                      music: { type: "string", example: "https://example.com/preview_music.m4a" },
+                      createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                      updatedAt: { type: "string", format: "date", example: "2025-01-01" }
+                   }
+                 },
+                 album: {
+                    type: "object",  
+                    properties: {
+                      id: { type: "string", example: "1" },
+                      title: { type: "string", example: "Love poem" },
+                      releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                      image: { type: "string", example: "https://example.com/album_image.jpg" },
+                      createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                      updatedAt: { type: "string", format: "date", example: "2025-01-01" }
                    }
                  },
                   artist: { type: "string", example: "IU" }
