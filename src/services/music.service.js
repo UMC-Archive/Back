@@ -55,8 +55,10 @@ export const listNominationMusic = async (user_id) => {
     for (const artist of artists) {
       const musics = await getAlbumItunes("", artist);
       if (musics) {
+        const musicList = await listMusic(artist, musics.trackName.split("(")[0]);
         recommendedMusics.push({
-          music: await listMusic(artist, musics.trackName.split("(")[0]),
+          music: musicList,
+          album: await getAlbumById(musicList.albumId),
           artist: artist
         });
       }
