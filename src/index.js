@@ -15,6 +15,8 @@ import {
   handleUserArtist,
   handleUserProfile,
   handleUserPlay,
+  handleHistory,
+  handleGetHistory,
 } from "./controllers/user.controller.js";
 import {
   handleMusicNomination,
@@ -146,6 +148,10 @@ app.post("/users/artist", handleUserArtist);
 //app.post("/users/profile", handleUserProfile); // 회원가입이랑 통합으로 미사용
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
+//유저 time 히스토리 추가하는 api
+app.post('/users/history', handleHistory);
+//유저 time 히스토리 불러오는 api
+app.get('/users/history', handleGetHistory);
 
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);

@@ -11,6 +11,7 @@ import {
   bodyToGenreDTO,
   bodyToArtistDTO,
   bodyToUserMusic,
+  bodyToHistoryDTO,
 } from "../dtos/user.dto.js";
 import {
   userSignUp,
@@ -23,6 +24,8 @@ import {
   userChangeArtistService,
   userProfile,
   userPlay,
+  userAddHistoryService,
+  userHistoryInfoService,
 } from "../services/user.service.js";
 
 //회원가입
@@ -369,7 +372,6 @@ export const handleUserInfo = async (req, res) => {
     console.log("유저 정보를 불러옵니다.");
     console.log(req.get("Authorization"))
     const token = await checkFormat(req.get("Authorization"));
-    console.log(req.userId);
     console.log(token, ":test")
     if (token !== null) {
       // 토큰 이상없음
@@ -378,7 +380,6 @@ export const handleUserInfo = async (req, res) => {
       // 토큰 이상감지
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
     }
-    console.log("123123")
   } catch (err) {
     console.log(err);
     res.send(response(BaseError));
@@ -469,11 +470,18 @@ export const handleUserChangeImage = async (req, res, next) => {
 */
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
-    console.log("bodyController:", req.body);
-    const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
-    res.send(response(status.SUCCESS, changeImage));
+    const token = await checkFormat(req.get("Authorization"));
+    if (token !== null) {
+      // 토큰 이상없음
+      const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
+      res.send(response(status.SUCCESS, changeImage));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
   } catch (err) {
-    return next(err);
+    console.log(err);
+		res.send(response(BaseError));
   }
 };
 
@@ -560,11 +568,20 @@ export const handleUserGenre = async (req, res, next) => {
 */
   try {
     console.log("유저가 장르 변경을 요청했습니다!");
-    console.log("bodyController:", req.body);
-    const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.body));
-    res.send(response(status.SUCCESS, changeGenre));
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.userId,req.body));
+      res.send(response(status.SUCCESS, changeGenre));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
   } catch (err) {
-    return next(err);
+    console.log(err);
+    res.send(response(BaseError));
   }
 };
 
@@ -651,9 +668,17 @@ export const handleUserArtist = async (req, res, next) => {
 */
   try {
     console.log("유저가 아티스트 변경을 요청했습니다!");
-    console.log("bodyController:", req.body);
-    const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.body));
-    res.send(response(status.SUCCESS, changeArtist));
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.userId,req.body));
+      res.send(response(status.SUCCESS, changeArtist));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
   } catch (err) {
     return next(err);
   }
@@ -779,5 +804,47 @@ export const handleUserPlay = async (req, res, next) => {
     res.send(response(status.SUCCESS, userMusic));
   } catch (err) {
     res.send(response(status.ALBUM_NOT_EXIST, null));
+  }
+};
+
+// 유저의 연도 타임 히스토리 기록하기
+export const handleHistory = async (req,res,next) => {
+  try {
+    console.log("유저의 연도 타임 히스토리 추가를 요청했습니다!");
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const addHistory = await userAddHistoryService(bodyToHistoryDTO(req.userId, req.body));
+      res.status(StatusCodes.OK).success(addHistory);
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
+  }
+};
+
+// 유저 히스토리 불러오기
+export const handleGetHistory = async (req,res,next) => {
+  try {
+    console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const userInfo = await userHistoryInfoService(req.userId);
+      res.status(StatusCodes.OK).success(userInfo);
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
   }
 };

@@ -15,6 +15,8 @@ import {
     setLibrary,
     setUserMusic,
     getUserMusic,
+    addHistoryRep,
+    userHistoryInfoRep,
 } from "../repositories/user.repository.js";
 import { profileUploader } from "../repositories/s3.repository.js"
 
@@ -133,7 +135,7 @@ export const loginService = async (req) => {
 };
 
 // 유저 프로필 이미지 변경 service
-export const userChangeImageService = async (req, res,) => {// data) => {
+export const userChangeImageService = async (req, res) => {// data) => {
     const { url, data } = await profileUploader(req, res);
     const jdata = json.parse(data)
     console.log("bodyService:", jdata)
@@ -152,8 +154,7 @@ export const userChangeImageService = async (req, res,) => {// data) => {
 export const userChangeGenreService = async (data) => {
     console.log("bodyService:", data)
     const ChangeGenre = await changeGenreRep({
-        name: data.name,
-        email: data.email,
+        userId: data.userId,
         genreId: data.genreId,
     })
     if (ChangeGenre == null) {
@@ -166,8 +167,7 @@ export const userChangeGenreService = async (data) => {
 export const userChangeArtistService = async (data) => {
     console.log("bodyService:", data)
     const ChangeArtist = await changeArtistRep({
-        name: data.name,
-        email: data.email,
+        userId: data.userId,
         artistId: data.artistId,
     })
     if (ChangeArtist == null) {
@@ -190,4 +190,23 @@ export const userPlay = async (data) => {
     });
     const userMusic = await getUserMusic(userMusicId);
     return userMusic;
+};
+
+// 유저의 타임 히스토리를 저장하는 service
+export const userAddHistoryService = async(data) => {
+    console.log("bodyService:", data)
+    const addHistory = await addHistoryRep({
+        userId: data.userId,
+        history: data.history,
+    })    
+    if(addHistory == null){
+        throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
+    }
+    return addHistory;
+};
+
+// 유저의 타임 히스토리를 불러오는 service
+export const userHistoryInfoService = async (userId) => {
+    const userHistoryInfo = await userHistoryInfoRep(userId);
+    return userHistoryInfo;
 };
