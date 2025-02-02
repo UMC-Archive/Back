@@ -52,7 +52,7 @@ export const bodyToImageDTO = (req) => {
     };
 };
 
-// 유저 장르 변경 DTO
+// 유저 장르 선택/수정 DTO
 export const bodyToGenreDTO = (uid, req) => {
     return {
         userId: uid.userId,

@@ -146,23 +146,84 @@ export const handleUserSignUp = async (req, res, next) => {
 
 // 로그인
 export const handleLogin = async (req, res, next) => {
-  /*
-  #swagger.summary = '로그인 API';
-  #swagger.tags = ['User']
-  #swagger.requestBody = {
-    required: true,
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            email: { type: "string", example: "example@email.com" },
-            password: { type: "string", example: "password" },
+    /*
+    #swagger.summary = '사용자 로그인 API';
+    #swagger.tags = ['User']
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              email: { type: "string", example: "user@example.com" },
+              password: { type: "string", example: "password123" }
+            },
+            required: ["email", "password"]
           }
         }
       }
-    }
-  };
+    };
+    #swagger.responses[200] = {
+      description: "로그인 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "object",
+                properties: {
+                  token: { type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+                  user: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1" },
+                      email: { type: "string", example: "user@example.com" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "이메일이 존재하지 않음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "LOGIN_ID_NOT_EXIST" },
+              message: { type: "string", example: "이메일이 존재하지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[401] = {
+      description: "비밀번호가 일치하지 않음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "LOGIN_PASSWORD_WRONG" },
+              message: { type: "string", example: "비밀번호가 틀렸습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
   */
   try {
     console.log("로그인");
@@ -320,54 +381,59 @@ export const checkVerification = async (req, res) => {
 // 유저 정보 불러오기
 export const handleUserInfo = async (req, res) => {
   console.log("유저 정보를 불러옵니다.");
-  /*
-  #swagger.summary = '유저 정보 조회 API';
-  #swagger.tags = ['User']
-  #swagger.responses[200] = {
-    description: "유저 정보 조회 성공 응답",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            id: { type: "string", example: "12345" },
-            name: { type: "string", example: "John Doe" },
-            nickname: { type: "string", example: "johnd" },
-            email: { type: "string", example: "john.doe@example.com" },
-            profileImage: { type: "string", example: "https://example.com/profile.jpg" },
-            status: { type: "string", example: "active" },
-            socialType: { type: "string", example: "google" },
-            inactiveDate: { type: "string", format: "date", example: "2025-01-01" },
-            createdAt : { type: "string", format: "date", example: "2025-01-12T04:43:36.811Z" },
-            updatedAt : { type: "string", format: "date", example: "2025-01-12T10:26:40.610Z" }
-          }
-        }
-      }
-    }
-  };
-  #swagger.responses[404] = {
-    description: "유저 정보를 찾을 수 없음",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
-              properties: {
-                errorCode: { type: "string", example: "U404" },
-                reason: { type: "string", example: "유저를 찾을 수 없습니다." },
-                data: { type: "object", example: {} }
+    /*
+    #swagger.summary = '유저 정보 조회 API';
+    #swagger.tags = ['User']
+    #swagger.security = [{
+      "BearerAuth": []
+    }]
+    #swagger.description = '토큰을 사용하여 로그인한 사용자의 정보를 가져오는 API입니다.'
+    #swagger.responses[200] = {
+      description: "유저 정보 조회 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  nickname: { type: "string", example: "닉네임" },
+                  email: { type: "string", example: "user@example.com" },
+                  profileImage: { type: "string", example: "https://example.com/image.jpg" },
+                  status: { type: "string", example: "active" },
+                  socialType: { type: "string", example: "local" },
+                  inactiveDate: { type: "string", format: "date" },
+                  createdAt: { type: "string", format: "date" },
+                  updatedAt: { type: "string", format: "date" }
+                }
               }
-            },
-            success: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-*/
+    };
+    #swagger.responses[401] = {
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
   try {
     console.log("유저 정보를 불러옵니다.");
     console.log(req.get("Authorization"))
@@ -389,85 +455,94 @@ export const handleUserInfo = async (req, res) => {
 // 유저 프로필 이미지 변경
 export const handleUserChangeImage = async (req, res, next) => {
   /*
-  #swagger.summary = '유저 프로필 이미지 변경 API';
-  #swagger.tags = ['User']
-  #swagger.requestBody = {
-    required: true,
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            name: { type: "string", example: "John Doe" },
-            email: { type: "string", example: "john.doe@example.com" },
-            profileImage: { type: "string", example: "https://example.com/new-profile.jpg" }
-          }
-        }
-      }
-    }
-  };
-  #swagger.responses[200] = {
-    description: "유저 프로필 이미지 변경 성공 응답",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            id: { type: "string", example: "12345" },
-            name: { type: "string", example: "John Doe" },
-            email: { type: "string", example: "john.doe@example.com" },
-            profileImage: { type: "string", example: "https://example.com/new-profile.jpg" },
-            updatedAt: { type: "string", format: "date-time", example: "2025-01-12T14:32:00Z" }
-          }
-        }
-      }
-    }
-  };
-  #swagger.responses[404] = {
-    description: "해당 이름과 이메일로 사용자를 찾을 수 없음",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
-              properties: {
-                errorCode: { type: "string", example: "U404" },
-                reason: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
-                data: { type: "object", example: {} }
+    #swagger.summary = '유저 프로필 이미지 변경 API';
+    #swagger.tags = ['User']
+    #swagger.security = [{
+      "BearerAuth": []
+    }]
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              image: {
+                type: "string",
+                format: "binary",
+                description: "새로운 프로필 이미지 파일"
+              },
+              data: {
+                type: "object",
+                properties: {
+                  name: { type: "string", example: "홍길동" },
+                  email: { type: "string", example: "user@example.com" }
+                },
+                description: "사용자 정보(JSON 형태)"
               }
-            },
-            success: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-  #swagger.responses[400] = {
-    description: "요청 파라미터 오류",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
-              properties: {
-                errorCode: { type: "string", example: "U400" },
-                reason: { type: "string", example: "요청 파라미터를 확인해주세요." },
-                data: { type: "object", example: {} }
+    };
+    #swagger.responses[200] = {
+      description: "프로필 이미지 변경 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  name: { type: "string", example: "홍길동" },
+                  email: { type: "string", example: "user@example.com" },
+                  profileImage: { type: "string", example: "https://example.com/new-profile.jpg" },
+                  updatedAt: { type: "string", format: "date" }
+                }
               }
-            },
-            success: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-*/
+    };
+    #swagger.responses[400] = {
+      description: "해당 이름과 이메일로 등록된 사용자가 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "USER_NOT_FOUND" },
+              message: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[401] = {
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
     const token = await checkFormat(req.get("Authorization"));
@@ -488,8 +563,9 @@ export const handleUserChangeImage = async (req, res, next) => {
 // 유저의 장르 선택/수정
 export const handleUserGenre = async (req, res, next) => {
   /*
-  #swagger.summary = '유저의 장르 선택/수정 API';
+  #swagger.summary = '유저의 장르 선택/수정 API'
   #swagger.tags = ['User']
+  #swagger.security = [{ "BearerAuth": [] }]
   #swagger.requestBody = {
     required: true,
     content: {
@@ -497,75 +573,64 @@ export const handleUserGenre = async (req, res, next) => {
         schema: {
           type: "object",
           properties: {
-            name: { type: "string", example: "John Doe" },
-            email: { type: "string", example: "john.doe@example.com" },
-            genreId: { type: "integer", example: 3 }
-          }
+            genreId: { type: "integer", example: 1, description: "선택 또는 수정할 장르의 ID" }
+          },
+          required: ["genreId"]
         }
       }
     }
-  };
+  }
   #swagger.responses[200] = {
-    description: "유저 장르 선택/수정 성공 응답",
+    description: '장르 변경 성공',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
-            id: { type: "string", example: "12345" },
-            userId: { type: "string", example: "67890" },
-            genreId: { type: "integer", example: 3 },
-            updatedAt: { type: "string", format: "date-time", example: "2025-01-12T15:45:00Z" }
-          }
-        }
-      }
-    }
-  };
-  #swagger.responses[404] = {
-    description: "해당 이름과 이메일 또는 장르 정보를 찾을 수 없음",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
+            code: { type: 'string', example: 'SUCCESS' },
+            data: { 
+              type: 'object',
               properties: {
-                errorCode: { type: "string", example: "U404" },
-                reason: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
-                data: { type: "object", example: {} }
+                userId: { type: 'integer', example: 1 },
+                genreId: { type: 'integer', example: 2 },
+                updatedAt: { type: 'string', format: 'date-time' }
               }
-            },
-            success: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
     }
-  };
-  #swagger.responses[400] = {
-    description: "요청 파라미터 오류",
+  }
+  #swagger.responses[401] = {
+    description: '유효하지 않은 토큰',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
-              properties: {
-                errorCode: { type: "string", example: "U400" },
-                reason: { type: "string", example: "요청 파라미터를 확인해주세요." },
-                data: { type: "object", example: {} }
-              }
-            },
-            success: { type: "object", nullable: true, example: null }
+            code: { type: 'string', example: 'TOKEN_FORMAT_INCORRECT' },
+            data: { type: 'null', example: null }
           }
         }
       }
     }
-  };
+  }
+  #swagger.responses[500] = {
+    description: '서버 오류',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            code: { type: 'string', example: 'SERVER_ERROR' },
+            message: { type: 'string', example: '서버 내부 오류가 발생했습니다.' }
+          }
+        }
+      }
+    }
+  }
 */
+
   try {
     console.log("유저가 장르 변경을 요청했습니다!");
     console.log(req.get("Authorization"))
@@ -587,9 +652,10 @@ export const handleUserGenre = async (req, res, next) => {
 
 // 유저의 아티스트 선택/수정
 export const handleUserArtist = async (req, res, next) => {
-  /*
-  #swagger.summary = '유저의 아티스트 선택/수정 API';
+/*
+  #swagger.summary = '유저의 아티스트 선택/수정 API'
   #swagger.tags = ['User']
+  #swagger.security = [{ "BearerAuth": [] }]
   #swagger.requestBody = {
     required: true,
     content: {
@@ -597,74 +663,62 @@ export const handleUserArtist = async (req, res, next) => {
         schema: {
           type: "object",
           properties: {
-            name: { type: "string", example: "John Doe" },
-            email: { type: "string", example: "john.doe@example.com" },
-            artistId: { type: "integer", example: 5 }
-          }
+            artistId: { type: "integer", example: 1, description: "선택 또는 수정할 아티스트의 ID" }
+          },
+          required: ["artistId"]
         }
       }
     }
-  };
+  }
   #swagger.responses[200] = {
-    description: "유저 아티스트 선택/수정 성공 응답",
+    description: '아티스트 선택/수정 성공',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
-            id: { type: "string", example: "67890" },
-            userId: { type: "string", example: "12345" },
-            artistId: { type: "integer", example: 5 },
-            updatedAt: { type: "string", format: "date-time", example: "2025-01-12T15:45:00Z" }
-          }
-        }
-      }
-    }
-  };
-  #swagger.responses[404] = {
-    description: "해당 이름과 이메일 또는 아티스트 정보를 찾을 수 없음",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
+            code: { type: 'string', example: 'SUCCESS' },
+            data: {
+              type: 'object',
               properties: {
-                errorCode: { type: "string", example: "U404" },
-                reason: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
-                data: { type: "object", example: {} }
+                userId: { type: 'integer', example: 1 },
+                artistId: { type: 'integer', example: 1 },
+                updatedAt: { type: 'string', format: 'date-time', example: '2024-02-01T12:34:56Z' }
               }
-            },
-            success: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
     }
-  };
-  #swagger.responses[400] = {
-    description: "요청 파라미터 오류",
+  }
+  #swagger.responses[401] = {
+    description: '토큰 형식 오류',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
-            resultType: { type: "string", example: "FAIL" },
-            error: {
-              type: "object",
-              properties: {
-                errorCode: { type: "string", example: "U400" },
-                reason: { type: "string", example: "요청 파라미터를 확인해주세요." },
-                data: { type: "object", example: {} }
-              }
-            },
-            success: { type: "object", nullable: true, example: null }
+            code: { type: 'string', example: 'TOKEN_FORMAT_INCORRECT' },
+            data: { type: 'null', example: null }
           }
         }
       }
     }
-  };
+  }
+  #swagger.responses[500] = {
+    description: '서버 내부 오류',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            code: { type: 'string', example: 'SERVER_ERROR' },
+            message: { type: 'string', example: '오류가 발생했습니다.' }
+          }
+        }
+      }
+    }
+  }
 */
   try {
     console.log("유저가 아티스트 변경을 요청했습니다!");
@@ -810,6 +864,109 @@ export const handleUserPlay = async (req, res, next) => {
 
 // 유저의 연도 타임 히스토리 기록하기
 export const handleHistory = async (req,res,next) => {
+  /*
+  #swagger.summary = '유저 타임 히스토리 추가 API';
+  #swagger.tags = ['User']
+  #swagger.parameters['Authorization'] = {
+    in: 'header',
+    description: 'Authorization 헤더에 포함된 JWT 토큰을 통해 유저 인증을 수행합니다.',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'Bearer <your-token>'
+    }
+  }
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            history: { 
+              type: "string", 
+              format: "date", 
+              example: "2025-02-02T00:00:00Z",
+              description: "타임 히스토리 기록 날짜"
+            }
+          },
+          required: ["history"]
+        }
+      }
+    }
+  };
+  #swagger.responses[200] = {
+    description: '유저 타임 히스토리 추가 성공 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "number", example: 200 },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "object",
+              properties: {
+                id: { type: "string", example: "1" },
+                userId: { type: "string", example: "1" },
+                history: { type: "string", format: "date", example: "2025-02-02T00:00:00Z" }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: '토큰 포맷 오류 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+            message: { type: "string", example: "토큰 포맷이 올바르지 않습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: '사용자를 찾을 수 없음 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "USER_NOT_FOUND" },
+            message: { type: "string", example: "해당 이름으로 등록된 사용자가 없습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[500] = {
+    description: '서버 오류 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "INTERNAL_SERVER_ERROR" },
+            message: { type: "string", example: "서버 오류가 발생했습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
   try {
     console.log("유저의 연도 타임 히스토리 추가를 요청했습니다!");
     console.log(req.get("Authorization"))
@@ -831,6 +988,79 @@ export const handleHistory = async (req,res,next) => {
 
 // 유저 히스토리 불러오기
 export const handleGetHistory = async (req,res,next) => {
+  /*
+  #swagger.summary = '유저 타임 히스토리 불러오기 API';
+  #swagger.tags = ['User']
+  #swagger.parameters['Authorization'] = {
+    in: 'header',
+    description: 'Authorization 헤더에 포함된 JWT 토큰을 통해 유저 인증을 수행합니다.',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'Bearer <your-token>'
+    }
+  }
+  #swagger.responses[200] = {
+    description: '유저 타임 히스토리 조회 성공 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "number", example: 200 },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  userId: { type: "string", example: "1" },
+                  historyType: { type: "string", example: "watch" },
+                  historyDate: { type: "string", format: "date", example: "2025-02-02" },
+                  description: { type: "string", example: "User watched a video" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: '토큰 포맷 오류 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+            message: { type: "string", example: "토큰 포맷이 올바르지 않습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: '사용자를 찾을 수 없음 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "USER_NOT_FOUND" },
+            message: { type: "string", example: "해당 이름으로 등록된 사용자가 없습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
   try {
     console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
     console.log(req.get("Authorization"))
