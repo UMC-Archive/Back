@@ -179,7 +179,7 @@ export const handleLogin = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    return next(err);
+    res.send(response(BaseError));
   }
 };
 //이메일 인증 전송
@@ -680,7 +680,8 @@ export const handleUserArtist = async (req, res, next) => {
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
     }
   } catch (err) {
-    return next(err);
+    console.log(err);
+    res.send(response(BaseError));
   }
 };
 
