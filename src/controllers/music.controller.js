@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import { } from "../dtos/music.dto.js";
+import {} from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -405,7 +405,10 @@ export const handleMusicArtistInfo = async (req, res, next) => {
  */
   try {
     console.log("아티스트 정보 가져오기를 요청했습니다!");
-    const artist = await listArtist(req.query.artist_name, req.query.album_name);
+    const artist = await listArtist(
+      req.query.artist_name,
+      req.query.album_name
+    );
     res.send(response(status.SUCCESS, artist));
   } catch (err) {
     res.send(response(status.ARTIST_NOT_EXIST, null));
@@ -515,6 +518,7 @@ export const handleArtistsInfo = async (req, res, next) => {
                        items: {
                          type: "object",
                          properties: {
+                           id: {type: "string", example: "1"},
                            name: { type: "string", example: "Ariana Grande" },
                            image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png" }
                          }
@@ -525,6 +529,7 @@ export const handleArtistsInfo = async (req, res, next) => {
                  {
                    type: "object",
                    properties: {
+                   id: {type: "string", example: "2"},
                      name: { type: "string", example: "SZA" },
                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png" }
                    }
@@ -747,6 +752,7 @@ export const handleGenreImage = async (req, res, next) => {
               items: {
                 type: "object",
                 properties: {
+                  id: {type: "string", example: "1"},
                   name: { type: "string", example: "afrobeats" },
                   image: { type: "string", example: "https://music-archive-bucket.s3.amazonaws.com/genre/Afrobeats_3.png" }
                 }
