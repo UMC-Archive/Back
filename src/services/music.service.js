@@ -55,17 +55,19 @@ export const listNominationMusic = async (user_id) => {
     for (const artist of artists) {
       const musics = await getAlbumItunes("", artist);
       if (musics) {
-        const musicList = await listMusic(artist, musics.trackName.split("(")[0]);
+        const musicList = await listMusic(
+          artist,
+          musics.trackName.split("(")[0]
+        );
         recommendedMusics.push({
           music: musicList,
           album: await getAlbumById(musicList.albumId),
-          artist: artist
+          artist: artist,
         });
       }
     }
   }
-  if (recommendedMusics.length === 0)
-    return await listNominationMusic(user_id)
+  if (recommendedMusics.length === 0) return await listNominationMusic(user_id);
   return recommendedMusics;
 };
 //당신을 위한 앨범 추천(연도)
@@ -80,13 +82,12 @@ export const listNominationAlbum = async (user_id) => {
       if (albums) {
         recommendedAlbums.push({
           album: await listAlbum(artist, albums.collectionName),
-          artist: artist
+          artist: artist,
         });
       }
     }
   }
-  if (recommendedAlbums.length === 0)
-    return await listNominationAlbum(user_id)
+  if (recommendedAlbums.length === 0) return await listNominationAlbum(user_id);
   return recommendedAlbums;
 };
 
@@ -96,7 +97,7 @@ export const listHiddenMusics = async (user_id) => {
   const billboardTop10 = await getBillboardAPI(
     date[0].history.toISOString().split("T")[0]
   );
-  let albums = []
+  let albums = [];
   const { titles, artists } = await extractBillboard(billboardTop10);
   const musics = await Promise.all(
     artists.map((artist, i) => listMusic(artist, titles[i]))
@@ -164,7 +165,7 @@ export const listAlbum = async (artist_name, album_name) => {
   //DB에 앨범이 저장 되어 있지 않을 때
   const apiInfo = await getAlbumAPI(artist_name, album_name);
   const album = await addAlbum(apiInfo);
-  await listArtist(artist_name, album_name)
+  await listArtist(artist_name, album_name);
   return responseFromAlbum(album);
 };
 

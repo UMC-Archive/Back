@@ -137,22 +137,24 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   }
   let image;
   if (albumInfo) {
-    image = albumInfo.image[4]["#text"][0] ? albumInfo.image[4]["#text"] : false;
+    image = albumInfo.image[4]["#text"][0]
+      ? albumInfo.image[4]["#text"]
+      : false;
   }
   const data = {
     title: albumInfo
       ? albumInfo.name
       : albumItunes
-        ? albumItunes.collectionName
-        : album_name,
+      ? albumItunes.collectionName
+      : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo
         ? albumInfo.wiki
           ? albumInfo.wiki.published
           : albumItunes
-            ? albumItunes.releaseDate
-            : "1970-01-01"
+          ? albumItunes.releaseDate
+          : "1970-01-01"
         : "1970-01-01"
     ),
     image: image ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
@@ -198,10 +200,14 @@ const getArtistIdsByMusic = async (artist_name, music_name) => {
     },
     "search"
   );
-  const ids = url.tracks.items[0].data.artists.items[0].uri.replace('spotify:artist:', '');
+  const ids = url.tracks.items[0].data.artists.items[0].uri.replace(
+    "spotify:artist:",
+    ""
+  );
   return ids;
-}
-const getArtistIdsByAlbum = async (artist_name, album_name) => { // 이상하게 작동함
+};
+const getArtistIdsByAlbum = async (artist_name, album_name) => {
+  // 이상하게 작동함
   const url = await spotify(
     {
       q: `${artist_name}, ${album_name}`,
@@ -212,23 +218,29 @@ const getArtistIdsByAlbum = async (artist_name, album_name) => { // 이상하게
     },
     "search"
   );
-  const ids = url.albums.items[0].data.artists.items[0].uri.replace('spotify:artist:', '');
+  const ids = url.albums.items[0].data.artists.items[0].uri.replace(
+    "spotify:artist:",
+    ""
+  );
   return ids;
-}
+};
 const getArtistByIds = async (ids) => {
   return await spotify(
     {
-      ids: ids
+      ids: ids,
     },
     "artists"
   );
-}
+};
 //lastfm에서 정보 가저오기
 export const getArtistAPI = async (artist_name, album_name) => {
   const artistInfo = await getArtistInfo(artist_name);
   const musicName = await getAlbumInfo(artist_name, album_name);
-  const ids = await getArtistIdsByMusic(artist_name, musicName.tracks.track[0].name);
-  const image = await getArtistByIds(ids)
+  const ids = await getArtistIdsByMusic(
+    artist_name,
+    musicName.tracks.track[0].name
+  );
+  const image = await getArtistByIds(ids);
   const data = {
     name: artistInfo.name,
     image: image
@@ -249,8 +261,50 @@ export const addArtist = async (artist) => {
 };
 
 export const getSpecificArtistAPI = async (artist_name) => {
-  const specificArtist = await searchArtist(artist_name);
-  return specificArtist;
+  try {
+    // 1. DB에서 아티스트 검색
+    const existingArtist = await getArtistDB(artist_name);
+
+    if (existingArtist) {
+      return existingArtist;
+    }
+
+    // 2. DB에 없는 경우 API에서 아티스트 정보 가져오기
+    const specificArtist = await searchArtist(artist_name);
+
+    if (!specificArtist) {
+      return null;
+    }
+
+    // 3. Spotify에서 이미지 URL 가져오기
+    const spotifyData = await spotify(
+      {
+        q: artist_name,
+        type: "artists",
+        offset: "0",
+        limit: "1",
+        numberOfTopResults: "1",
+      },
+      "search"
+    );
+
+    const imageUrl =
+      spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
+        ?.url || null;
+
+    // 4. DB에 새 아티스트 추가
+    const artistData = {
+      name: artist_name,
+      image: imageUrl,
+      ...specificArtist, // searchArtist에서 가져온 추가 정보가 있다면 포함
+    };
+
+    const newArtist = await addArtist(artistData);
+    return newArtist;
+  } catch (error) {
+    console.error(`Error processing artist ${artist_name}:`, error);
+    throw error; // 에러를 상위로 전파하여 적절한 에러 처리 가능하도록 함
+  }
 };
 
 export const getallArtistsAPI = async (user_id) => {
@@ -279,14 +333,20 @@ export const getallArtistsAPI = async (user_id) => {
 
   const artistsPromises = genreInfos.map((genre) => getGenreArtist(genre));
   const artistsByGenre = await Promise.all(artistsPromises);
-
-  // 모든 배열을 하나로 합치기
   const allArtists = artistsByGenre.flat().filter((artist) => artist !== null);
 
-  // 각 아티스트에 대해 Spotify 이미지 검색
-  const artistsWithImages = await Promise.all(
+  // 각 아티스트 처리
+  const processedArtists = await Promise.all(
     allArtists.map(async (artist) => {
       try {
+        // DB에서 아티스트 검색
+        const existingArtist = await getArtistDB(artist.name);
+
+        if (existingArtist) {
+          return existingArtist;
+        }
+
+        // DB에 없는 경우 Spotify에서 정보 가져오기
         const spotifyData = await spotify(
           {
             q: artist.name,
@@ -298,31 +358,31 @@ export const getallArtistsAPI = async (user_id) => {
           "search"
         );
 
-        // 새로운 응답 구조에서 이미지 URL 추출
         const imageUrl =
           spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
             ?.url || null;
 
-        return {
-          ...artist,
-          imageUrl,
-        };
+        const newArtist = await addArtist({
+          name: artist.name,
+          image: imageUrl,
+        });
+
+        return newArtist;
       } catch (error) {
-        console.error(`Error fetching image for ${artist.name}:`, error);
+        console.error(`Error processing artist ${artist.name}:`, error);
         return {
-          ...artist,
-          imageUrl: null,
-        }; // 이미지 검색 실패시 null로 설정
+          name: artist.name,
+          image: null,
+        };
       }
     })
   );
 
-  // 중복 제거 (이미지 URL도 고려하여)
   const uniqueArtists = Array.from(
-    new Map(artistsWithImages.map((artist) => [artist.name, artist])).values()
+    new Map(processedArtists.map((artist) => [artist.name, artist])).values()
   );
-
   console.log("uniqueArtists", uniqueArtists);
+
   return uniqueArtists;
 };
 
