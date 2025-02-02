@@ -133,7 +133,7 @@ export const loginService = async (req) => {
 };
 
 // 유저 프로필 이미지 변경 service
-export const userChangeImageService = async (req, res,) => {// data) => {
+export const userChangeImageService = async (req, res) => {// data) => {
     const { url, data } = await profileUploader(req, res);
     const jdata = json.parse(data)
     console.log("bodyService:", jdata)

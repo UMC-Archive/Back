@@ -369,7 +369,6 @@ export const handleUserInfo = async (req, res) => {
     console.log("유저 정보를 불러옵니다.");
     console.log(req.get("Authorization"))
     const token = await checkFormat(req.get("Authorization"));
-    console.log(req.userId);
     console.log(token, ":test")
     if (token !== null) {
       // 토큰 이상없음
@@ -378,7 +377,6 @@ export const handleUserInfo = async (req, res) => {
       // 토큰 이상감지
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
     }
-    console.log("123123")
   } catch (err) {
     console.log(err);
     res.send(response(BaseError));
@@ -469,11 +467,18 @@ export const handleUserChangeImage = async (req, res, next) => {
 */
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
-    console.log("bodyController:", req.body);
-    const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
-    res.send(response(status.SUCCESS, changeImage));
+    const token = await checkFormat(req.get("Authorization"));
+    if (token !== null) {
+      // 토큰 이상없음
+      const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
+      res.send(response(status.SUCCESS, changeImage));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
   } catch (err) {
-    return next(err);
+    console.log(err);
+		res.send(response(BaseError));
   }
 };
 
