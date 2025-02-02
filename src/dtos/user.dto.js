@@ -53,19 +53,17 @@ export const bodyToImageDTO = (req) => {
 };
 
 // 유저 장르 변경 DTO
-export const bodyToGenreDTO = (req) => {
+export const bodyToGenreDTO = (uid, req) => {
     return {
-        name: req.name,
-        email: req.email,
+        userId: uid.userId,
         genreId: BigInt(req.genreId),
     };
 };
 
 // 유저 아티스트 변경 DTO
-export const bodyToArtistDTO = (req) => {
+export const bodyToArtistDTO = (uid, req) => {
     return {
-        name: req.name,
-        email: req.email,
+        userId: uid.userId,
         artistId: BigInt(req.artistId),
     };
 };
@@ -77,3 +75,13 @@ export const bodyToUserMusic = (userId, body) => {
         musicId: body.musicId,
     }
 }
+
+// 유저의 히스토리 추가하는 DTO
+export const bodyToHistoryDTO = (userId, req) => {
+    console.log("bodyDTO:", req)
+    const history = new Date(req.history);
+    return{
+        userId: BigInt(userId),
+        history: history,
+    };
+};

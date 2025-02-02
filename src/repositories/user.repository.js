@@ -154,8 +154,7 @@ export const changeGenreRep = async (data) => {
         // 1. userId로 회원 존재 여부 확인
         const existingUser = await prisma.user.findFirst({
             where: {
-                name: data.name,
-                email: data.email,
+                id: data.userId,
             },
         });
 
@@ -164,11 +163,11 @@ export const changeGenreRep = async (data) => {
         }
         console.log(existingUser);
 
-        const userId = Number(existingUser.id);
+        //const userId = Number(existingUser.id);
 
         // 2. userId로 UserGenre의 고유 id 조회
         const existingUserGenre = await prisma.userGenre.findFirst({
-            where: { userId: userId },
+            where: { userId: data.userId },
         });
 
         if (!existingUserGenre) {
@@ -201,8 +200,7 @@ export const changeArtistRep = async (data) => {
         // 1. userId로 회원 존재 여부 확인
         const existingUser = await prisma.user.findFirst({
             where: {
-                name: data.name,
-                email: data.email,
+                id: data.userId,
             },
         });
 
@@ -211,11 +209,11 @@ export const changeArtistRep = async (data) => {
         }
         console.log(existingUser);
 
-        const userId = Number(existingUser.id);
+        //const userId = Number(existingUser.id);
 
         // 2. userId로 UserArtist의 고유 id 조회
         const existingUserArtist = await prisma.userArtist.findFirst({
-            where: { userId: userId },
+            where: { userId: data.userId },
         });
 
         if (!existingUserArtist) {
@@ -251,3 +249,58 @@ export const getUserMusic = async (userMusicId) => {
     const userMusic = await prisma.userMusic.findFirstOrThrow({ where: { id: userMusicId } });
     return userMusic;
 }
+
+// 유저의 time 히스토리를 추가
+export const addHistoryRep = async (data) => {
+    console.log("bodyRep:", data)
+    try {
+        // 1. userId로 회원 존재 여부 확인
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                id: data.userId,
+            },
+        });
+    
+        if (!existingUser) {
+            throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
+        }
+    
+        // 2. 타임 히스토리 추가
+        const addUserHistory = await prisma.timeHistory.create({ data : data });
+    
+        // 3. 업데이트된 회원 정보 반환
+        return addUserHistory;
+        } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    }
+    
+};
+
+//유저의 time 히스토리를 불러오기
+export const userHistoryInfoRep = async (data) => {
+    console.log("bodyRep:", data)
+    try {
+        // 1. userId로 회원 존재 여부 확인
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                id: data.userId,
+            },
+        });
+    
+        if (!existingUser) {
+            throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
+        }
+    
+        // 2. 타임 히스토리 불러오기
+        const userHistories = await prisma.timeHistory.findMany({ where: { userid: data.userId } });
+    
+        // 3. 업데이트된 회원 정보 반환
+        return userHistories;
+        } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    }
+};

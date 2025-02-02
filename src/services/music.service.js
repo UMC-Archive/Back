@@ -119,7 +119,7 @@ export const listHiddenMusics = async (user_id) => {
   const billboardTop10 = await getBillboardAPI(
     date[0].history.toISOString().split("T")[0]
   );
-  let albums = []
+  let albums = [];
   const { titles, artists } = await extractBillboard(billboardTop10);
   const musics = await Promise.all(
     artists.map((artist, i) => listMusic(artist, titles[i]))
@@ -187,7 +187,7 @@ export const listAlbum = async (artist_name, album_name) => {
   //DB에 앨범이 저장 되어 있지 않을 때
   const apiInfo = await getAlbumAPI(artist_name, album_name);
   const album = await addAlbum(apiInfo);
-  await listArtist(artist_name, album_name)
+  await listArtist(artist_name, album_name);
   return responseFromAlbum(album);
 };
 
@@ -294,7 +294,11 @@ export const genreImage = async () => {
         let genreImage = await getGenreImage(data);
         if (!genreImage) genreImage = await setGenreImage(data);
         if (index === randomIndex)
-          genreImages.push({ name: genreDB.name, image: genreImage.image }); // 출력 되는 값 지정
+          genreImages.push({
+            id: genreDB.id.toString(),
+            name: genreDB.name,
+            image: genreImage.image,
+          }); // 출력 되는 값 지정
       })
     );
   }

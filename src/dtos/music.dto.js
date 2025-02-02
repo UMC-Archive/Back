@@ -13,7 +13,11 @@ export const responseFromMusic = (music) => {
 
 export const responseFromHiddenMusics = (data) => {
   const combined = [];
-  const length = Math.min(data.musics.length, data.artists.length, data.albums.length);
+  const length = Math.min(
+    data.musics.length,
+    data.artists.length,
+    data.albums.length
+  );
   for (let i = 0; i < length; i++) {
     combined.push({
       music: data.musics[i],
@@ -25,14 +29,19 @@ export const responseFromHiddenMusics = (data) => {
 };
 
 export const responseFromSpecificArtist = (artist) => {
-  return artist;
+  return {
+    id: artist.id.toString(),
+    name: artist.name,
+    image: artist.image,
+  };
 };
 
 export const responseFromAllArtists = ({ AllArtists }) => {
   return {
     artists: AllArtists.map((artist) => ({
+      id: artist.id.toString(),
       name: artist.name,
-      image: artist.imageUrl,
+      image: artist.image,
     })),
   };
 };
