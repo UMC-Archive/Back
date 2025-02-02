@@ -152,8 +152,7 @@ export const userChangeImageService = async (req, res) => {// data) => {
 export const userChangeGenreService = async (data) => {
     console.log("bodyService:", data)
     const ChangeGenre = await changeGenreRep({
-        name: data.name,
-        email: data.email,
+        userId: data.userId,
         genreId: data.genreId,
     })
     if (ChangeGenre == null) {

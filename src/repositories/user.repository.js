@@ -154,8 +154,7 @@ export const changeGenreRep = async (data) => {
         // 1. userId로 회원 존재 여부 확인
         const existingUser = await prisma.user.findFirst({
             where: {
-                name: data.name,
-                email: data.email,
+                id: data.userId,
             },
         });
 
@@ -164,11 +163,11 @@ export const changeGenreRep = async (data) => {
         }
         console.log(existingUser);
 
-        const userId = Number(existingUser.id);
+        //const userId = Number(existingUser.id);
 
         // 2. userId로 UserGenre의 고유 id 조회
         const existingUserGenre = await prisma.userGenre.findFirst({
-            where: { userId: userId },
+            where: { userId: data.userId },
         });
 
         if (!existingUserGenre) {

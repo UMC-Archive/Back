@@ -53,10 +53,9 @@ export const bodyToImageDTO = (req) => {
 };
 
 // 유저 장르 변경 DTO
-export const bodyToGenreDTO = (req) => {
+export const bodyToGenreDTO = (uid, req) => {
     return {
-        name: req.name,
-        email: req.email,
+        userId: uid.userId,
         genreId: BigInt(req.genreId),
     };
 };
