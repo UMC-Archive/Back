@@ -184,9 +184,7 @@ export const getArtistTopTrack = (artist_name) => {
           resolve(null);
           return;
         }
-        console.log(data);
         const result = data.track[0].name;
-        console.log(result.name);
         resolve(result);
       }
     );
