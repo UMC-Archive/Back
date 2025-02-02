@@ -11,6 +11,7 @@ import {
   bodyToGenreDTO,
   bodyToArtistDTO,
   bodyToUserMusic,
+  bodyToHistoryDTO,
 } from "../dtos/user.dto.js";
 import {
   userSignUp,
@@ -23,6 +24,7 @@ import {
   userChangeArtistService,
   userProfile,
   userPlay,
+  userAddHistoryService,
 } from "../services/user.service.js";
 
 //회원가입
@@ -801,5 +803,25 @@ export const handleUserPlay = async (req, res, next) => {
     res.send(response(status.SUCCESS, userMusic));
   } catch (err) {
     res.send(response(status.ALBUM_NOT_EXIST, null));
+  }
+};
+
+// 유저의 연도 타임 히스토리 기록하기
+export const handleHistory = async (req,res,next) => {
+  try {
+    console.log("유저의 연도 타임 히스토리 추가를 요청했습니다!");
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const addHistory = await userAddHistoryService(bodyToHistoryDTO(req.userId, req.body));
+      res.status(StatusCodes.OK).success(addHistory);
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    return next(err);
   }
 };
