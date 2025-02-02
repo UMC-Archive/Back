@@ -16,6 +16,7 @@ import {
     setUserMusic,
     getUserMusic,
     addHistoryRep,
+    userHistoryInfoRep,
 } from "../repositories/user.repository.js";
 import { profileUploader } from "../repositories/s3.repository.js"
 
@@ -202,4 +203,10 @@ export const userAddHistoryService = async(data) => {
         throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
     }
     return addHistory;
+};
+
+// 유저의 타임 히스토리를 불러오는 service
+export const userHistoryInfoService = async (userId) => {
+    const userHistoryInfo = await userHistoryInfoRep(userId);
+    return userHistoryInfo;
 };

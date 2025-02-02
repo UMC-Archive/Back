@@ -25,6 +25,7 @@ import {
   userProfile,
   userPlay,
   userAddHistoryService,
+  userHistoryInfoService,
 } from "../services/user.service.js";
 
 //회원가입
@@ -822,6 +823,28 @@ export const handleHistory = async (req,res,next) => {
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
     }
   } catch (err) {
-    return next(err);
+    console.log(err);
+    res.send(response(BaseError));
+  }
+};
+
+// 유저 히스토리 불러오기
+export const handleGetHistory = async (req,res,next) => {
+  try {
+    console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const userInfo = await userHistoryInfoService(req.userId);
+      res.status(StatusCodes.OK).success(userInfo);
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
   }
 };
