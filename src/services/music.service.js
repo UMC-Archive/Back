@@ -45,49 +45,71 @@ import {
 } from "../repositories/music.repository.js";
 import { recommandArtist } from "../middleware/gpt.js";
 import { getGenrePngFiles } from "../repositories/s3.repository.js";
+import {
+  getArtistTopAlbum,
+  getArtistTopTrack,
+  getAlbumInfo,
+} from "../lastfm.js";
+
+// gpt api에서 선호 아티스트 배열로 집어넣기
+const listRecommandArtist = async (user_history, preferArtists) => {
+  let artists = [];
+  for (const prefer of preferArtists) {
+    const recommend = await recommandArtist(`${user_history}, ${prefer}`)
+    artists.push(...(recommend));
+  }
+  return artists;
+}
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
+  // 유저 정보 값 가져오기
   const preferArtists = await getUserArtistPrefers(user_id);
   const userHistory = await getUserHistory(user_id);
+
+  // 함수 스코프로 사용될 값
   let recommendedMusics = [];
-  for (const prefer of preferArtists) {
-    const artists = await recommandArtist(`${userHistory} ${prefer}`);
-    for (const artist of artists) {
-      const musics = await getAlbumItunes("", artist);
-      if (musics) {
-        const musicList = await listMusic(
-          artist,
-          musics.trackName.split("(")[0]
-        );
-        recommendedMusics.push({
-          music: musicList,
-          album: await getAlbumById(musicList.albumId),
-          artist: artist,
-        });
-      }
+
+  const artists = await listRecommandArtist(userHistory, preferArtists)
+
+  // 아티스트로 검색
+  for (const num in artists) {
+    // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
+    const albumName = await getArtistTopAlbum(artists[num])
+    // 앨범 검색
+    const album = await listAlbum(artists[num], albumName);
+
+    // 검증된 앨범 값 검색하여 음악 찾기
+    const api = await getAlbumInfo(artists[num], album.title);
+    if (api) {
+      const musicName = api.tracks.track[0].name;
+      recommendedMusics.push(await listMusic(artists[num], musicName))
     }
   }
-  if (recommendedMusics.length === 0) return await listNominationMusic(user_id);
-  return recommendedMusics;
+  return recommendedMusics
 };
 //당신을 위한 앨범 추천(연도)
 export const listNominationAlbum = async (user_id) => {
+  // 유저 정보 값 가져오기
   const preferArtists = await getUserArtistPrefers(user_id);
   const userHistory = await getUserHistory(user_id);
+
+  // 함수 스코프로 사용될 값
   let recommendedAlbums = [];
+  let artists = [];
+
+  // gpt api에서 선호 아티스트 배열로 집어넣기
   for (const prefer of preferArtists) {
-    const artists = await recommandArtist(`${userHistory} ${prefer}`);
-    for (const artist of artists) {
-      const albums = await getAlbumItunesEntity("", artist, "album");
-      if (albums) {
-        recommendedAlbums.push({
-          album: await listAlbum(artist, albums.collectionName),
-          artist: artist,
-        });
-      }
-    }
+    const recommend = await recommandArtist(`${userHistory}, ${prefer}`)
+    artists.push(...(recommend));
   }
-  if (recommendedAlbums.length === 0) return await listNominationAlbum(user_id);
+
+  // 아티스트로 검색
+  for (const num in artists) {
+    // Top Album 가져오기 
+    const albumName = await getArtistTopAlbum(artists[num])
+    // 앨범 검색
+    recommendedAlbums.push(await listAlbum(artists[num], albumName));
+  }
   return recommendedAlbums;
 };
 
