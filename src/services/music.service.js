@@ -272,7 +272,11 @@ export const genreImage = async () => {
         let genreImage = await getGenreImage(data);
         if (!genreImage) genreImage = await setGenreImage(data);
         if (index === randomIndex)
-          genreImages.push({ name: genreDB.name, image: genreImage.image }); // 출력 되는 값 지정
+          genreImages.push({
+            id: genreDB.id.toString(),
+            name: genreDB.name,
+            image: genreImage.image,
+          }); // 출력 되는 값 지정
       })
     );
   }
