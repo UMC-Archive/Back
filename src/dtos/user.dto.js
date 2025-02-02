@@ -61,10 +61,9 @@ export const bodyToGenreDTO = (uid, req) => {
 };
 
 // 유저 아티스트 변경 DTO
-export const bodyToArtistDTO = (req) => {
+export const bodyToArtistDTO = (uid, req) => {
     return {
-        name: req.name,
-        email: req.email,
+        userId: uid.userId,
         artistId: BigInt(req.artistId),
     };
 };

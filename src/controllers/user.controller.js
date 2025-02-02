@@ -665,9 +665,17 @@ export const handleUserArtist = async (req, res, next) => {
 */
   try {
     console.log("유저가 아티스트 변경을 요청했습니다!");
-    console.log("bodyController:", req.body);
-    const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.body));
-    res.send(response(status.SUCCESS, changeArtist));
+    console.log(req.get("Authorization"))
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test")
+    if (token !== null) {
+      // 토큰 이상없음
+      const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.userId,req.body));
+      res.send(response(status.SUCCESS, changeArtist));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
   } catch (err) {
     return next(err);
   }

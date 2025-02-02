@@ -165,8 +165,7 @@ export const userChangeGenreService = async (data) => {
 export const userChangeArtistService = async (data) => {
     console.log("bodyService:", data)
     const ChangeArtist = await changeArtistRep({
-        name: data.name,
-        email: data.email,
+        userId: data.userId,
         artistId: data.artistId,
     })
     if (ChangeArtist == null) {

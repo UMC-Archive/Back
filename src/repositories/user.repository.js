@@ -200,8 +200,7 @@ export const changeArtistRep = async (data) => {
         // 1. userId로 회원 존재 여부 확인
         const existingUser = await prisma.user.findFirst({
             where: {
-                name: data.name,
-                email: data.email,
+                id: data.userId,
             },
         });
 
@@ -210,11 +209,11 @@ export const changeArtistRep = async (data) => {
         }
         console.log(existingUser);
 
-        const userId = Number(existingUser.id);
+        //const userId = Number(existingUser.id);
 
         // 2. userId로 UserArtist의 고유 id 조회
         const existingUserArtist = await prisma.userArtist.findFirst({
-            where: { userId: userId },
+            where: { userId: data.userId },
         });
 
         if (!existingUserArtist) {
