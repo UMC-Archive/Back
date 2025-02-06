@@ -177,14 +177,7 @@ export const handleLogin = async (req, res, next) => {
               result: {
                 type: "object",
                 properties: {
-                  token: { type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
-                  user: {
-                    type: "object",
-                    properties: {
-                      id: { type: "string", example: "1" },
-                      email: { type: "string", example: "user@example.com" }
-                    }
-                  }
+                  token: { type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
                 }
               }
             }
@@ -404,12 +397,13 @@ export const handleUserInfo = async (req, res) => {
                   id: { type: "string", example: "1" },
                   nickname: { type: "string", example: "닉네임" },
                   email: { type: "string", example: "user@example.com" },
+                  password: { type: "string", example: "hidden" },
                   profileImage: { type: "string", example: "https://example.com/image.jpg" },
                   status: { type: "string", example: "active" },
                   socialType: { type: "string", example: "local" },
-                  inactiveDate: { type: "string", format: "date" },
-                  createdAt: { type: "string", format: "date" },
-                  updatedAt: { type: "string", format: "date" }
+                  inactiveDate: { type: "string", format: "date-time" },
+                  createdAt: { type: "string", format: "date-time" },
+                  updatedAt: { type: "string", format: "date-time" }
                 }
               }
             }
@@ -587,12 +581,15 @@ export const handleUserGenre = async (req, res, next) => {
         schema: {
           type: 'object',
           properties: {
-            code: { type: 'string', example: 'SUCCESS' },
-            data: { 
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "number", example: 200 },
+            message: { type: "string", example: "success!" },
+            result: {
               type: 'object',
               properties: {
                 userId: { type: 'integer', example: 1 },
                 genreId: { type: 'integer', example: 2 },
+                createdAt: { type: "string", format: "date-time" },
                 updatedAt: { type: 'string', format: 'date-time' }
               }
             }
@@ -601,34 +598,22 @@ export const handleUserGenre = async (req, res, next) => {
       }
     }
   }
-  #swagger.responses[401] = {
-    description: '유효하지 않은 토큰',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'object',
-          properties: {
-            code: { type: 'string', example: 'TOKEN_FORMAT_INCORRECT' },
-            data: { type: 'null', example: null }
+    #swagger.responses[401] = {
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  }
-  #swagger.responses[500] = {
-    description: '서버 오류',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'object',
-          properties: {
-            code: { type: 'string', example: 'SERVER_ERROR' },
-            message: { type: 'string', example: '서버 내부 오류가 발생했습니다.' }
-          }
-        }
-      }
-    }
-  }
+    };
 */
 
   try {
@@ -677,12 +662,15 @@ export const handleUserArtist = async (req, res, next) => {
         schema: {
           type: 'object',
           properties: {
-            code: { type: 'string', example: 'SUCCESS' },
-            data: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
               type: 'object',
               properties: {
                 userId: { type: 'integer', example: 1 },
                 artistId: { type: 'integer', example: 1 },
+                createdAt: { type: "string", format: "date-time" },
                 updatedAt: { type: 'string', format: 'date-time', example: '2024-02-01T12:34:56Z' }
               }
             }
@@ -692,34 +680,22 @@ export const handleUserArtist = async (req, res, next) => {
     }
   }
   #swagger.responses[401] = {
-    description: '토큰 형식 오류',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'object',
-          properties: {
-            code: { type: 'string', example: 'TOKEN_FORMAT_INCORRECT' },
-            data: { type: 'null', example: null }
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  }
-  #swagger.responses[500] = {
-    description: '서버 내부 오류',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'object',
-          properties: {
-            code: { type: 'string', example: 'SERVER_ERROR' },
-            message: { type: 'string', example: '오류가 발생했습니다.' }
-          }
-        }
-      }
-    }
-  }
-*/
+    };
+  */
   try {
     console.log("유저가 아티스트 변경을 요청했습니다!");
     console.log(req.get("Authorization"))
@@ -901,7 +877,9 @@ export const handleHistory = async (req,res,next) => {
               properties: {
                 id: { type: "string", example: "1" },
                 userId: { type: "string", example: "1" },
-                history: { type: "string", format: "date", example: "2025-02-02T00:00:00Z" }
+                history: { type: "string", format: "date", example: "2025-02-02T00:00:00Z" },
+                createdAt: { type: "string", format: "date-time" },
+                updatedAt: { type: "string", format: "date-time" }
               }
             }
           }
