@@ -270,6 +270,7 @@ export const addHistoryRep = async (data) => {
     
         // 3. 업데이트된 회원 정보 반환
         return addUserHistory;
+        
         } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`

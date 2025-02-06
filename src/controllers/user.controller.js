@@ -944,7 +944,7 @@ export const handleHistory = async (req,res,next) => {
     if (token !== null) {
       // 토큰 이상없음
       const addHistory = await userAddHistoryService(bodyToHistoryDTO(req.userId, req.body));
-      res.status(StatusCodes.OK).success(addHistory);
+      res.send(response(status.SUCCESS, addHistory));
     } else {
       // 토큰 이상감지
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
@@ -957,7 +957,7 @@ export const handleHistory = async (req,res,next) => {
 
 // 유저 히스토리 불러오기
 export const handleGetHistory = async (req,res,next) => {
-  /*
+/*
   #swagger.summary = '유저 타임 히스토리 불러오기 API';
   #swagger.tags = ['User']
   #swagger.responses[200] = {
@@ -977,13 +977,55 @@ export const handleGetHistory = async (req,res,next) => {
                 properties: {
                   id: { type: "string", example: "1" },
                   userId: { type: "string", example: "1" },
-                  historyType: { type: "string", example: "watch" },
-                  historyDate: { type: "string", format: "date", example: "2025-02-02" },
-                  description: { type: "string", example: "User watched a video" }
+                  history: { type: "string", example: "2024-01-01T00:00:00.000Z" },
+                  createdAt: { type: "string", format: "date-time" },
+                  updatedAt: { type: "string", format: "date-time" }
                 }
               }
             }
           }
+        },
+        example: {
+          isSuccess: true,
+          code: 200,
+          message: "success!",
+          result: [
+            {
+              id: "1",
+              userId: "1",
+              history: "2024-01-01T00:00:00.000Z",
+              createdAt: "2025-02-03T11:07:13.931Z",
+              updatedAt: "2025-02-03T11:07:13.931Z"
+            },
+            {
+              id: "2",
+              userId: "1",
+              history: "2010-01-01T00:00:00.000Z",
+              createdAt: "2024-01-01T00:00:00.000Z",
+              updatedAt: "2025-02-03T11:14:48.097Z"
+            },
+            {
+              id: "3",
+              userId: "1",
+              history: "2025-01-25T15:30:45.123Z",
+              createdAt: "2025-02-06T06:27:13.381Z",
+              updatedAt: "2025-02-06T06:27:13.381Z"
+            },
+            {
+              id: "4",
+              userId: "1",
+              history: "2025-01-26T15:30:45.123Z",
+              createdAt: "2025-02-06T06:35:16.149Z",
+              updatedAt: "2025-02-06T06:35:16.149Z"
+            },
+            {
+              id: "5",
+              userId: "1",
+              history: "2025-01-28T15:30:45.123Z",
+              createdAt: "2025-02-06T06:59:25.515Z",
+              updatedAt: "2025-02-06T06:59:25.515Z"
+            }
+          ]
         }
       }
     }
@@ -1029,7 +1071,7 @@ export const handleGetHistory = async (req,res,next) => {
     if (token !== null) {
       // 토큰 이상없음
       const userInfo = await userHistoryInfoService(req.userId);
-      res.status(StatusCodes.OK).success(userInfo);
+      res.send(response(status.SUCCESS, userInfo));
     } else {
       // 토큰 이상감지
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
