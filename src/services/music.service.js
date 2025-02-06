@@ -45,7 +45,7 @@ import {
   getMusicByAlbumId,
   getMusicArtistByMusicId,
   getMusicArtistByArtistId,
-  getMusicById
+  getMusicById,
 } from "../repositories/music.repository.js";
 import { recommandArtist } from "../middleware/gpt.js";
 import { getGenrePngFiles } from "../repositories/s3.repository.js";
@@ -55,27 +55,35 @@ import {
   getAlbumInfo,
 } from "../lastfm.js";
 
-
 // gpt api에서 선호 아티스트 배열로 집어넣기
 const listRecommandArtist = async (user_history, preferArtists) => {
   let artists = [];
   const invalidArtists = [
-    "Artist 1 Name", "object Object", "Object1 Artist",
-    "Similar Artist 1", "artist1", "Artist's Name", "Error", "[object Object]", "invalid data", "[artist1]", "object1"
+    "Artist 1 Name",
+    "object Object",
+    "Object1 Artist",
+    "Similar Artist 1",
+    "artist1",
+    "Artist's Name",
+    "Error",
+    "[object Object]",
+    "invalid data",
+    "[artist1]",
+    "object1",
   ];
 
   for (const prefer of preferArtists) {
-    let recommend = await recommandArtist(`${user_history}, ${prefer}`)
+    let recommend = await recommandArtist(`${user_history}, ${prefer}`);
 
     // AI 에러 값 검출
     while (invalidArtists.includes(artists[0]) || !recommend[2]) {
       recommend = await recommandArtist(`${user_history} ${prefer}`);
     }
 
-    artists.push(...(recommend));
+    artists.push(...recommend);
   }
   return artists;
-}
+};
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
   // 유저 정보 값 가져오기
@@ -85,12 +93,12 @@ export const listNominationMusic = async (user_id) => {
   // 함수 스코프로 사용될 값
   let recommendedMusics = [];
 
-  const artists = await listRecommandArtist(userHistory, preferArtists)
+  const artists = await listRecommandArtist(userHistory, preferArtists);
 
   // 아티스트로 검색
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albumName = await getArtistTopAlbum(artists[num])
+    const albumName = await getArtistTopAlbum(artists[num]);
     // 앨범 검색
     const album = await listAlbum(artists[num], albumName);
 
@@ -105,7 +113,7 @@ export const listNominationMusic = async (user_id) => {
       });
     }
   }
-  return recommendedMusics
+  return recommendedMusics;
 };
 //당신을 위한 앨범 추천(연도)
 export const listNominationAlbum = async (user_id) => {
@@ -119,14 +127,14 @@ export const listNominationAlbum = async (user_id) => {
 
   // gpt api에서 선호 아티스트 배열로 집어넣기
   for (const prefer of preferArtists) {
-    const recommend = await recommandArtist(`${userHistory}, ${prefer}`)
-    artists.push(...(recommend));
+    const recommend = await recommandArtist(`${userHistory}, ${prefer}`);
+    artists.push(...recommend);
   }
 
   // 아티스트로 검색
   for (const num in artists) {
-    // Top Album 가져오기 
-    const albumName = await getArtistTopAlbum(artists[num])
+    // Top Album 가져오기
+    const albumName = await getArtistTopAlbum(artists[num]);
     // 앨범 검색
     recommendedAlbums.push({
       album: await listAlbum(artists[num], albumName),
@@ -148,8 +156,8 @@ export const listHiddenMusics = async (user_id) => {
   let artists = [];
 
   for (let i = 0; i < 10; i++) {
-    const album = await getAlbumItunes(AllTitles[i], AllArtists[i])
-    const api = await getAlbumInfo(AllArtists[i], album.collectionName)
+    const album = await getAlbumItunes(AllTitles[i], AllArtists[i]);
+    const api = await getAlbumInfo(AllArtists[i], album.collectionName);
     if (api.tracks) {
       artists.push(AllArtists[i]);
       titles.push(AllTitles[i]);
@@ -197,8 +205,8 @@ export const listMusic = async (artist_name, music_name) => {
 const listAlbumSearch = async (music_name, artist_name) => {
   const albumApi = await getAlbumItunesAPI(music_name, artist_name);
   if (!albumApi) {
-    console.log("error not album")
-    throw new Error("음악과 아티스트를 통해 앨범을 찾을 수 없음")
+    console.log("error not album");
+    throw new Error("음악과 아티스트를 통해 앨범을 찾을 수 없음");
   }
   const album = await listAlbum(artist_name, albumApi.title);
   return album;
@@ -278,12 +286,34 @@ export const listAllArtistInfo = async (user_id) => {
   }
 };
 
-export const listNomMusics = async (music_name, artist_name) => {
-  const tracks = await getSimMusicsAPI(music_name, artist_name);
+export const listNomMusics = async (user_id) => {
+  // 유저 정보 값 가져오기
+  const preferArtists = await getUserArtistPrefers(user_id);
 
-  const shuffledTracks = tracks.sort(() => Math.random() - 0.5).slice(1, 11);
+  // 함수 스코프로 사용될 값
+  let recommendedMusics = [];
 
-  return { shuffledTracks };
+  const artists = await listRecommandBasicArtist(preferArtists);
+
+  // 아티스트로 검색
+  for (const num in artists) {
+    // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
+    const albumName = await getArtistTopAlbum(artists[num]);
+    // 앨범 검색
+    const album = await listAlbum(artists[num], albumName);
+
+    // 검증된 앨범 값 검색하여 음악 찾기
+    const api = await getAlbumInfo(artists[num], album.title);
+    if (api) {
+      const musicName = api.tracks.track[0].name;
+      recommendedMusics.push({
+        music: await listMusic(artists[num], musicName),
+        album: album,
+        artist: artists[num],
+      });
+    }
+  }
+  return recommendedMusics;
 };
 
 //앨범 큐레이션
@@ -302,9 +332,8 @@ export const albumCuration = async (album_id) => {
     const musicArtist = await getMusicArtistByMusicId(music.id);
     const artist = await getArtistById(musicArtist.artistId);
     albumCuration = await setAlbumCuration(album_id, album.title, artist.title);
-  }
-  else {
-    return null
+  } else {
+    return null;
   }
   return albumCuration;
 };
@@ -314,9 +343,9 @@ export const artistCuration = async (artist_id) => {
   if (artistCuration) {
     return artistCuration;
   }
-  const artist = await getArtistById(artist_id)
+  const artist = await getArtistById(artist_id);
   const artistMusic = await getMusicArtistByArtistId(artist_id);
-  const music = await getMusicById(artistMusic.musicId)
+  const music = await getMusicById(artistMusic.musicId);
   //console.log(music)
   artistCuration = await setArtistCuration(artist_id, artist.name, music.title);
   if (!artistCuration) {
@@ -358,4 +387,33 @@ export const genreImage = async () => {
     );
   }
   return genreImages;
+};
+
+const listRecommandBasicArtist = async (preferArtists) => {
+  let artists = [];
+  const invalidArtists = [
+    "Artist 1 Name",
+    "object Object",
+    "Object1 Artist",
+    "Similar Artist 1",
+    "artist1",
+    "Artist's Name",
+    "Error",
+    "[object Object]",
+    "invalid data",
+    "[artist1]",
+    "object1",
+  ];
+
+  for (const prefer of preferArtists) {
+    let recommend = await recommandArtist(`${prefer}`);
+
+    // AI 에러 값 검출
+    while (invalidArtists.includes(artists[0]) || !recommend[2]) {
+      recommend = await recommandArtist(`${prefer}`);
+    }
+
+    artists.push(...recommend);
+  }
+  return artists;
 };
