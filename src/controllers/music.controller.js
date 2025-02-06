@@ -595,30 +595,81 @@ export const handleArtistsInfo = async (req, res, next) => {
 
 // 음악 콘텐츠 추천
 export const handleCommonMusicNomination = async (req, res, next) => {
+  /*
+   #swagger.summary = '추천곡 조회 API';
+   #swagger.tags = ['Music']
+   #swagger.responses[200] = {
+     description: "추천곡 조회 성공 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: true },
+             code: { type: "string", example: "200" },
+             message: { type: "string", example: "success!" },
+             result: {
+               type: "array",
+               items: {
+                 type: "object",
+                 properties: {
+                   music: {
+                     type: "object",
+                     properties: {
+                       id: { type: "string", example: "5" },
+                       albumId: { type: "string", example: "2" },
+                       title: { type: "string", example: "Starboy" },
+                       releaseTime: { type: "string", format: "date-time", example: "2022-12-12T03:33:00.000Z" },
+                       lyrics: { type: "string", example: "[00:57.38] I'm tryna put you in the worst mood, ah..." },
+                       image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/08e3f15aca0423b084fb49f342756f3b.png" },
+                       music: { type: "string", example: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0d/f7/bf/0df7bf34-b7b7-4390-95ef-91749556c20d/mzaf_8636523417719572612.plus.aac.p.m4a" },
+                       createdAt: { type: "string", format: "date-time", example: "2025-02-03T11:07:28.230Z" },
+                       updatedAt: { type: "string", format: "date-time", example: "2025-02-03T11:07:28.230Z" }
+                     }
+                   },
+                   album: {
+                     type: "object",
+                     properties: {
+                       id: { type: "string", example: "2" },
+                       title: { type: "string", example: "Starboy" },
+                       releaseTime: { type: "string", format: "date-time", example: "2022-12-12T03:33:00.000Z" },
+                       image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/08e3f15aca0423b084fb49f342756f3b.png" },
+                       createdAt: { type: "string", format: "date-time", example: "2025-02-03T11:06:05.634Z" },
+                       updatedAt: { type: "string", format: "date-time", example: "2025-02-03T11:06:05.634Z" }
+                     }
+                   },
+                   artist: { type: "string", example: "The Weeknd" }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   };
+   #swagger.responses[400] = {
+     description: "추천곡 조회 실패 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: false },
+             code: { type: "string", example: "MUSIC4001" },
+             message: { type: "string", example: "음악이 존재하지 않습니다." },
+             result: { type: "object", nullable: true, example: null }
+           }
+         }
+       }
+     }
+   };
+*/
   try {
-    console.log("추천곡 조회를 요청했습니다!");
-    const music_name = req.query.music;
-    const artist_name = req.query.artist;
-
-    if (!music_name || !artist_name) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        resultType: "FAIL",
-        error: {
-          errorCode: "BAD_REQUEST",
-          reason: "음악 제목과 아티스트 이름이 필요합니다",
-          data: null,
-        },
-        success: null,
-      });
-    }
-
-    const similarMusics = await listNomMusics(music_name, artist_name);
-
-    return res.status(StatusCodes.OK).json({
-      musics: similarMusics,
-    });
-  } catch (error) {
-    next(error);
+    console.log("당신을 위한 노래 추천을 요청했습니다!");
+    const music = await listNomMusics(req.userId);
+    res.send(response(status.SUCCESS, music));
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
   }
 };
 
