@@ -867,15 +867,6 @@ export const handleHistory = async (req,res,next) => {
   /*
   #swagger.summary = '유저 타임 히스토리 추가 API';
   #swagger.tags = ['User']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: 'Authorization 헤더에 포함된 JWT 토큰을 통해 유저 인증을 수행합니다.',
-    required: true,
-    schema: {
-      type: 'string',
-      example: 'Bearer <your-token>'
-    }
-  }
   #swagger.requestBody = {
     required: true,
     content: {
@@ -991,15 +982,6 @@ export const handleGetHistory = async (req,res,next) => {
   /*
   #swagger.summary = '유저 타임 히스토리 불러오기 API';
   #swagger.tags = ['User']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: 'Authorization 헤더에 포함된 JWT 토큰을 통해 유저 인증을 수행합니다.',
-    required: true,
-    schema: {
-      type: 'string',
-      example: 'Bearer <your-token>'
-    }
-  }
   #swagger.responses[200] = {
     description: '유저 타임 히스토리 조회 성공 응답',
     content: {
