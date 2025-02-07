@@ -31,6 +31,7 @@ import {
   handleAlbumCuration,
   handleArtistCuration,
   handleGenreImage,
+  handleCommonAlbumNomination,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -149,9 +150,9 @@ app.post("/users/artist", handleUserArtist);
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
 //유저 time 히스토리 추가하는 api
-app.post('/users/history', handleHistory);
+app.post("/users/history", handleHistory);
 //유저 time 히스토리 불러오는 api
-app.get('/users/history', handleGetHistory);
+app.get("/users/history", handleGetHistory);
 
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);
@@ -159,6 +160,8 @@ app.get("/music/year/nomination", handleMusicNomination);
 app.get("/album/year/nomination", handleAlbumNomination);
 //추천곡(일반)
 app.get("/music/nomination", handleCommonMusicNomination);
+//당신을 위한 앨범 추천(일반)
+app.get("/album/nomination", handleCommonAlbumNomination);
 //숨겨진 명곡
 app.get("/music/hidden", handleMusicHidden);
 //노래 정보 가져오기

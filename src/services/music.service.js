@@ -417,3 +417,29 @@ const listRecommandBasicArtist = async (preferArtists) => {
   }
   return artists;
 };
+
+export const listNomAlbums = async (user_id) => {
+  const preferArtists = await getUserArtistPrefers(user_id);
+
+  // 함수 스코프로 사용될 값
+  let recommendedAlbums = [];
+  let artists = [];
+
+  // gpt api에서 선호 아티스트 배열로 집어넣기
+  for (const prefer of preferArtists) {
+    const recommend = await recommandArtist(`${prefer}`);
+    artists.push(...recommend);
+  }
+
+  // 아티스트로 검색
+  for (const num in artists) {
+    // Top Album 가져오기
+    const albumName = await getArtistTopAlbum(artists[num]);
+    // 앨범 검색
+    recommendedAlbums.push({
+      album: await listAlbum(artists[num], albumName),
+      artist: artists[num],
+    });
+  }
+  return recommendedAlbums;
+};
