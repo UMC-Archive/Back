@@ -18,6 +18,7 @@ import {
   listNomAlbums,
   listAlbumTrackList,
   listSimilarArtists,
+  listDifferentAlbum,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -1014,6 +1015,17 @@ export const handleArtistSimilar = async (req, res, next) => {
     console.log("이 아티스트와 비슷한 아티스트를 요청했습니다!");
     const artists = await listSimilarArtists(req.params.artist_id);
     res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+}
+
+//이 아티스트의 다른 앨범
+export const handleDifferentAlbum = async (req, res, next) => {
+  try {
+    console.log("이 아티스트의 다른 앨범을 요청했습니다!");
+    const albums = await listDifferentAlbum(req.params.artist_id, req.params.album_id);
+    res.send(response(status.SUCCESS, albums));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
   }
