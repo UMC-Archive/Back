@@ -148,16 +148,16 @@ export const getAlbumAPI = async (artist_name, album_name) => {
     title: albumInfo
       ? albumInfo.name
       : albumItunes
-      ? albumItunes.collectionName
-      : album_name,
+        ? albumItunes.collectionName
+        : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo
         ? albumInfo.wiki
           ? albumInfo.wiki.published
           : albumItunes
-          ? albumItunes.releaseDate
-          : "1970-01-01"
+            ? albumItunes.releaseDate
+            : "1970-01-01"
         : "1970-01-01"
     ),
     image: image ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
@@ -422,6 +422,7 @@ export const getSimArtistsAPI = async (artist_name) => {
 //앨범 큐레이션
 //앨범 정보 얻기
 export const getMusicByAlbumId = async (album_id) => {
+  console.log(album_id)
   const music = await prisma.music.findFirst({ where: { albumId: album_id } });
   return music;
 };

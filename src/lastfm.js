@@ -229,3 +229,30 @@ export const getTrackInfoAPI = (album_name, artist_name) => {
     );
   });
 };
+
+export const getSimilarArtistsBymbid = async (artist_name, mbid) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getSimilar({ artist: artist_name, mbid: mbid }, (err, data) => {
+      if (err) {
+        resolve(null);
+      }
+
+      const artist = data?.artist;
+      const result = artist//{ name: artist.name };
+
+      resolve(result);
+    });
+  });
+}
+
+export const getArtistTopAlbumsBymbid = async (artist_name, mbid) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopAlbums({ artist: artist_name, mbid: mbid }, (err, artist) => {
+      if (err) {
+        resolve(null);
+      } else {
+        resolve(artist);
+      }
+    });
+  });
+}

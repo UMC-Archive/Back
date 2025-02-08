@@ -33,6 +33,7 @@ import {
   handleGenreImage,
   handleCommonAlbumNomination,
   handleAlbumTrackList,
+  handleArtistSimilar,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -183,6 +184,8 @@ app.get("/library/artist", handleLibraryArtist);
 app.get("/library/album", handleLibraryAlbum);
 //수록곡 조회
 app.get("/album/:album_id/track-list", handleAlbumTrackList);
+//이 아티스트와 비슷한 아티스트
+app.get("/music/artist/:artist_id/similar", handleArtistSimilar);
 //--------------------------------
 
 app.use((err, req, res, next) => {

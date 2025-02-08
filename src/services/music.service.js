@@ -56,6 +56,9 @@ import {
   getArtistTopAlbum,
   getArtistTopTrack,
   getAlbumInfo,
+  getMusicInfo,
+  getSimilarArtistsBymbid,
+  getArtistTopAlbumsBymbid,
 } from "../lastfm.js";
 
 // gpt api에서 선호 아티스트 배열로 집어넣기
@@ -189,9 +192,9 @@ export const listMusic = async (artist_name, music_name) => {
   }
   //DB에 음악이 저장 되어 있지 않을 때
   //앨범 정보
-  const album = await listAlbumSearch(music_name, artist_name);
+  let album = await listAlbumSearch(music_name, artist_name);
   //아티스트 정보
-  const artist = await listArtist(artist_name, album.title);
+  const artist = await listArtistOnly(artist_name, album.title);
 
   //음악 가사 정보
   let lyrics = await getLyricsAPI(artist_name, music_name);
@@ -210,7 +213,6 @@ const listAlbumSearch = async (music_name, artist_name) => {
   const albumApi = await getAlbumItunesAPI(music_name, artist_name);
   if (!albumApi) {
     console.log("error not album");
-    throw new Error("음악과 아티스트를 통해 앨범을 찾을 수 없음");
   }
   const album = await listAlbum(artist_name, albumApi.title);
   return album;
@@ -239,12 +241,12 @@ export const listAlbum = async (artist_name, album_name) => {
   //DB에 앨범이 저장 되어 있지 않을 때
   const apiInfo = await getAlbumAPI(artist_name, album_name);
   const album = await addAlbum(apiInfo);
-  const artist = await listArtist(artist_name, album_name);
+  const artist = await listArtistOnly(artist_name, album_name);
   return responseFromAlbum(album);
 };
 
 //아티스트 정보 가져오기
-export const listArtist = async (artist_name, album_name) => {
+const listArtistOnly = async (artist_name, album_name) => {
   //DB에 아티스트가 저장 되어 있을 때
   const artistDB = await getArtistDB(artist_name);
   if (artistDB) {
@@ -254,6 +256,11 @@ export const listArtist = async (artist_name, album_name) => {
   const apiInfo = await getArtistAPI(artist_name, album_name);
   //const description = await recommandCuration(artist_name); // 아티스트와 큐레이션 분리
   const artist = await addArtist(apiInfo);
+
+  return responseFromArtist(artist);
+};
+export const listArtist = async (artist_name, album_name) => {
+  const artist = await listArtistOnly(artist_name, album_name)
 
   //큐레이션 용
   const albumInfo = await getAlbumInfo(artist_name, album_name);
@@ -463,3 +470,62 @@ export const listAlbumTrackList = async (album_id) => {
     responseFromAlbumTrackList({ album_info, tracks })
   );
 };
+
+const listAll = async (artist_name, album_name, music_name) => {
+  let artist = await getArtistDB(artist_name);
+  if (!artist) {
+    const data = await getArtistAPI(artist_name, album_name);
+    artist = await addArtist(data)
+  }
+
+  let album = await getAlbumDB(album_name);
+  if (!album) {
+    const data = await getAlbumAPI(artist_name, album_name);
+    album = await addAlbum(data)
+  }
+  let music = await getMusicDB(music_name);
+  if (!music) {
+    let lyrics = await getLyricsAPI(artist_name, music_name);
+    if (!lyrics) {
+      lyrics = "none";
+    }
+    const data = await getMusicAPI(album, lyrics, artist_name, music_name);
+    music = await addMusic(data)
+  }
+  return {
+    music,
+    album,
+    artist
+  }
+}
+
+export const listSimilarArtists = async (artistId) => {
+  const artist = await getArtistById(artistId);
+  const musicArtist = await getMusicArtistByArtistId(artistId);
+  const music = await getMusicById(musicArtist.musicId);
+  const musicInfo = await getMusicInfo(artist.name, music.title);
+  const similar = await getSimilarArtistsBymbid(artist.name, musicInfo?.artist?.mbid);
+  let similars = [];
+  for (let i = 0; i < 5; i++) {
+    const artist = similar[i].name;
+    const mbid = similar[i].mbid;
+    const album = await getArtistTopAlbumsBymbid(artist, mbid);
+    const info = await getAlbumInfo(artist, album?.album[0].name !== "(null)" ? album?.album[0].name : album?.album[1].name)
+
+    if (info?.tracks?.track[0]?.name) {
+      similars.push({
+        artist,
+        album: info.name,
+        music: info.tracks.track[0].name
+      })
+    }
+  }
+  let artists = [];
+  for (let sim in similars) {
+    const all = await listAll(similars[sim].artist, similars[sim].album, similars[sim].music)
+    artists.push(all.artist);
+  }
+  return {
+    artists: artists
+  }
+}
