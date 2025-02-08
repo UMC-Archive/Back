@@ -34,6 +34,7 @@ import {
   handleCommonAlbumNomination,
   handleAlbumTrackList,
   handleArtistSimilar,
+  handleDifferentAlbum
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -186,6 +187,8 @@ app.get("/library/album", handleLibraryAlbum);
 app.get("/album/:album_id/track-list", handleAlbumTrackList);
 //이 아티스트와 비슷한 아티스트
 app.get("/music/artist/:artist_id/similar", handleArtistSimilar);
+//이 아티스트의 다른 앨범
+app.get("/music/artist/:artist_id/album/:album_id", handleDifferentAlbum)
 //--------------------------------
 
 app.use((err, req, res, next) => {

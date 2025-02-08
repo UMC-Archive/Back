@@ -529,3 +529,23 @@ export const listSimilarArtists = async (artistId) => {
     artists: artists
   }
 }
+
+export const listDifferentAlbum = async (artistId, albumId) => {
+  const artist = await getArtistById(artistId);
+  const album = await getAlbumById(albumId);
+  const api = await getAlbumInfo(artist.name, album.title);
+  const mbid = api?.mbid !== "" ? api.mbid : null;
+  const albumsApi = await getArtistTopAlbumsBymbid(artist.name, mbid);
+  const albums = [];
+  for (let i = 0; i < 10; i++) {
+    const albumName = albumsApi?.album[i]?.name;
+    if (albumName && albumName != album.title) {
+      const info = await getAlbumInfo(artist.name, albumName);
+      if (info?.tracks?.track[0]?.name) {
+        const all = await listAll(artist.name, info.name, info.tracks.track[0].name);
+        albums.push(all.album)
+      }
+    }
+  }
+  return albums;
+}
