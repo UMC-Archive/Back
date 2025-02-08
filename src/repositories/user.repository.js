@@ -250,6 +250,16 @@ export const getUserMusic = async (userMusicId) => {
     return userMusic;
 }
 
+export const getMusicGenreByMusicId = async (musicId) => {
+    const musicGenre = await prisma.musicGenre.findFirst({ where: { musicId: musicId } });
+    return musicGenre;
+}
+
+export const setMusicGenre = async (data) => {
+    const created = await prisma.musicGenre.create({ data: data });
+    return created;
+}
+
 // 유저의 time 히스토리를 추가
 export const addHistoryRep = async (data) => {
     console.log("bodyRep:", data)
@@ -260,23 +270,23 @@ export const addHistoryRep = async (data) => {
                 id: data.userId,
             },
         });
-    
+
         if (!existingUser) {
             throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
         }
-    
+
         // 2. 타임 히스토리 추가
-        const addUserHistory = await prisma.timeHistory.create({ data : data });
-    
+        const addUserHistory = await prisma.timeHistory.create({ data: data });
+
         // 3. 업데이트된 회원 정보 반환
         return addUserHistory;
-        
-        } catch (err) {
+
+    } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
         );
     }
-    
+
 };
 
 //유저의 time 히스토리를 불러오기
@@ -289,17 +299,17 @@ export const userHistoryInfoRep = async (data) => {
                 id: data.userId,
             },
         });
-    
+
         if (!existingUser) {
             throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
         }
-    
+
         // 2. 타임 히스토리 불러오기
         const userHistories = await prisma.timeHistory.findMany({ where: { userid: data.userId } });
-    
+
         // 3. 업데이트된 회원 정보 반환
         return userHistories;
-        } catch (err) {
+    } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
         );

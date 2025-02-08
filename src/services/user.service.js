@@ -17,9 +17,11 @@ import {
     getUserMusic,
     addHistoryRep,
     userHistoryInfoRep,
+    getMusicGenreByMusicId,
+    setMusicGenre,
 } from "../repositories/user.repository.js";
 import { profileUploader } from "../repositories/s3.repository.js"
-
+import { recommandGenre } from "../middleware/gpt.js";
 import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
 
 import bcrypt from "bcrypt";
@@ -28,6 +30,7 @@ import dotenv from "dotenv";
 import { createJwt } from "../middleware/jwt.js";
 import mailSender from "../middleware/email.js";
 import { encrypt } from "../middleware/encrypt.js";
+import { getArtistById, getGenreIdByName, getMusicArtistByMusicId, getMusicById } from "../repositories/music.repository.js";
 
 export const userSignUp = async (req, res) => {
     const { url, data } = await profileUploader(req, res);
@@ -183,6 +186,25 @@ export const userProfile = async (req, res) => {
 }
 
 // 유저의 음악 재생 시 기록하기
+export const getGenreForMusic = async (data) => {
+    let musicGenre = await getMusicGenreByMusicId(data.musicId);
+    if (!musicGenre) {
+        const music = await getMusicById(data.musicId);
+        const musicArtist = await getMusicArtistByMusicId(data.musicId);
+        const artist = await getArtistById(musicArtist.artistId);
+        const genreName = await recommandGenre(`${artist.name}, ${music.title}`);
+        const genre = await getGenreIdByName(genreName);
+        const genreData = {
+            musicId: music.id,
+            genreId: genre.id
+        };
+        musicGenre = await setMusicGenre(genreData)
+        console.log(musicGenre)
+        return genre;
+    }
+    console.log(musicGenre)
+    return null;
+};
 export const userPlay = async (data) => {
     const userMusicId = await setUserMusic({
         userId: data.userId,
@@ -193,13 +215,13 @@ export const userPlay = async (data) => {
 };
 
 // 유저의 타임 히스토리를 저장하는 service
-export const userAddHistoryService = async(data) => {
+export const userAddHistoryService = async (data) => {
     console.log("bodyService:", data)
     const addHistory = await addHistoryRep({
         userId: data.userId,
         history: data.history,
-    })    
-    if(addHistory == null){
+    })
+    if (addHistory == null) {
         throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
     }
     return addHistory;
