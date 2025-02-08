@@ -207,3 +207,25 @@ export const getArtistTopAlbum = (artist_name) => {
     );
   });
 };
+
+export const getTrackInfoAPI = (album_name, artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.album.getInfo(
+      { album: album_name, artist: artist_name, autocorrect: 1 },
+      (err, data) => {
+        if (err) {
+          console.log("error", err);
+          resolve(null);
+          return;
+        }
+
+        const tracks = data.tracks.track.map((track) => ({
+          title: track.name,
+          artist: track.artist.name,
+        }));
+
+        resolve(tracks);
+      }
+    );
+  });
+};

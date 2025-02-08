@@ -7,6 +7,7 @@ import {
   responseFromHiddenMusics,
   responseFromSpecificArtist,
   responseFromAllArtists,
+  responseFromAlbumTrackList,
 } from "../dtos/music.dto.js";
 import { getAlbumItunes, getAlbumItunesEntity } from "../itunes.js";
 import {
@@ -46,6 +47,8 @@ import {
   getMusicArtistByMusicId,
   getMusicArtistByArtistId,
   getMusicById,
+  getTrackList,
+  getAlbum,
 } from "../repositories/music.repository.js";
 import { recommandArtist } from "../middleware/gpt.js";
 import { getGenrePngFiles } from "../repositories/s3.repository.js";
@@ -176,6 +179,7 @@ export const listHiddenMusics = async (user_id) => {
     artists,
   });
 };
+
 //음악 정보 가져오기
 export const listMusic = async (artist_name, music_name) => {
   //DB에 음악이 저장 되어 있을 때
@@ -442,4 +446,20 @@ export const listNomAlbums = async (user_id) => {
     });
   }
   return recommendedAlbums;
+};
+
+export const listAlbumTrackList = async (album_id) => {
+  const album_info = await getAlbum(album_id);
+  if (!album_info) {
+    return response(status.ALBUM_NOT_EXIST, null);
+  }
+  const tracks = await getTrackList(album_id);
+  if (!tracks || tracks.length === 0) {
+    return response(status.MUSIC_NOT_EXIST, null);
+  }
+
+  return response(
+    status.SUCCESS,
+    responseFromAlbumTrackList({ album_info, tracks })
+  );
 };

@@ -45,3 +45,22 @@ export const responseFromAllArtists = ({ AllArtists }) => {
     })),
   };
 };
+
+export const responseFromAlbumTrackList = ({ album_info, tracks }) => {
+  return {
+    album: {
+      id: album_info.id.toString(),
+      title: album_info.title,
+      image: album_info.image,
+      artist: album_info.Musics[0].MusicArtists[0].artist.name,
+      releaseTime: new Date(album_info.releaseTime).getFullYear(),
+    },
+    tracks: tracks.map((track) => ({
+      id: track.id,
+      title: track.title,
+      artist: track.MusicArtists[0].artist.name,
+      image: album_info.image,
+      releaseTime: new Date(track.releaseTime).getFullYear(),
+    })),
+  };
+};

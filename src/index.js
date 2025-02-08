@@ -32,6 +32,7 @@ import {
   handleArtistCuration,
   handleGenreImage,
   handleCommonAlbumNomination,
+  handleAlbumTrackList,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -180,6 +181,8 @@ app.get("/library/music", handleLibraryMusic);
 app.get("/library/artist", handleLibraryArtist);
 //보관함 앨범 조회
 app.get("/library/album", handleLibraryAlbum);
+//수록곡 조회
+app.get("/album/:album_id/track-list", handleAlbumTrackList);
 //--------------------------------
 
 app.use((err, req, res, next) => {

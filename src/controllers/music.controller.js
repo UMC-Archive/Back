@@ -16,6 +16,7 @@ import {
   artistCuration,
   genreImage,
   listNomAlbums,
+  listAlbumTrackList,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -907,5 +908,101 @@ export const handleGenreImage = async (req, res, next) => {
     }
   } catch (err) {
     console.error(err);
+  }
+};
+
+//앨범 수록곡 조회
+export const handleAlbumTrackList = async (req, res, next) => {
+  /*
+#swagger.summary = '앨범 수록곡 조회 API'
+#swagger.tags = ['Music']
+#swagger.responses[200] = {
+  description: "앨범 상세 조회 성공 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: true },
+          code: { type: "string", example: "200" },
+          message: { type: "string", example: "success!" },
+          result: {
+            type: "object",
+            properties: {
+              album: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  title: { type: "string", example: "Love Poem - EP" },
+                  image: { 
+                    type: "string", 
+                    example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" 
+                  },
+                  artist: { type: "string", example: "IU" },
+                  releaseTime: { type: "number", example: 2019 }
+                }
+              },
+              tracks: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    title: { type: "string", example: "unlucky" },
+                    artist: { type: "string", example: "IU" },
+                    image: { 
+                      type: "string", 
+                      example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" 
+                    },
+                    releaseTime: { type: "number", example: 2019 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+#swagger.responses[400] = {
+  description: "앨범 상세 조회 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: false },
+          code: { type: "string", example: "MUSIC4001" },
+          message: { type: "string", example: "음악이 존재하지 않습니다." },
+          result: { type: "null", example: null }
+        }
+      }
+    }
+  }
+}
+#swagger.responses[401] = {
+  description: "앨범 상세 조회 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: false },
+          code: { type: "string", example: "MUSIC4002" },
+          message: { type: "string", example: "앨범이 존재하지 않습니다." },
+          result: { type: "null", example: null }
+        }
+      }
+    }
+  }
+}
+*/
+  try {
+    const albumId = req.params.album_id;
+    const result = await listAlbumTrackList(albumId);
+    res.send(result);
+  } catch (err) {
+    return next(err);
   }
 };

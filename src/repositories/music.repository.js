@@ -12,6 +12,7 @@ import {
   getSimArtists,
   getArtistTopTrack,
   getArtistTopAlbum,
+  getTrackInfoAPI,
 } from "../lastfm.js";
 import { getTrackReleaseYear } from "../itunes.js";
 import { prisma } from "../db.config.js";
@@ -45,7 +46,9 @@ export const getBillboardAPI = async (date) => {
 };
 export const extractBillboard = async (billboard) => {
   const values = Object.values(billboard).slice(0, 10);
-  const AllTitles = values.map((item) => item.title.replace(/\(.*$/i, "").trim());
+  const AllTitles = values.map((item) =>
+    item.title.replace(/\(.*$/i, "").trim()
+  );
   const AllArtists = values.map((item) =>
     item.artist.replace(/( featuring| &| and).*$/i, "").trim()
   );
@@ -145,16 +148,16 @@ export const getAlbumAPI = async (artist_name, album_name) => {
     title: albumInfo
       ? albumInfo.name
       : albumItunes
-        ? albumItunes.collectionName
-        : album_name,
+      ? albumItunes.collectionName
+      : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo
         ? albumInfo.wiki
           ? albumInfo.wiki.published
           : albumItunes
-            ? albumItunes.releaseDate
-            : "1970-01-01"
+          ? albumItunes.releaseDate
+          : "1970-01-01"
         : "1970-01-01"
     ),
     image: image ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
@@ -234,7 +237,7 @@ const getArtistByIds = async (ids) => {
 };
 //lastfm에서 정보 가저오기
 export const getArtistAPI = async (artist_name, album_name) => {
-  album_name = album_name.replace(/\(.*$/, '');
+  album_name = album_name.replace(/\(.*$/, "");
   const artistInfo = await getArtistInfo(artist_name);
   const musicName = await getAlbumInfo(artist_name, album_name);
   const ids = await getArtistIdsByMusic(
@@ -423,7 +426,9 @@ export const getMusicByAlbumId = async (album_id) => {
   return music;
 };
 export const getMusicArtistByMusicId = async (music_id) => {
-  const musicArtist = await prisma.musicArtist.findFirst({ where: { musicId: music_id } });
+  const musicArtist = await prisma.musicArtist.findFirst({
+    where: { musicId: music_id },
+  });
   return musicArtist;
 };
 export const getAlbumById = async (album_id) => {
@@ -466,7 +471,9 @@ export const getMusicById = async (music_id) => {
   return music;
 };
 export const getMusicArtistByArtistId = async (artist_id) => {
-  const musicArtist = await prisma.musicArtist.findFirst({ where: { artistId: artist_id } });
+  const musicArtist = await prisma.musicArtist.findFirst({
+    where: { artistId: artist_id },
+  });
   return musicArtist;
 };
 
@@ -484,7 +491,9 @@ export const getArtistCuration = async (artist_id) => {
 
 //아티스트 큐레이션 생성
 export const setArtistCuration = async (artist_id, artist_name, music_name) => {
-  const description = await recommandCuration(`${music_name}를 부른 ${artist_name}`);
+  const description = await recommandCuration(
+    `${music_name}를 부른 ${artist_name}`
+  );
   const data = {
     artistId: artist_id,
     description: description,
@@ -518,4 +527,130 @@ export const getGenreImage = async (data) => {
 export const setGenreImage = async (data) => {
   const genre = await prisma.genreImage.create({ data: data });
   return genre;
+};
+
+export const getTrackList = async (album_id) => {
+  // 1. 앨범 정보 가져오기
+  const album = await prisma.album.findFirst({
+    where: { id: album_id },
+    select: {
+      id: true,
+      title: true,
+      releaseTime: true,
+      image: true,
+      Musics: {
+        take: 1,
+        select: {
+          MusicArtists: {
+            select: {
+              artist: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const album_name = album.title;
+  const artist_name = album.Musics[0].MusicArtists[0].artist.name;
+  const artist_id = album.Musics[0].MusicArtists[0].artist.id;
+
+  // 2. 해당 앨범의 현재 수록곡 확인
+  const dbTracks = await prisma.music.findMany({
+    where: { albumId: album_id },
+  });
+
+  console.log("dbTracks", dbTracks);
+
+  // API에서 전체 수록곡 목록 가져오기
+  const apiTracks = await getTrackInfoAPI(album_name, artist_name);
+  if (!apiTracks) {
+    return [];
+  }
+
+  // DB에 저장된 트랙 수가 API의 트랙 수보다 적을 때만 추가 작업 진행
+  if (dbTracks.length < apiTracks.length) {
+    for (const apiTrack of apiTracks) {
+      // 이미 DB에 있는 트랙인지 확인
+      const existingTrack = dbTracks.find(
+        (dbTrack) => dbTrack.title === apiTrack.title
+      );
+
+      // DB에 없는 트랙만 추가
+      if (!existingTrack) {
+        let lyrics = await getLyricsAPI(artist_name, apiTrack.title);
+        if (!lyrics) {
+          lyrics = "none";
+        }
+
+        await prisma.music.create({
+          data: {
+            title: apiTrack.title,
+            releaseTime: album.releaseTime,
+            lyrics: lyrics,
+            image: album.image,
+            music: apiTrack.url || "",
+            albumId: album.id,
+            MusicArtists: {
+              create: {
+                artistId: artist_id,
+              },
+            },
+          },
+        });
+      }
+    }
+  }
+
+  // 최종적으로 DB의 모든 트랙 반환
+  return await prisma.music.findMany({
+    where: { albumId: album_id },
+    select: {
+      id: true,
+      title: true,
+      releaseTime: true,
+      MusicArtists: {
+        select: {
+          artist: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const getAlbum = async (album_id) => {
+  const album = await prisma.album.findFirst({
+    where: { id: album_id },
+    select: {
+      id: true,
+      title: true,
+      releaseTime: true,
+      image: true,
+      Musics: {
+        take: 1,
+        select: {
+          MusicArtists: {
+            select: {
+              artist: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return album;
 };
