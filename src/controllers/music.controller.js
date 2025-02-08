@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import {} from "../dtos/music.dto.js";
+import { } from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -17,6 +17,7 @@ import {
   genreImage,
   listNomAlbums,
   listAlbumTrackList,
+  listSimilarArtists,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -1006,3 +1007,14 @@ export const handleAlbumTrackList = async (req, res, next) => {
     return next(err);
   }
 };
+
+//이 아티스트와 비슷한 아티스트
+export const handleArtistSimilar = async (req, res, next) => {
+  try {
+    console.log("이 아티스트와 비슷한 아티스트를 요청했습니다!");
+    const artists = await listSimilarArtists(req.params.artist_id);
+    res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+}
