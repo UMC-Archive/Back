@@ -54,7 +54,7 @@ export const recommandArtist = async (data) => {
   }
 };
 
-export const recommandGerne = async (data) => {
+export const recommandGenre = async (data) => {
   try {
     const openai = new OpenAI({
       apiKey: process.env.GPT_KEY,
