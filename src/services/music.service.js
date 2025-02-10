@@ -549,3 +549,37 @@ export const listDifferentAlbum = async (artistId, albumId) => {
   }
   return albums;
 }
+
+//정보 불러오기
+export const findMusic = async (musicName) => {
+  if (musicName) {
+    const music = await getMusicDB(musicName);
+    if (music) {
+      return { name: true, value: true, info: music };
+    }
+    return { name: true, value: false, info: {} };
+  }
+  return { name: false, value: false, info: {} };
+};
+
+export const findAlbum = async (albumName) => {
+  if (albumName) {
+    const album = await getAlbumDB(albumName);
+    if (album) {
+      return { name: true, value: true, info: album };
+    }
+    return { name: true, value: false, info: {} };
+  }
+  return { name: false, value: false, info: {} };
+};
+
+export const findArtist = async (artistName) => {
+  if (artistName) {
+    const artist = await getArtistDB(artistName);
+    if (artist) {
+      return { name: true, value: true, info: artist };
+    }
+    return { name: true, value: false, info: {} };
+  }
+  return { name: false, value: false, info: {} };
+};

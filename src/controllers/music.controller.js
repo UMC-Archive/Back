@@ -19,6 +19,9 @@ import {
   listAlbumTrackList,
   listSimilarArtists,
   listDifferentAlbum,
+  findMusic,
+  findAlbum,
+  findArtist,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -257,9 +260,9 @@ export const handleMusicInfo = async (req, res, next) => {
            type: "object",
            properties: {
               isSuccess: { type: "boolean", example: true },
-            code: { type: "number", example: 200 },
-            message: { type: "string", example: "success!" },
-            result: {
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
                   type: "object",
                   properties: {
                     id: { type: "number", example: 1 },
@@ -1028,5 +1031,231 @@ export const handleDifferentAlbum = async (req, res, next) => {
     res.send(response(status.SUCCESS, albums));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+}
+
+//모든 정보 불러오기
+export const handleAllInfo = async (req, res, next) => {
+  /*
+   #swagger.summary = '모든 정보 조회 API';
+   #swagger.tags = ['Music']
+   #swagger.parameters['music'] = {
+       in: 'query',
+       description: '음악 이름',
+       required: false,
+       type: 'string'
+   }
+   #swagger.parameters['album'] = {
+       in: 'query',
+       description: '앨범 이름',
+       required: false,
+       type: 'string'
+   }
+   #swagger.parameters['artist'] = {
+       in: 'query',
+       description: '아티스트 이름',
+       required: false,
+       type: 'string'
+   }
+  #swagger.responses[200] = {
+    description: "노래 정보 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: true },
+                    info: { type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        albumId: { type: "string", example: "1" },
+                        title: { type: "string", example: "Celebrity" },
+                        releseTime : { type: "string", format: "date", example: "2021-03-25" },
+                        lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
+                        image: { type: "string", example: "https://example.com/music_image.jpg" },
+                        music: { type: "string", example: "https://example.com/preview_music.m4a"},
+                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                        updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                      }
+                    }
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: true },
+                    info: { type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love poem" },
+                        releseTime : { type: "string", format: "date", example: "2021-03-25" },
+                        image: { type: "string", example: "https://example.com/album_image.jpg" },
+                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                        updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                      }
+                    }
+                  }
+                },
+                artist: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: true },
+                    info: { type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        name: { type: "string", example: "IU" },
+                        image: { type: "string", example: "https://example.com/artist_image.jpg" },
+                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                        updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                      }
+                    }
+                  }
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "모든 정보 조회 이름이 모두 존재하지 않아 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "MUSIC4005" },
+            message: { type: "string", example: "요청하신 이름이 모두 존재하지 않습니다." },
+            result: { 
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: false },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: false },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                artist: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: false },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "모든 정보 조회 값이 모두 존재하지 않아 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "MUSIC4004" },
+            message: { type: "string", example: "요청하신 값이 모두 존재하지 않습니다." },
+            result: { 
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                artist: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[500] = {
+    description: "서버 에러",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "COMMON000" },
+            message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
+            result: { type: "null", example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try {
+    console.log("정보 불러오기를 요청했습니다!");
+    const music = await findMusic(req.query.music);
+    const album = await findAlbum(req.query.album);
+    const artist = await findArtist(req.query.artist);
+    const data = {
+      music: music,
+      album: album,
+      artist: artist,
+    };
+    if (music.name === false && album.name === false && artist.name === false) {
+      res.send(response(status.ALL_NAME_NOT_EXIST, data))
+    }
+    else if (music.value === false && album.value === false && artist.value === false) {
+      res.send(response(status.ALL_VALUE_NOT_EXIST, data));
+    }
+    else {
+      res.send(response(status.SUCCESS, data));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
   }
 }

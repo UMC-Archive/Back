@@ -147,6 +147,18 @@ export const status = {
     code: "MUSIC4003",
     message: "아티스트가 존재하지 않습니다.",
   },
+  ALL_VALUE_NOT_EXIST: {
+    status: StatusCodes.NOT_FOUND,
+    isSuccess: false,
+    code: "MUSIC4004",
+    message: "요청하신 값이 모두 존재하지 않습니다.",
+  },
+  ALL_NAME_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC4005",
+    message: "요청하신 이름이 모두 존재하지 않습니다.",
+  },
   //AWS err
   IMAGE_NOT_EXIST: {
     status: StatusCodes.BAD_REQUEST,
