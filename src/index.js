@@ -36,6 +36,7 @@ import {
   handleAlbumTrackList,
   handleArtistSimilar,
   handleDifferentAlbum,
+  handleAllInfo,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -192,6 +193,8 @@ app.get("/album/:album_id/track-list", handleAlbumTrackList);
 app.get("/music/artist/:artist_id/similar", handleArtistSimilar);
 //이 아티스트의 다른 앨범
 app.get("/music/artist/:artist_id/album/:album_id", handleDifferentAlbum);
+//정보 가져오기
+app.get("/music/all/info", handleAllInfo);
 //--------------------------------
 
 app.use((err, req, res, next) => {
