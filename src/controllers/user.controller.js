@@ -26,7 +26,8 @@ import {
   userPlay,
   userAddHistoryService,
   userHistoryInfoService,
-  getGenreForMusic
+  getGenreForMusic,
+  listReacapMusics,
 } from "../services/user.service.js";
 
 //회원가입
@@ -133,11 +134,9 @@ export const handleUserSignUp = async (req, res, next) => {
     const user = await userSignUp(req, res);
     if (user === null) {
       res.send(response(status.EMAIL_ALREADY_EXIST, null));
-    }
-    else if (user.info === false) {
+    } else if (user.info === false) {
       res.send(response(status.MEMBER_NOT_FOUND, null));
-    }
-    else {
+    } else {
       res.send(response(status.SUCCESS, user));
     }
   } catch (err) {
@@ -431,9 +430,9 @@ export const handleUserInfo = async (req, res) => {
 */
   try {
     console.log("유저 정보를 불러옵니다.");
-    console.log(req.get("Authorization"))
+    console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test")
+    console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       res.send(response(status.SUCCESS, await userInfoService(req.userId)));
@@ -445,7 +444,7 @@ export const handleUserInfo = async (req, res) => {
     console.log(err);
     res.send(response(BaseError));
   }
-}
+};
 
 // 유저 프로필 이미지 변경
 export const handleUserChangeImage = async (req, res, next) => {
@@ -543,7 +542,11 @@ export const handleUserChangeImage = async (req, res, next) => {
     const token = await checkFormat(req.get("Authorization"));
     if (token !== null) {
       // 토큰 이상없음
-      const changeImage = await userChangeImageService(req, res, bodyToImageDTO(req.body));
+      const changeImage = await userChangeImageService(
+        req,
+        res,
+        bodyToImageDTO(req.body)
+      );
       res.send(response(status.SUCCESS, changeImage));
     } else {
       // 토큰 이상감지
@@ -619,12 +622,14 @@ export const handleUserGenre = async (req, res, next) => {
 
   try {
     console.log("유저가 장르 변경을 요청했습니다!");
-    console.log(req.get("Authorization"))
+    console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test")
+    console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
-      const changeGenre = await userChangeGenreService(bodyToGenreDTO(req.userId, req.body));
+      const changeGenre = await userChangeGenreService(
+        bodyToGenreDTO(req.userId, req.body)
+      );
       res.send(response(status.SUCCESS, changeGenre));
     } else {
       // 토큰 이상감지
@@ -699,12 +704,14 @@ export const handleUserArtist = async (req, res, next) => {
     */
   try {
     console.log("유저가 아티스트 변경을 요청했습니다!");
-    console.log(req.get("Authorization"))
+    console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test")
+    console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
-      const changeArtist = await userChangeArtistService(bodyToArtistDTO(req.userId, req.body));
+      const changeArtist = await userChangeArtistService(
+        bodyToArtistDTO(req.userId, req.body)
+      );
       res.send(response(status.SUCCESS, changeArtist));
     } else {
       // 토큰 이상감지
@@ -760,14 +767,13 @@ export const handleUserProfile = async (req, res, next) => {
     const url = await userProfile(req, res);
     if (url) {
       res.send(response(status.SUCCESS, url));
-    }
-    else {
+    } else {
       res.send(response(status.FILE_NOT_EXIST, null));
     }
   } catch (err) {
     res.send(response(status.FILE_NOT_EXIST, null));
   }
-}
+};
 
 // 유저의 음악 재생 시 기록하기
 export const handleUserPlay = async (req, res, next) => {
@@ -831,7 +837,7 @@ export const handleUserPlay = async (req, res, next) => {
   */
   try {
     console.log("유저의 음악 재생 시 기록하기를 요청했습니다!");
-    const userMusic = await userPlay(bodyToUserMusic(req.userId, req.body))
+    const userMusic = await userPlay(bodyToUserMusic(req.userId, req.body));
     res.send(response(status.SUCCESS, userMusic));
     const genre = await getGenreForMusic(bodyToUserMusic(req.userId, req.body));
   } catch (err) {
@@ -939,12 +945,14 @@ export const handleHistory = async (req, res, next) => {
 */
   try {
     console.log("유저의 연도 타임 히스토리 추가를 요청했습니다!");
-    console.log(req.get("Authorization"))
+    console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test")
+    console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
-      const addHistory = await userAddHistoryService(bodyToHistoryDTO(req.userId, req.body));
+      const addHistory = await userAddHistoryService(
+        bodyToHistoryDTO(req.userId, req.body)
+      );
       res.send(response(status.SUCCESS, addHistory));
     } else {
       // 토큰 이상감지
@@ -1066,13 +1074,111 @@ export const handleGetHistory = async (req, res, next) => {
   */
   try {
     console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
-    console.log(req.get("Authorization"))
+    console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test")
+    console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const userInfo = await userHistoryInfoService(req.userId);
       res.send(response(status.SUCCESS, userInfo));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
+  }
+};
+
+export const handleUserRecap = async (req, res, next) => {
+  /*
+    #swagger.summary = '유저 음악 리캡 조회 API'
+    #swagger.tags = ['User']
+    #swagger.responses[200] = {
+      description: '유저 음악 리캡 조회 성공 응답',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "string", example: "200" },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    title: { type: "string", example: "unlucky" },
+                    image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" },
+                    releaseYear: { type: "number", example: 2019 },
+                    artists: { type: "string", example: "IU" },
+                    period: { type: "string", example: "first" }
+                  }
+                }
+              }
+            }
+          },
+          example: {
+            isSuccess: true,
+            code: "200",
+            message: "success!",
+            result: [
+              {
+                id: "1",
+                title: "unlucky",
+                image: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg",
+                releaseYear: 2019,
+                artists: "IU",
+                period: "first"
+              },
+              {
+                id: "2",
+                title: "Love Poem",
+                image: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg",
+                releaseYear: 2019,
+                artists: "IU",
+                period: "first"
+              },
+              {
+                id: "3",
+                title: "Come Together - Remastered 2009",
+                image: "https://lastfm.freetls.fastly.net/i/u/300x300/a4bbf73ba62024be279364e867b0ca20.jpg",
+                releaseYear: 2022,
+                artists: "The Beatles",
+                period: "first"
+              }
+            ]
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: '토큰 포맷 오류 응답',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MEMBER4006" },
+              message: { type: "string", example: "토큰의 형식이 올바르지 않습니다. 다시 확인해주세요." },
+              result: { type: "null", example: null }
+            }
+          }
+        }
+      }
+    };
+  */
+  try {
+    console.log("유저의 recap 정보를 요청했습니다!");
+    const token = await checkFormat(req.get("Authorization"));
+    if (token !== null) {
+      // 토큰 이상없음
+      const recapMusics = await listReacapMusics(req.userId);
+      res.send(response(status.SUCCESS, recapMusics));
     } else {
       // 토큰 이상감지
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));

@@ -17,6 +17,7 @@ import {
   handleUserPlay,
   handleHistory,
   handleGetHistory,
+  handleUserRecap,
 } from "./controllers/user.controller.js";
 import {
   handleMusicNomination,
@@ -34,7 +35,7 @@ import {
   handleCommonAlbumNomination,
   handleAlbumTrackList,
   handleArtistSimilar,
-  handleDifferentAlbum
+  handleDifferentAlbum,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -156,6 +157,8 @@ app.post("/users/play", handleUserPlay);
 app.post("/users/history", handleHistory);
 //유저 time 히스토리 불러오는 api
 app.get("/users/history", handleGetHistory);
+//recap 결산
+app.get("/users/recap", handleUserRecap);
 
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);
@@ -188,7 +191,7 @@ app.get("/album/:album_id/track-list", handleAlbumTrackList);
 //이 아티스트와 비슷한 아티스트
 app.get("/music/artist/:artist_id/similar", handleArtistSimilar);
 //이 아티스트의 다른 앨범
-app.get("/music/artist/:artist_id/album/:album_id", handleDifferentAlbum)
+app.get("/music/artist/:artist_id/album/:album_id", handleDifferentAlbum);
 //--------------------------------
 
 app.use((err, req, res, next) => {
