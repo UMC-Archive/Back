@@ -95,3 +95,10 @@ export const responseFromUserRecap = (recap) => {
     period: music.period,
   }));
 };
+
+export const responseFropUserPreferGenre = (userGenre) => {
+  return userGenre.map((genre) => ({
+    id: genre.id.toString(),
+    name: genre.name,
+  }));
+};
