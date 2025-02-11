@@ -340,10 +340,11 @@ export const albumCuration = async (album_id) => {
   // 앨범 큐레이션이 없는 경우
   const album = await getAlbumById(album_id);
   const music = await getMusicByAlbumId(album_id);
+
   if (music) {
     const musicArtist = await getMusicArtistByMusicId(music.id);
     const artist = await getArtistById(musicArtist.artistId);
-    albumCuration = await setAlbumCuration(album_id, album.title, artist.title);
+    albumCuration = await setAlbumCuration(album_id, album.title, artist.name);
   } else {
     return null;
   }
@@ -358,7 +359,7 @@ export const artistCuration = async (artist_id) => {
   const artist = await getArtistById(artist_id);
   const artistMusic = await getMusicArtistByArtistId(artist_id);
   const music = await getMusicById(artistMusic.musicId);
-  //console.log(music)
+  console.log(artist.name, music.title)
   artistCuration = await setArtistCuration(artist_id, artist.name, music.title);
   if (!artistCuration) {
     return null;

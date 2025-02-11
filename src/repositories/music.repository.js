@@ -418,7 +418,6 @@ export const getSimArtistsAPI = async (artist_name) => {
 //앨범 큐레이션
 //앨범 정보 얻기
 export const getMusicByAlbumId = async (album_id) => {
-  console.log(album_id)
   const music = await prisma.music.findFirst({ where: { albumId: album_id } });
   return music;
 };
