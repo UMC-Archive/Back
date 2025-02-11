@@ -60,6 +60,7 @@ import {
   getMusicInfo,
   getSimilarArtistsBymbid,
   getArtistTopAlbumsBymbid,
+  getArtistTopAlbums
 } from "../lastfm.js";
 
 // gpt api에서 선호 아티스트 배열로 집어넣기
@@ -105,7 +106,7 @@ export const listNominationMusic = async (user_id) => {
   // 아티스트로 검색
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albums = await getArtistTopAlbumsBymbid(artists[num], "");
+    const albums = await getArtistTopAlbums(artists[num], 4);
     for (let album of albums?.album) {
       // 검증된 앨범 값 검색하여 음악 찾기
       if (album?.name && album?.name !== "(null)") {
@@ -138,7 +139,7 @@ export const listNominationAlbum = async (user_id) => {
   // 아티스트로 검색
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albums = await getArtistTopAlbumsBymbid(artists[num], "");
+    const albums = await getArtistTopAlbums(artists[num], 4);
     for (let album of albums?.album) {
       // 검증된 앨범 값 검색하여 음악 찾기
       if (album?.name && album?.name !== "(null)") {
@@ -541,9 +542,11 @@ export const listDifferentAlbum = async (artistId, albumId) => {
   const artist = await getArtistById(artistId);
   const album = await getAlbumById(albumId);
   const api = await getAlbumInfo(artist.name, album.title);
-  const mbid = api?.mbid !== "" ? api.mbid : null;
+  const ambid = api?.tracks?.track[0]?.artist?.mbid;
+  const mbid = ambid !== "" ? ambid : null;
   const albumsApi = await getArtistTopAlbumsBymbid(artist.name, mbid);
   const albums = [];
+
   for (let i = 0; i < 10; i++) {
     const albumName = albumsApi?.album[i]?.name;
     if (albumName && albumName != album.title) {
