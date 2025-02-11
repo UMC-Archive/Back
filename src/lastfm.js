@@ -247,7 +247,7 @@ export const getSimilarArtistsBymbid = async (artist_name, mbid) => {
 
 export const getArtistTopAlbumsBymbid = async (artist_name, mbid) => {
   return new Promise((resolve, reject) => {
-    lastfm.artist.getTopAlbums({ artist: artist_name, mbid: mbid }, (err, artist) => {
+    lastfm.artist.getTopAlbums({ artist: artist_name, mbid: mbid, limit: 4 }, (err, artist) => {
       if (err) {
         resolve(null);
       } else {

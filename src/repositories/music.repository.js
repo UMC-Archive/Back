@@ -38,23 +38,24 @@ export const getUserArtistPrefers = async (user_id) => {
   });
   return userArtist;
 };
+
 //숨겨진 명곡
-export const getBillboardAPI = async (date) => {
-  const result = await billboard("hot-100", date, "1-10");
-  return result.content;
-  //return result.content
+export const getBillboardAPI = async (date, first, last) => {
+  const result = await billboard("hot-100", date, `${first}-${last}`);
+  return result?.content;
 };
+
 export const extractBillboard = async (billboard) => {
   const values = Object.values(billboard).slice(0, 10);
-  const AllTitles = values.map((item) =>
+  const titles = values.map((item) =>
     item.title.replace(/\(.*$/i, "").trim()
   );
-  const AllArtists = values.map((item) =>
+  const artists = values.map((item) =>
     item.artist.replace(/( featuring| &| and).*$/i, "").trim()
   );
   return {
-    AllTitles,
-    AllArtists,
+    titles,
+    artists,
   };
 };
 
@@ -64,11 +65,6 @@ export const getMusicDB = async (music_name) => {
   const music = await prisma.music.findFirst({ where: { title: music_name } });
   return music;
 };
-
-// //itunes에서 앨범 검색 (중복되는 기능)
-// export const searchAlbumAPI = async (music_name, artist_name) => {
-//   return getAlbumItunes(music_name, artist_name);
-// };
 
 export const getLyricsAPI = async (artist_name, music_name) => {
   const lyrics = await lrclib.searchLyrics({
@@ -422,7 +418,6 @@ export const getSimArtistsAPI = async (artist_name) => {
 //앨범 큐레이션
 //앨범 정보 얻기
 export const getMusicByAlbumId = async (album_id) => {
-  console.log(album_id)
   const music = await prisma.music.findFirst({ where: { albumId: album_id } });
   return music;
 };
@@ -655,3 +650,13 @@ export const getAlbum = async (album_id) => {
 
   return album;
 };
+
+export const getMusicArtistByMusicIdArtistId = async (music_id, artist_id) => {
+  const musicArtist = await prisma.musicArtist.findFirst({
+    where: {
+      musicId: music_id,
+      artistId: artist_id
+    },
+  });
+  return musicArtist;
+}
