@@ -1014,17 +1014,119 @@ export const handleAlbumTrackList = async (req, res, next) => {
 
 //이 아티스트와 비슷한 아티스트
 export const handleArtistSimilar = async (req, res, next) => {
+  /*
+  #swagger.summary = '이 아티스트와 비슷한 아티스트 조회 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "이 아티스트와 비슷한 아티스트 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "object",
+              properties: {
+                artists: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1" },
+                      name: { type: "string", example: "IU" },
+                      image: { type: "string", example: "https://example.com/artist_image.jpg" },
+                      createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                      updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #swagger.responses[400] = {
+    description: "이 아티스트와 비슷한 아티스트 조회 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "MUSIC4003" },
+            message: { type: "string", example: "아티스트가 존재하지 않습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  */
   try {
     console.log("이 아티스트와 비슷한 아티스트를 요청했습니다!");
     const artists = await listSimilarArtists(req.params.artist_id);
     res.send(response(status.SUCCESS, artists));
   } catch (err) {
-    res.send(response(status.MUSIC_NOT_EXIST, null));
+    res.send(response(status.ARTIST_NOT_EXIST, null));
   }
 }
 
 //이 아티스트의 다른 앨범
 export const handleDifferentAlbum = async (req, res, next) => {
+  /*
+  #swagger.summary = '이 아티스트의 다른 앨범 조회 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "이 아티스트의 다른 앨범 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  title: { type: "string", example: "Love poem" },
+                  releaseTime : { type: "string", format: "date", example: "2021-03-25" },
+                  image: { type: "string", example: "https://example.com/album_image.jpg" },
+                  createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                  updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+      description: "이 아티스트의 다른 앨범 조회 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MUSIC4002" },
+              message: { type: "string", example: "앨범이 존재하지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
   try {
     console.log("이 아티스트의 다른 앨범을 요청했습니다!");
     const albums = await listDifferentAlbum(req.params.artist_id, req.params.album_id);
