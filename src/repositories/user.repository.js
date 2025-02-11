@@ -321,7 +321,6 @@ export const userHistoryInfoRep = async (data) => {
 };
 
 export const getUserRecapMusic = async (userId) => {
-  // Get the current date
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -384,7 +383,6 @@ export const getUserRecapMusic = async (userId) => {
     },
   });
 
-  // Combine play count with simplified music details
   const result = topMusicDetails
     .map((music) => {
       const playCount =
@@ -402,4 +400,72 @@ export const getUserRecapMusic = async (userId) => {
     .sort((a, b) => b.playCount - a.playCount);
 
   return result;
+};
+
+export const getUserPreferGenre = async (userId) => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+
+  const isPeriodFirst = currentMonth < 6;
+
+  let startDate, endDate;
+
+  if (isPeriodFirst) {
+    startDate = new Date(currentYear, 0, 1);
+    endDate = new Date(currentYear, 5, 30, 23, 59, 59, 999);
+  } else {
+    startDate = new Date(currentYear, 6, 1);
+    endDate = new Date(currentYear, 11, 31, 23, 59, 59, 999);
+  }
+
+  const genreCounts = await prisma.genre.findMany({
+    select: {
+      id: true,
+      name: true,
+      MusicGenres: {
+        where: {
+          music: {
+            UserMusics: {
+              some: {
+                userId,
+                createdAt: {
+                  gte: startDate,
+                  lte: endDate,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: {
+      MusicGenres: {
+        some: {
+          music: {
+            UserMusics: {
+              some: {
+                userId,
+                createdAt: {
+                  gte: startDate,
+                  lte: endDate,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      MusicGenres: {
+        _count: "desc",
+      },
+    },
+    take: 5,
+  });
+
+  return genreCounts.map((genre) => ({
+    id: genre.id,
+    name: genre.name,
+  }));
 };

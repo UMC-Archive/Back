@@ -18,6 +18,7 @@ import {
   handleHistory,
   handleGetHistory,
   handleUserRecap,
+  handleUserPreferGenre,
 } from "./controllers/user.controller.js";
 import {
   handleMusicNomination,
@@ -160,6 +161,8 @@ app.post("/users/history", handleHistory);
 app.get("/users/history", handleGetHistory);
 //recap 결산
 app.get("/users/recap", handleUserRecap);
+//장르 취향 반환
+app.get("/users/genre/preference", handleUserPreferGenre);
 
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);

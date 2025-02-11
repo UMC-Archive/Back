@@ -20,8 +20,12 @@ import {
   getMusicGenreByMusicId,
   setMusicGenre,
   getUserRecapMusic,
+  getUserPreferGenre,
 } from "../repositories/user.repository.js";
-import { responseFromUserRecap } from "../dtos/user.dto.js";
+import {
+  responseFromUserRecap,
+  responseFropUserPreferGenre,
+} from "../dtos/user.dto.js";
 import { profileUploader } from "../repositories/s3.repository.js";
 import { recommandGenre } from "../middleware/gpt.js";
 import { DuplicateUserEmailError, DuplicateUpdateError } from "../errors.js";
@@ -242,4 +246,9 @@ export const userHistoryInfoService = async (userId) => {
 export const listReacapMusics = async (userId) => {
   const userRecap = await getUserRecapMusic(userId);
   return responseFromUserRecap(userRecap);
+};
+
+export const listUserPreferGenre = async (userId) => {
+  const userGenre = await getUserPreferGenre(userId);
+  return responseFropUserPreferGenre(userGenre);
 };

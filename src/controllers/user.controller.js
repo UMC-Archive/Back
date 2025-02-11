@@ -28,6 +28,7 @@ import {
   userHistoryInfoService,
   getGenreForMusic,
   listReacapMusics,
+  listUserPreferGenre,
 } from "../services/user.service.js";
 
 //회원가입
@@ -1155,16 +1156,16 @@ export const handleUserRecap = async (req, res, next) => {
         }
       }
     };
-    #swagger.responses[400] = {
-      description: '토큰 포맷 오류 응답',
+    #swagger.responses[500] = {
+      description: '서버 에러 응답',
       content: {
         "application/json": {
           schema: {
             type: "object",
             properties: {
               isSuccess: { type: "boolean", example: false },
-              code: { type: "string", example: "MEMBER4006" },
-              message: { type: "string", example: "토큰의 형식이 올바르지 않습니다. 다시 확인해주세요." },
+              code: { type: "string", example: "COMMON000" },
+              message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
               result: { type: "null", example: null }
             }
           }
@@ -1174,17 +1175,84 @@ export const handleUserRecap = async (req, res, next) => {
   */
   try {
     console.log("유저의 recap 정보를 요청했습니다!");
-    const token = await checkFormat(req.get("Authorization"));
-    if (token !== null) {
-      // 토큰 이상없음
-      const recapMusics = await listReacapMusics(req.userId);
-      res.send(response(status.SUCCESS, recapMusics));
-    } else {
-      // 토큰 이상감지
-      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
-    }
+    const recapMusics = await listReacapMusics(req.userId);
+    res.send(response(status.SUCCESS, recapMusics));
+  } catch (err) {
+    res.send(response(status.INTERNAL_SERVER_ERROR, null));
+  }
+};
+
+export const handleUserPreferGenre = async (req, res, next) => {
+  /*
+    #swagger.summary = '유저 선호 장르 조회 API'
+    #swagger.tags = ['User']
+    #swagger.responses[200] = {
+      description: '유저 선호 장르 조회 성공 응답',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "string", example: "200" },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    name: { type: "string", example: "afrobeats" }
+                  }
+                }
+              }
+            }
+          },
+          example: {
+            isSuccess: true,
+            code: "200",
+            message: "success!",
+            result: [
+              {
+                id: "1",
+                name: "afrobeats"
+              },
+              {
+                id: "2",
+                name: "ballad"
+              },
+              {
+                id: "13",
+                name: "rock"
+              }
+            ]
+          }
+        }
+      }
+    };
+    #swagger.responses[500] = {
+      description: '서버 에러 응답',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "COMMON000" },
+              message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
+              result: { type: "null", example: null }
+            }
+          }
+        }
+      }
+    };
+  */
+  try {
+    console.log("유저의 선호 장르를 조회합니다.");
+    const userGenre = await listUserPreferGenre(req.userId);
+    res.send(response(status.SUCCESS, userGenre));
   } catch (err) {
     console.log(err);
-    res.send(response(BaseError));
+    res.send(response(status.INTERNAL_SERVER_ERROR, null));
   }
 };
