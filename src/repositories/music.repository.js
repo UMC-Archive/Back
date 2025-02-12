@@ -660,3 +660,8 @@ export const getMusicArtistByMusicIdArtistId = async (music_id, artist_id) => {
   });
   return musicArtist;
 }
+
+export const getUserMusicsByUserId = async (user_id) => {
+  const userMusic = await prisma.userMusic.findMany({ where: { userId: user_id } })
+  return userMusic
+}

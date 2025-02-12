@@ -38,7 +38,7 @@ import {
   handleArtistSimilar,
   handleDifferentAlbum,
   handleAllInfo,
-
+  handleMusicSelection,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -192,6 +192,9 @@ app.post("/music/artist", handleMusicArtistInfo);
 app.post("/music/album/:album_id/curation", handleAlbumCuration);
 //아티스트 큐레이션
 app.post("/music/artist/:artist_id/curation", handleArtistCuration);
+//빠른 선곡
+app.get("/music/selection", handleMusicSelection);
+
 //보관함 노래 조회
 app.get("/library/music", handleLibraryMusic);
 //보관함 아티스트 조회
