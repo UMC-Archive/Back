@@ -154,4 +154,40 @@ export const status = {
     code: "AWS4001",
     message: "이미지 파일이 존재하지 않습니다.",
   },
+  MUSIC_IS_EXIST:{
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC004",
+    message: "보관함에 음악이 이미 존재합니다.",
+  },
+  ALBUM_IS_EXIST:{
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC005",
+    message: "보관함에 앨범이 이미 존재합니다.",
+  },
+  ARTIST_IS_EXIST:{
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC006",
+    message: "보관함에 아티스트가 이미 존재합니다.",
+  },
+  MUSIC_NOT_LIBRARY:{
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC007",
+    message: "보관함에 해당 노래가 존재하지 않습니다.",
+  },
+  ALBUM_NOT_LIBRARY:{
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC008",
+    message: "보관함에 해당 앨범이 존재하지 않습니다.",
+  },
+  ARTIST_NOT_LIBRARY:{
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MUSIC009",
+    message: "보관함에 해당 아티스트가 존재하지 않습니다.",
+  }
 };

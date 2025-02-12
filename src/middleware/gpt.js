@@ -39,7 +39,7 @@ export const recommandArtist = async (data) => {
                 run = await client.beta.threads.runs.retrieve(threadId, runId);
             }
         }
-        const result = [JSON.parse(contents).artist1, JSON.parse(contents).artist2, JSON.parse(contents).artist3];
+        const result = [JSON.parse(contents).artist1, JSON.parse(contents).artist2, JSON.parse(contents).artist3, JSON.parse(contents).artist4, JSON.parse(contents).artist5];
         return result
     } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
