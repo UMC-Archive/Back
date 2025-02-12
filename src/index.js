@@ -38,11 +38,18 @@ import {
   handleArtistSimilar,
   handleDifferentAlbum,
   handleAllInfo,
+
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
   handleLibraryArtist,
   handleLibraryAlbum,
+  addMusicLibrary,
+  addAllbumLibrary,
+  addArtistLibrary,
+  deleteMusicLibrary,
+  deleteAlbumLibrary,
+  deleteArtistLibrary
 } from "./controllers/library.controller.js";
 
 BigInt.prototype.toJSON = function () {
@@ -191,6 +198,18 @@ app.get("/library/music", handleLibraryMusic);
 app.get("/library/artist", handleLibraryArtist);
 //보관함 앨범 조회
 app.get("/library/album", handleLibraryAlbum);
+//보관함 노래 추가
+app.post("/library/music/:musicId", addMusicLibrary);
+//보관함 앨범 추가
+app.post("/library/album/:albumId", addAllbumLibrary);
+//보관함 아티스트 추가
+app.post("/library/artist/:artistId", addArtistLibrary);
+//보관함 노래 삭제
+app.delete("/library/music/:musicId", deleteMusicLibrary);
+//보관함 앨범 삭제
+app.delete("/library/album/:albumId", deleteAlbumLibrary);
+//보관함 아티스트트 삭제
+app.delete("/library/artist/:artistId", deleteArtistLibrary);
 //수록곡 조회
 app.get("/album/:album_id/track-list", handleAlbumTrackList);
 //이 아티스트와 비슷한 아티스트
