@@ -50,6 +50,7 @@ import {
   getMusicById,
   getTrackList,
   getAlbum,
+  getUserMusicsByUserId
 } from "../repositories/music.repository.js";
 import { recommandArtist } from "../middleware/gpt.js";
 import { getGenrePngFiles } from "../repositories/s3.repository.js";
@@ -423,7 +424,7 @@ const listRecommandBasicArtist = async (preferArtists) => {
     let recommend = await recommandArtist(`${prefer}`);
 
     // AI 에러 값 검출
-    while (invalidArtists.includes(artists[0]) || !recommend[2]) {
+    while (invalidArtists.includes(recommend[0]) || !recommend[2]) {
       recommend = await recommandArtist(`${prefer}`);
     }
 
@@ -593,3 +594,67 @@ export const findArtist = async (artistName) => {
   }
   return { name: false, value: false, info: {} };
 };
+
+//빠른 선곡
+const getMusicStatistics = (userMusics) => {
+  const stats = {};
+
+  // userMusics 배열을 순회하면서 musicId별로 개수를 세는 방식
+  userMusics.forEach(music => {
+    const { musicId } = music;
+
+    if (stats[musicId]) {
+      stats[musicId] += 1; // 이미 있으면 카운트를 증가
+    } else {
+      stats[musicId] = 1; // 처음 나온 음악이면 1로 초기화
+    }
+  });
+
+  return stats;
+};
+export const listSelectionMusic = async (user_id) => {
+  // 유저 정보 값 가져오기
+  const preferArtists = await getUserArtistPrefers(user_id);
+
+  // 함수 스코프로 사용될 값
+  let recommendedMusics = [];
+
+  const artists = await listRecommandBasicArtist(preferArtists);
+
+  // 아티스트로 검색
+  for (const num in artists) {
+    // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
+    const albums = await getArtistTopAlbums(artists[num], 4);
+    for (let album of albums?.album) {
+      // 검증된 앨범 값 검색하여 음악 찾기
+      if (album?.name && album?.name !== "(null)") {
+        const albumName = album?.name
+        const api = await getAlbumInfo(artists[num], albumName);
+        if (api?.tracks?.track[0]?.name) {
+          const musicName = api.tracks.track[0].name;
+          const all = await listAll(artists[num], albumName, musicName);
+          recommendedMusics.push({
+            music: all.music,
+            album: all.album,
+            artist: all.artist.name
+          });
+        }
+      }
+    }
+  }
+  const userMusics = await getUserMusicsByUserId(user_id);
+  const stat = getMusicStatistics(userMusics);
+
+  return recommendedMusics.sort((a, b) => {
+    const idA = a.music.id;
+    const idB = b.music.id;
+
+    // stat[id] 값이 존재하지 않으면 기본값을 0으로 처리
+    const statA = stat[idA] || 0;
+    const statB = stat[idB] || 0;
+
+    // 값이 큰 순으로 내림차순 정렬
+    return statB - statA;
+  });;
+};
+

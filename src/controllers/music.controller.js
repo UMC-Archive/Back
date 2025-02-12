@@ -22,6 +22,7 @@ import {
   findMusic,
   findAlbum,
   findArtist,
+  listSelectionMusic,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -1361,3 +1362,83 @@ export const handleAllInfo = async (req, res, next) => {
     res.send(response(BaseError));
   }
 }
+
+//빠른 선곡
+export const handleMusicSelection = async (req, res, next) => {
+  /*
+   #swagger.summary = '빠른 선곡 조회 API';
+   #swagger.tags = ['Music']
+   #swagger.responses[200] = {
+  description: "빠른 선곡 조회 성공 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: true },
+          code: { type: "string", example: "200" },
+          message: { type: "string", example: "success!" },
+          result: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    albumId: { type: "string", example: "1" },
+                    title: { type: "string", example: "Love poem" },
+                    releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                    lyrics: { type: "string", example: "가사" },
+                    image: { type: "string", example: "https://image.png" },
+                    music: { type: "string", example: "https://music.m4a" },
+                    createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                    updatedAt: { type: "string", format: "date", example: "2025-01-01" }
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    title: { type: "string", example: "Love poem" },
+                    releaseTime: { type: "string", format: "date", example: "1970-01-01" },
+                    image: { type: "string", example: "https://image.png" },
+                    createdAt: { type: "string", format: "date", example: "2025-01-01" },
+                    updatedAt: { type: "string", format: "date", example: "2025-01-01" }
+                  }
+                },
+                artist: { type: "string", example: "IU" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+   #swagger.responses[400] = {
+      description: "빠른 선곡 조회 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MUSIC4001" },
+              message: { type: "string", example: "음악이 존재하지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
+  try {
+    console.log("빠른 선곡을 요청했습니다!");
+    const music = await listSelectionMusic(req.userId);
+    res.send(response(status.SUCCESS, music));
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+};
