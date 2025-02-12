@@ -184,11 +184,85 @@ export const getArtistTopTrack = (artist_name) => {
           resolve(null);
           return;
         }
-        console.log(data);
         const result = data.track[0].name;
-        console.log(result.name);
         resolve(result);
       }
     );
   });
 };
+
+export const getArtistTopAlbum = (artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopAlbums(
+      { artist: artist_name, limit: 1 },
+      (err, data) => {
+        if (err) {
+          console.log("error", err);
+          resolve(null);
+          return;
+        }
+        const result = data.album[0].name;
+        resolve(result);
+      }
+    );
+  });
+};
+
+export const getTrackInfoAPI = (album_name, artist_name) => {
+  return new Promise((resolve, reject) => {
+    lastfm.album.getInfo(
+      { album: album_name, artist: artist_name, autocorrect: 1 },
+      (err, data) => {
+        if (err) {
+          console.log("error", err);
+          resolve(null);
+          return;
+        }
+
+        const tracks = data.tracks.track.map((track) => ({
+          title: track.name,
+          artist: track.artist.name,
+        }));
+
+        resolve(tracks);
+      }
+    );
+  });
+};
+
+export const getSimilarArtistsBymbid = async (artist_name, mbid) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getSimilar({ artist: artist_name, mbid: mbid }, (err, data) => {
+      if (err) {
+        resolve(null);
+      }
+
+      const artist = data?.artist;
+      const result = artist//{ name: artist.name };
+
+      resolve(result);
+    });
+  });
+}
+export const getArtistTopAlbums = async (artist_name, limit) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopAlbums({ artist: artist_name, limit: limit }, (err, artist) => {
+      if (err) {
+        resolve(null);
+      } else {
+        resolve(artist);
+      }
+    });
+  });
+}
+export const getArtistTopAlbumsBymbid = async (artist_name, mbid) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopAlbums({ artist: artist_name, mbid: mbid }, (err, artist) => {
+      if (err) {
+        resolve(null);
+      } else {
+        resolve(artist);
+      }
+    });
+  });
+}

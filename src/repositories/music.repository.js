@@ -11,6 +11,8 @@ import {
   getPublishedYear,
   getSimArtists,
   getArtistTopTrack,
+  getArtistTopAlbum,
+  getTrackInfoAPI,
 } from "../lastfm.js";
 import { getTrackReleaseYear } from "../itunes.js";
 import { prisma } from "../db.config.js";
@@ -36,15 +38,18 @@ export const getUserArtistPrefers = async (user_id) => {
   });
   return userArtist;
 };
+
 //숨겨진 명곡
-export const getBillboardAPI = async (date) => {
-  const result = await billboard("hot-100", date, "1-10");
-  return result.content;
-  //return result.content
+export const getBillboardAPI = async (date, first, last) => {
+  const result = await billboard("hot-100", date, `${first}-${last}`);
+  return result?.content;
 };
+
 export const extractBillboard = async (billboard) => {
   const values = Object.values(billboard).slice(0, 10);
-  const titles = values.map((item) => item.title.replace(/\(.*$/i, "").trim());
+  const titles = values.map((item) =>
+    item.title.replace(/\(.*$/i, "").trim()
+  );
   const artists = values.map((item) =>
     item.artist.replace(/( featuring| &| and).*$/i, "").trim()
   );
@@ -60,11 +65,6 @@ export const getMusicDB = async (music_name) => {
   const music = await prisma.music.findFirst({ where: { title: music_name } });
   return music;
 };
-
-// //itunes에서 앨범 검색 (중복되는 기능)
-// export const searchAlbumAPI = async (music_name, artist_name) => {
-//   return getAlbumItunes(music_name, artist_name);
-// };
 
 export const getLyricsAPI = async (artist_name, music_name) => {
   const lyrics = await lrclib.searchLyrics({
@@ -136,8 +136,9 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   }
   let image;
   if (albumInfo) {
-    console.log(albumInfo.image[4]["#text"][0])
-    image = albumInfo.image[4]["#text"][0] ? albumInfo.image[4]["#text"] : false;
+    image = albumInfo.image[4]["#text"][0]
+      ? albumInfo.image[4]["#text"]
+      : false;
   }
   const data = {
     title: albumInfo
@@ -187,24 +188,63 @@ export const getArtistDB = async (artist_name) => {
   });
   return artist;
 };
-
-//lastfm에서 정보 가저오기
-export const getArtistAPI = async (artist_name) => {
-  const artistInfo = await getArtistInfo(artist_name);
-  const image = await spotify(
+const getArtistIdsByMusic = async (artist_name, music_name) => {
+  const url = await spotify(
     {
-      q: artist_name,
-      type: "artists",
+      q: `${artist_name}, ${music_name}`,
+      type: "tracks",
       offset: "0",
       limit: "1",
       numberOfTopResults: "1",
     },
     "search"
   );
+  const ids = url.tracks.items[0].data.artists.items[0].uri.replace(
+    "spotify:artist:",
+    ""
+  );
+  return ids;
+};
+const getArtistIdsByAlbum = async (artist_name, album_name) => {
+  // 이상하게 작동함
+  const url = await spotify(
+    {
+      q: `${artist_name}, ${album_name}`,
+      type: "albums",
+      offset: "0",
+      limit: "1",
+      numberOfTopResults: "1",
+    },
+    "search"
+  );
+  const ids = url.albums.items[0].data.artists.items[0].uri.replace(
+    "spotify:artist:",
+    ""
+  );
+  return ids;
+};
+const getArtistByIds = async (ids) => {
+  return await spotify(
+    {
+      ids: ids,
+    },
+    "artists"
+  );
+};
+//lastfm에서 정보 가저오기
+export const getArtistAPI = async (artist_name, album_name) => {
+  album_name = album_name.replace(/\(.*$/, "");
+  const artistInfo = await getArtistInfo(artist_name);
+  const musicName = await getAlbumInfo(artist_name, album_name);
+  const ids = await getArtistIdsByMusic(
+    artist_name,
+    musicName.tracks.track[0].name
+  );
+  const image = await getArtistByIds(ids);
   const data = {
     name: artistInfo.name,
     image: image
-      ? image.artists.items[0].data.visuals.avatarImage.sources[0].url
+      ? image.artists[0].images[0].url
       : artistInfo.image[4]["#text"],
   };
   return data;
@@ -221,8 +261,50 @@ export const addArtist = async (artist) => {
 };
 
 export const getSpecificArtistAPI = async (artist_name) => {
-  const specificArtist = await searchArtist(artist_name);
-  return specificArtist;
+  try {
+    // 1. DB에서 아티스트 검색
+    const existingArtist = await getArtistDB(artist_name);
+
+    if (existingArtist) {
+      return existingArtist;
+    }
+
+    // 2. DB에 없는 경우 API에서 아티스트 정보 가져오기
+    const specificArtist = await searchArtist(artist_name);
+
+    if (!specificArtist) {
+      return null;
+    }
+
+    // 3. Spotify에서 이미지 URL 가져오기
+    const spotifyData = await spotify(
+      {
+        q: artist_name,
+        type: "artists",
+        offset: "0",
+        limit: "1",
+        numberOfTopResults: "1",
+      },
+      "search"
+    );
+
+    const imageUrl =
+      spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
+        ?.url || null;
+
+    // 4. DB에 새 아티스트 추가
+    const artistData = {
+      name: artist_name,
+      image: imageUrl,
+      ...specificArtist, // searchArtist에서 가져온 추가 정보가 있다면 포함
+    };
+
+    const newArtist = await addArtist(artistData);
+    return newArtist;
+  } catch (error) {
+    console.error(`Error processing artist ${artist_name}:`, error);
+    throw error; // 에러를 상위로 전파하여 적절한 에러 처리 가능하도록 함
+  }
 };
 
 export const getallArtistsAPI = async (user_id) => {
@@ -251,14 +333,20 @@ export const getallArtistsAPI = async (user_id) => {
 
   const artistsPromises = genreInfos.map((genre) => getGenreArtist(genre));
   const artistsByGenre = await Promise.all(artistsPromises);
-
-  // 모든 배열을 하나로 합치기
   const allArtists = artistsByGenre.flat().filter((artist) => artist !== null);
 
-  // 각 아티스트에 대해 Spotify 이미지 검색
-  const artistsWithImages = await Promise.all(
+  // 각 아티스트 처리
+  const processedArtists = await Promise.all(
     allArtists.map(async (artist) => {
       try {
+        // DB에서 아티스트 검색
+        const existingArtist = await getArtistDB(artist.name);
+
+        if (existingArtist) {
+          return existingArtist;
+        }
+
+        // DB에 없는 경우 Spotify에서 정보 가져오기
         const spotifyData = await spotify(
           {
             q: artist.name,
@@ -270,31 +358,31 @@ export const getallArtistsAPI = async (user_id) => {
           "search"
         );
 
-        // 새로운 응답 구조에서 이미지 URL 추출
         const imageUrl =
           spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
             ?.url || null;
 
-        return {
-          ...artist,
-          imageUrl,
-        };
+        const newArtist = await addArtist({
+          name: artist.name,
+          image: imageUrl,
+        });
+
+        return newArtist;
       } catch (error) {
-        console.error(`Error fetching image for ${artist.name}:`, error);
+        console.error(`Error processing artist ${artist.name}:`, error);
         return {
-          ...artist,
-          imageUrl: null,
-        }; // 이미지 검색 실패시 null로 설정
+          name: artist.name,
+          image: null,
+        };
       }
     })
   );
 
-  // 중복 제거 (이미지 URL도 고려하여)
   const uniqueArtists = Array.from(
-    new Map(artistsWithImages.map((artist) => [artist.name, artist])).values()
+    new Map(processedArtists.map((artist) => [artist.name, artist])).values()
   );
-
   console.log("uniqueArtists", uniqueArtists);
+
   return uniqueArtists;
 };
 
@@ -329,6 +417,16 @@ export const getSimArtistsAPI = async (artist_name) => {
 
 //앨범 큐레이션
 //앨범 정보 얻기
+export const getMusicByAlbumId = async (album_id) => {
+  const music = await prisma.music.findFirst({ where: { albumId: album_id } });
+  return music;
+};
+export const getMusicArtistByMusicId = async (music_id) => {
+  const musicArtist = await prisma.musicArtist.findFirst({
+    where: { musicId: music_id },
+  });
+  return musicArtist;
+};
 export const getAlbumById = async (album_id) => {
   const album = await prisma.album.findFirst({ where: { id: album_id } });
   return album;
@@ -353,8 +451,8 @@ export const getAlbumCuration = async (album_id) => {
 };
 
 //앨범 큐레이션 생성
-export const setAlbumCuration = async (album_id, album_name, artistName) => {
-  const description = await recommandCuration(`${artistName} ${album_name}`);
+export const setAlbumCuration = async (album_id, album_name, artist_name) => {
+  const description = await recommandCuration(`${artist_name}, ${album_name}`);
   const data = {
     albumId: album_id,
     description: description,
@@ -364,6 +462,17 @@ export const setAlbumCuration = async (album_id, album_name, artistName) => {
 };
 //아티스트 큐레이션
 //아티스트 정보 얻기
+export const getMusicById = async (music_id) => {
+  const music = await prisma.music.findFirst({ where: { id: music_id } });
+  return music;
+};
+export const getMusicArtistByArtistId = async (artist_id) => {
+  const musicArtist = await prisma.musicArtist.findFirst({
+    where: { artistId: artist_id },
+  });
+  return musicArtist;
+};
+
 export const getArtistById = async (artist_id) => {
   const artist = await prisma.artist.findFirst({ where: { id: artist_id } });
   return artist;
@@ -377,8 +486,10 @@ export const getArtistCuration = async (artist_id) => {
 };
 
 //아티스트 큐레이션 생성
-export const setArtistCuration = async (artist_id, artist_name) => {
-  const description = await recommandCuration(artist_name);
+export const setArtistCuration = async (artist_id, artist_name, music_name) => {
+  const description = await recommandCuration(
+    `${music_name}를 부른 ${artist_name}`
+  );
   const data = {
     artistId: artist_id,
     description: description,
@@ -413,3 +524,139 @@ export const setGenreImage = async (data) => {
   const genre = await prisma.genreImage.create({ data: data });
   return genre;
 };
+
+export const getTrackList = async (album_id) => {
+  // 1. 앨범 정보 가져오기
+  const album = await prisma.album.findFirst({
+    where: { id: album_id },
+    select: {
+      id: true,
+      title: true,
+      releaseTime: true,
+      image: true,
+      Musics: {
+        take: 1,
+        select: {
+          MusicArtists: {
+            select: {
+              artist: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const album_name = album.title;
+  const artist_name = album.Musics[0].MusicArtists[0].artist.name;
+  const artist_id = album.Musics[0].MusicArtists[0].artist.id;
+
+  // 2. 해당 앨범의 현재 수록곡 확인
+  const dbTracks = await prisma.music.findMany({
+    where: { albumId: album_id },
+  });
+
+  console.log("dbTracks", dbTracks);
+
+  // API에서 전체 수록곡 목록 가져오기
+  const apiTracks = await getTrackInfoAPI(album_name, artist_name);
+  if (!apiTracks) {
+    return [];
+  }
+
+  // DB에 저장된 트랙 수가 API의 트랙 수보다 적을 때만 추가 작업 진행
+  if (dbTracks.length < apiTracks.length) {
+    for (const apiTrack of apiTracks) {
+      // 이미 DB에 있는 트랙인지 확인
+      const existingTrack = dbTracks.find(
+        (dbTrack) => dbTrack.title === apiTrack.title
+      );
+
+      // DB에 없는 트랙만 추가
+      if (!existingTrack) {
+        let lyrics = await getLyricsAPI(artist_name, apiTrack.title);
+        if (!lyrics) {
+          lyrics = "none";
+        }
+
+        await prisma.music.create({
+          data: {
+            title: apiTrack.title,
+            releaseTime: album.releaseTime,
+            lyrics: lyrics,
+            image: album.image,
+            music: apiTrack.url || "",
+            albumId: album.id,
+            MusicArtists: {
+              create: {
+                artistId: artist_id,
+              },
+            },
+          },
+        });
+      }
+    }
+  }
+
+  // 최종적으로 DB의 모든 트랙 반환
+  return await prisma.music.findMany({
+    where: { albumId: album_id },
+    select: {
+      id: true,
+      title: true,
+      releaseTime: true,
+      MusicArtists: {
+        select: {
+          artist: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const getAlbum = async (album_id) => {
+  const album = await prisma.album.findFirst({
+    where: { id: album_id },
+    select: {
+      id: true,
+      title: true,
+      releaseTime: true,
+      image: true,
+      Musics: {
+        take: 1,
+        select: {
+          MusicArtists: {
+            select: {
+              artist: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return album;
+};
+
+export const getMusicArtistByMusicIdArtistId = async (music_id, artist_id) => {
+  const musicArtist = await prisma.musicArtist.findFirst({
+    where: {
+      musicId: music_id,
+      artistId: artist_id
+    },
+  });
+  return musicArtist;
+}

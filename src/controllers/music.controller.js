@@ -15,6 +15,13 @@ import {
   albumCuration,
   artistCuration,
   genreImage,
+  listNomAlbums,
+  listAlbumTrackList,
+  listSimilarArtists,
+  listDifferentAlbum,
+  findMusic,
+  findAlbum,
+  findArtist,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -253,9 +260,9 @@ export const handleMusicInfo = async (req, res, next) => {
            type: "object",
            properties: {
               isSuccess: { type: "boolean", example: true },
-            code: { type: "number", example: 200 },
-            message: { type: "string", example: "success!" },
-            result: {
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
                   type: "object",
                   properties: {
                     id: { type: "number", example: 1 },
@@ -405,7 +412,10 @@ export const handleMusicArtistInfo = async (req, res, next) => {
  */
   try {
     console.log("아티스트 정보 가져오기를 요청했습니다!");
-    const artist = await listArtist(req.query.artist_name);
+    const artist = await listArtist(
+      req.query.artist_name,
+      req.query.album_name
+    );
     res.send(response(status.SUCCESS, artist));
   } catch (err) {
     res.send(response(status.ARTIST_NOT_EXIST, null));
@@ -515,6 +525,7 @@ export const handleArtistsInfo = async (req, res, next) => {
                        items: {
                          type: "object",
                          properties: {
+                           id: {type: "string", example: "1"},
                            name: { type: "string", example: "Ariana Grande" },
                            image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png" }
                          }
@@ -525,6 +536,7 @@ export const handleArtistsInfo = async (req, res, next) => {
                  {
                    type: "object",
                    properties: {
+                   id: {type: "string", example: "2"},
                      name: { type: "string", example: "SZA" },
                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png" }
                    }
@@ -590,30 +602,147 @@ export const handleArtistsInfo = async (req, res, next) => {
 
 // 음악 콘텐츠 추천
 export const handleCommonMusicNomination = async (req, res, next) => {
+  /*
+   #swagger.summary = '추천 콘텐츠(일반) 조회 API';
+   #swagger.tags = ['Music']
+   #swagger.responses[200] = {
+     description: "추천곡 조회 성공 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: true },
+             code: { type: "string", example: "200" },
+             message: { type: "string", example: "success!" },
+             result: {
+               type: "array",
+               items: {
+                 type: "object",
+                 properties: {
+                   music: {
+                     type: "object",
+                     properties: {
+                       id: { type: "string", example: "5" },
+                       albumId: { type: "string", example: "2" },
+                       title: { type: "string", example: "Starboy" },
+                       releaseTime: { type: "string", format: "date-time", example: "2022-12-12T03:33:00.000Z" },
+                       lyrics: { type: "string", example: "[00:57.38] I'm tryna put you in the worst mood, ah..." },
+                       image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/08e3f15aca0423b084fb49f342756f3b.png" },
+                       music: { type: "string", example: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0d/f7/bf/0df7bf34-b7b7-4390-95ef-91749556c20d/mzaf_8636523417719572612.plus.aac.p.m4a" },
+                       createdAt: { type: "string", format: "date-time", example: "2025-02-03T11:07:28.230Z" },
+                       updatedAt: { type: "string", format: "date-time", example: "2025-02-03T11:07:28.230Z" }
+                     }
+                   },
+                   album: {
+                     type: "object",
+                     properties: {
+                       id: { type: "string", example: "2" },
+                       title: { type: "string", example: "Starboy" },
+                       releaseTime: { type: "string", format: "date-time", example: "2022-12-12T03:33:00.000Z" },
+                       image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/08e3f15aca0423b084fb49f342756f3b.png" },
+                       createdAt: { type: "string", format: "date-time", example: "2025-02-03T11:06:05.634Z" },
+                       updatedAt: { type: "string", format: "date-time", example: "2025-02-03T11:06:05.634Z" }
+                     }
+                   },
+                   artist: { type: "string", example: "The Weeknd" }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   };
+   #swagger.responses[400] = {
+     description: "추천곡 조회 실패 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: false },
+             code: { type: "string", example: "MUSIC4001" },
+             message: { type: "string", example: "음악이 존재하지 않습니다." },
+             result: { type: "object", nullable: true, example: null }
+           }
+         }
+       }
+     }
+   };
+*/
   try {
-    console.log("추천곡 조회를 요청했습니다!");
-    const music_name = req.query.music;
-    const artist_name = req.query.artist;
+    console.log("당신을 위한 노래 추천을 요청했습니다!");
+    const music = await listNomMusics(req.userId);
+    res.send(response(status.SUCCESS, music));
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+};
 
-    if (!music_name || !artist_name) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        resultType: "FAIL",
-        error: {
-          errorCode: "BAD_REQUEST",
-          reason: "음악 제목과 아티스트 이름이 필요합니다",
-          data: null,
-        },
-        success: null,
-      });
-    }
-
-    const similarMusics = await listNomMusics(music_name, artist_name);
-
-    return res.status(StatusCodes.OK).json({
-      musics: similarMusics,
-    });
-  } catch (error) {
-    next(error);
+// 당신을 위한 앨범 추천(일반)
+export const handleCommonAlbumNomination = async (req, res, next) => {
+  /*
+   #swagger.summary = '딩신을 위한 앨범 추천(일반) 조회 API';
+   #swagger.tags = ['Music']
+   #swagger.responses[200] = {
+     description: "앨범 목록 조회 성공 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: true },
+             code: { type: "string", example: "200" },
+             message: { type: "string", example: "success!" },
+             result: {
+               type: "array",
+               items: {
+                 type: "object",
+                 properties: {
+                   album: {
+                     type: "object",
+                     properties: {
+                       id: { type: "string", example: "33" },
+                       title: { type: "string", example: "Lover" },
+                       releaseTime: { type: "string", format: "date-time", example: "2022-10-10T20:36:00.000Z" },
+                       image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/d3f083370c371a3ba1cddafaf193c27d.jpg" },
+                       createdAt: { type: "string", format: "date-time", example: "2025-02-03T11:22:15.377Z" },
+                       updatedAt: { type: "string", format: "date-time", example: "2025-02-03T11:22:15.377Z" }
+                     }
+                   },
+                   artist: { type: "string", example: "Taylor Swift" }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   };
+   #swagger.responses[400] = {
+     description: "앨범 목록 조회 실패 응답",
+     content: {
+       "application/json": {
+         schema: {
+           type: "object",
+           properties: {
+             isSuccess: { type: "boolean", example: false },
+             code: { type: "string", example: "MUSIC4001" },
+             message: { type: "string", example: "음악이 존재하지 않습니다." },
+             result: { type: "object", nullable: true, example: null }
+           }
+         }
+       }
+     }
+   };
+  */
+  try {
+    console.log("당신을 위한 앨범 추천을 요청했습니다!");
+    const album = await listNomAlbums(req.userId);
+    res.send(response(status.SUCCESS, album));
+  } catch (err) {
+    res.send(response(status.ALBUM_NOT_EXIST, null));
   }
 };
 
@@ -747,6 +876,7 @@ export const handleGenreImage = async (req, res, next) => {
               items: {
                 type: "object",
                 properties: {
+                  id: {type: "string", example: "1"},
                   name: { type: "string", example: "afrobeats" },
                   image: { type: "string", example: "https://music-archive-bucket.s3.amazonaws.com/genre/Afrobeats_3.png" }
                 }
@@ -785,3 +915,449 @@ export const handleGenreImage = async (req, res, next) => {
     console.error(err);
   }
 };
+
+//앨범 수록곡 조회
+export const handleAlbumTrackList = async (req, res, next) => {
+  /*
+#swagger.summary = '앨범 수록곡 조회 API'
+#swagger.tags = ['Music']
+#swagger.responses[200] = {
+  description: "앨범 상세 조회 성공 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: true },
+          code: { type: "string", example: "200" },
+          message: { type: "string", example: "success!" },
+          result: {
+            type: "object",
+            properties: {
+              album: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  title: { type: "string", example: "Love Poem - EP" },
+                  image: { 
+                    type: "string", 
+                    example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" 
+                  },
+                  artist: { type: "string", example: "IU" },
+                  releaseTime: { type: "number", example: 2019 }
+                }
+              },
+              tracks: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    title: { type: "string", example: "unlucky" },
+                    artist: { type: "string", example: "IU" },
+                    image: { 
+                      type: "string", 
+                      example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" 
+                    },
+                    releaseTime: { type: "number", example: 2019 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+#swagger.responses[400] = {
+  description: "앨범 상세 조회 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: false },
+          code: { type: "string", example: "MUSIC4001" },
+          message: { type: "string", example: "음악이 존재하지 않습니다." },
+          result: { type: "null", example: null }
+        }
+      }
+    }
+  }
+}
+#swagger.responses[401] = {
+  description: "앨범 상세 조회 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          isSuccess: { type: "boolean", example: false },
+          code: { type: "string", example: "MUSIC4002" },
+          message: { type: "string", example: "앨범이 존재하지 않습니다." },
+          result: { type: "null", example: null }
+        }
+      }
+    }
+  }
+}
+*/
+  try {
+    const albumId = req.params.album_id;
+    const result = await listAlbumTrackList(albumId);
+    res.send(result);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//이 아티스트와 비슷한 아티스트
+export const handleArtistSimilar = async (req, res, next) => {
+  /*
+  #swagger.summary = '이 아티스트와 비슷한 아티스트 조회 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "이 아티스트와 비슷한 아티스트 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "object",
+              properties: {
+                artists: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1" },
+                      name: { type: "string", example: "IU" },
+                      image: { type: "string", example: "https://example.com/artist_image.jpg" },
+                      createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                      updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #swagger.responses[400] = {
+    description: "이 아티스트와 비슷한 아티스트 조회 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "MUSIC4003" },
+            message: { type: "string", example: "아티스트가 존재하지 않습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  */
+  try {
+    console.log("이 아티스트와 비슷한 아티스트를 요청했습니다!");
+    const artists = await listSimilarArtists(req.params.artist_id);
+    res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.ARTIST_NOT_EXIST, null));
+  }
+}
+
+//이 아티스트의 다른 앨범
+export const handleDifferentAlbum = async (req, res, next) => {
+  /*
+  #swagger.summary = '이 아티스트의 다른 앨범 조회 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "이 아티스트의 다른 앨범 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  title: { type: "string", example: "Love poem" },
+                  releaseTime : { type: "string", format: "date", example: "2021-03-25" },
+                  image: { type: "string", example: "https://example.com/album_image.jpg" },
+                  createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                  updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+      description: "이 아티스트의 다른 앨범 조회 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MUSIC4002" },
+              message: { type: "string", example: "앨범이 존재하지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
+  try {
+    console.log("이 아티스트의 다른 앨범을 요청했습니다!");
+    const albums = await listDifferentAlbum(req.params.artist_id, req.params.album_id);
+    res.send(response(status.SUCCESS, albums));
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+}
+
+//모든 정보 불러오기
+export const handleAllInfo = async (req, res, next) => {
+  /*
+   #swagger.summary = '모든 정보 조회 API';
+   #swagger.tags = ['Music']
+   #swagger.parameters['music'] = {
+       in: 'query',
+       description: '음악 이름',
+       required: false,
+       type: 'string'
+   }
+   #swagger.parameters['album'] = {
+       in: 'query',
+       description: '앨범 이름',
+       required: false,
+       type: 'string'
+   }
+   #swagger.parameters['artist'] = {
+       in: 'query',
+       description: '아티스트 이름',
+       required: false,
+       type: 'string'
+   }
+  #swagger.responses[200] = {
+    description: "노래 정보 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: true },
+                    info: { type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        albumId: { type: "string", example: "1" },
+                        title: { type: "string", example: "Celebrity" },
+                        releseTime : { type: "string", format: "date", example: "2021-03-25" },
+                        lyics: { type: "string", example: "세상의 모서리 구부정하게  커버린 골칫거리 outsider (ah ah)" },
+                        image: { type: "string", example: "https://example.com/music_image.jpg" },
+                        music: { type: "string", example: "https://example.com/preview_music.m4a"},
+                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                        updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                      }
+                    }
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: true },
+                    info: { type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love poem" },
+                        releseTime : { type: "string", format: "date", example: "2021-03-25" },
+                        image: { type: "string", example: "https://example.com/album_image.jpg" },
+                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                        updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                      }
+                    }
+                  }
+                },
+                artist: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: true },
+                    info: { type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        name: { type: "string", example: "IU" },
+                        image: { type: "string", example: "https://example.com/artist_image.jpg" },
+                        createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                        updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                      }
+                    }
+                  }
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "모든 정보 조회 이름이 모두 존재하지 않아 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "MUSIC4005" },
+            message: { type: "string", example: "요청하신 이름이 모두 존재하지 않습니다." },
+            result: { 
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: false },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: false },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                artist: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: false },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "모든 정보 조회 값이 모두 존재하지 않아 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "MUSIC4004" },
+            message: { type: "string", example: "요청하신 값이 모두 존재하지 않습니다." },
+            result: { 
+              type: "object",
+              properties: {
+                music: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                album: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+                artist: {
+                  type: "object",
+                  properties: {
+                    name: { type: "boolean", example: true },
+                    value: { type: "boolean", example: false },
+                    info: { type: "object", properties: {}}
+                  }
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[500] = {
+    description: "서버 에러",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "COMMON000" },
+            message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
+            result: { type: "null", example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try {
+    console.log("정보 불러오기를 요청했습니다!");
+    const music = await findMusic(req.query.music);
+    const album = await findAlbum(req.query.album);
+    const artist = await findArtist(req.query.artist);
+    const data = {
+      music: music,
+      album: album,
+      artist: artist,
+    };
+    if (music.name === false && album.name === false && artist.name === false) {
+      res.send(response(status.ALL_NAME_NOT_EXIST, data))
+    }
+    else if (music.value === false && album.value === false && artist.value === false) {
+      res.send(response(status.ALL_VALUE_NOT_EXIST, data));
+    }
+    else {
+      res.send(response(status.SUCCESS, data));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
+  }
+}

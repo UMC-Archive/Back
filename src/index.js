@@ -15,6 +15,10 @@ import {
   handleUserArtist,
   handleUserProfile,
   handleUserPlay,
+  handleHistory,
+  handleGetHistory,
+  handleUserRecap,
+  handleUserPreferGenre,
 } from "./controllers/user.controller.js";
 import {
   handleMusicNomination,
@@ -28,7 +32,13 @@ import {
   handleCommonMusicNomination,
   handleAlbumCuration,
   handleArtistCuration,
-  handleGenreImage
+  handleGenreImage,
+  handleCommonAlbumNomination,
+  handleAlbumTrackList,
+  handleArtistSimilar,
+  handleDifferentAlbum,
+  handleAllInfo,
+
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -122,6 +132,7 @@ app.use((req, res, next) => {
 });
 //--------------------------------
 app.get("/", (req, res, next) => {
+  // #swagger.ignore = true
   res.send("Hello World!");
 });
 
@@ -152,6 +163,14 @@ app.post("/users/artist", handleUserArtist);
 //app.post("/users/profile", handleUserProfile); // 회원가입이랑 통합으로 미사용
 // 유저의 음악 재생 시 기록하기
 app.post("/users/play", handleUserPlay);
+//유저 time 히스토리 추가하는 api
+app.post("/users/history", handleHistory);
+//유저 time 히스토리 불러오는 api
+app.get("/users/history", handleGetHistory);
+//recap 결산
+app.get("/users/recap", handleUserRecap);
+//장르 취향 반환
+app.get("/users/genre/preference", handleUserPreferGenre);
 
 //추천곡(연도)
 app.get("/music/year/nomination", handleMusicNomination);
@@ -159,6 +178,8 @@ app.get("/music/year/nomination", handleMusicNomination);
 app.get("/album/year/nomination", handleAlbumNomination);
 //추천곡(일반)
 app.get("/music/nomination", handleCommonMusicNomination);
+//당신을 위한 앨범 추천(일반)
+app.get("/album/nomination", handleCommonAlbumNomination);
 //숨겨진 명곡
 app.get("/music/hidden", handleMusicHidden);
 //노래 정보 가져오기
@@ -189,6 +210,14 @@ app.delete("/library/music/:musicId", deleteMusicLibrary);
 app.delete("/library/album/:albumId", deleteAlbumLibrary);
 //보관함 아티스트트 삭제
 app.delete("/library/artist/:artistId", deleteArtistLibrary);
+//수록곡 조회
+app.get("/album/:album_id/track-list", handleAlbumTrackList);
+//이 아티스트와 비슷한 아티스트
+app.get("/music/artist/:artist_id/similar", handleArtistSimilar);
+//이 아티스트의 다른 앨범
+app.get("/music/artist/:artist_id/album/:album_id", handleDifferentAlbum);
+//정보 가져오기
+app.get("/music/all/info", handleAllInfo);
 //--------------------------------
 
 app.use((err, req, res, next) => {
