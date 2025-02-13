@@ -1001,39 +1001,39 @@ export const handleGetHistory = async (req, res, next) => {
             message: "success!",
             result: [
               {
-                id: "1",
+                id: "16",
                 userId: "1",
-                history: "2024-01-01T00:00:00.000Z",
-                createdAt: "2025-02-03T11:07:13.931Z",
-                updatedAt: "2025-02-03T11:07:13.931Z"
+                history: "2010-02-02T00:00:00.000Z",
+                createdAt: "2025-02-11T06:59:16.830Z",
+                updatedAt: "2025-02-11T06:59:16.830Z"
               },
               {
-                id: "2",
+                id: "15",
                 userId: "1",
-                history: "2010-01-01T00:00:00.000Z",
-                createdAt: "2024-01-01T00:00:00.000Z",
-                updatedAt: "2025-02-03T11:14:48.097Z"
+                history: "1984-06-08T00:00:00.000Z",
+                createdAt: "2025-02-10T15:58:32.008Z",
+                updatedAt: "2025-02-10T15:58:32.008Z"
               },
               {
-                id: "3",
+                id: "14",
                 userId: "1",
-                history: "2025-01-25T15:30:45.123Z",
-                createdAt: "2025-02-06T06:27:13.381Z",
-                updatedAt: "2025-02-06T06:27:13.381Z"
+                history: "1986-12-22T00:00:00.000Z",
+                createdAt: "2025-02-10T15:58:00.421Z",
+                updatedAt: "2025-02-10T15:58:00.421Z"
               },
               {
-                id: "4",
+                id: "13",
                 userId: "1",
-                history: "2025-01-26T15:30:45.123Z",
-                createdAt: "2025-02-06T06:35:16.149Z",
-                updatedAt: "2025-02-06T06:35:16.149Z"
+                history: "1980-01-01T00:00:00.000Z",
+                createdAt: "2025-02-10T15:56:49.877Z",
+                updatedAt: "2025-02-10T15:56:49.877Z"
               },
               {
-                id: "5",
+                id: "12",
                 userId: "1",
-                history: "2025-01-28T15:30:45.123Z",
-                createdAt: "2025-02-06T06:59:25.515Z",
-                updatedAt: "2025-02-06T06:59:25.515Z"
+                history: "1980-01-01T00:00:00.000Z",
+                createdAt: "2025-02-10T06:00:27.027Z",
+                updatedAt: "2025-02-10T06:00:27.027Z"
               }
             ]
           }
