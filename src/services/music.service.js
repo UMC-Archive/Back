@@ -25,7 +25,7 @@ import {
   getArtistDB,
   getArtistAPI,
   addArtist,
-  getAlbumItunesAPI,
+  getAlbumSpotifyAPI,
   addMusicGenre,
   getUserHistory,
   getUserArtistPrefers,
@@ -226,8 +226,8 @@ const listAlbumSearch = async (music_name, artist_name) => {
       return album;
     }
   }
-  const itunesAlbums = await getAlbumItunesAPI(music_name, artist_name);
-  const albumApi = await getAlbumInfo(artist_name, itunesAlbums)
+  const spotifyAlbums = await getAlbumSpotifyAPI(music_name, artist_name);
+  const albumApi = await getAlbumInfo(artist_name, spotifyAlbums)
   if (!albumApi?.tracks?.track) {
     return null;
   }

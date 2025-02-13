@@ -135,7 +135,7 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   };
   return data;
 };
-export const getAlbumItunesAPI = async (artist_name, music_name) => {
+export const getAlbumSpotifyAPI = async (artist_name, music_name) => {
   const url = await spotify(
     {
       q: `${artist_name}, ${music_name}`,
