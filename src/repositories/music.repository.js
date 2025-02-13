@@ -80,7 +80,7 @@ export const getMusicAPI = async (album, lyrics, artist_name, music_name) => {
   if (!album) return null;
   const data = {
     albumId: album.id,
-    music: music ? music.previewUrl : "",
+    music: music ? music?.previewUrl : "none",
     title: musicInfo ? musicInfo.name : music_name,
     lyrics: lyrics,
     releaseTime: album.releaseTime,
@@ -409,7 +409,7 @@ export const getAlbumById = async (album_id) => {
   const album = await prisma.album.findFirst({ where: { id: album_id } });
   return album;
 };
-export const getArtistByAlbum = async (album) => {
+export const getArtistByAlbum = async (album) => { // 현재 미사용
   let albumApi = await getAlbumSearch(album.title);
   let artist;
   if (albumApi) {
@@ -430,7 +430,7 @@ export const getAlbumCuration = async (album_id) => {
 
 //앨범 큐레이션 생성
 export const setAlbumCuration = async (album_id, album_name, artist_name) => {
-  const description = await recommandCuration(`${artist_name}, ${album_name}`);
+  const description = await recommandCuration(`${artist_name}의 앨범인 ${album_name}`);
   const data = {
     albumId: album_id,
     description: description,
