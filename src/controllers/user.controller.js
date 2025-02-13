@@ -52,7 +52,7 @@ export const handleUserSignUp = async (req, res, next) => {
                 type: "object",
                     properties: {
                       nickname: { type: "string", example: "닉네임" },
-                      email: { type: "string", example: "email@email.com"},
+                      email: { type: "string", example: "example@email.com"},
                       password: { type: "string", example: "password"},
                       status: { type: "string", example: "active"},
                       socialType: { type: "string", example: "local"},
@@ -85,7 +85,7 @@ export const handleUserSignUp = async (req, res, next) => {
                     properties: {
                       id: { type: "string", example: "1"},
                       nickname: { type: "string", example: "닉네임" },
-                      email: { type: "string", example: "example@gmail.com"},
+                      email: { type: "string", example: "example@email.com"},
                       password: { type: "string", example: "$2b$10$o8SHav4KiPRDtC0XEMyKm.EqVSZmALYfCH2lrrDaWqeR33j37vmoC"},
                       profileImage: { type: "string", example: "https://example.com/image.jpg"},
                       status: { type: "string", example: "active"},
@@ -157,8 +157,8 @@ export const handleLogin = async (req, res, next) => {
         schema: {
           type: "object",
           properties: {
-            email: { type: "string", example: "user@example.com" },
-            password: { type: "string", example: "password123" }
+            email: { type: "string", example: "example@email.com" },
+            password: { type: "string", example: "password" }
           },
           required: ["email", "password"]
         }
