@@ -309,6 +309,7 @@ export const userHistoryInfoRep = async (data) => {
     // 2. 타임 히스토리 불러오기
     const userHistories = await prisma.timeHistory.findMany({
       where: { userid: data.userId },
+      orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
     });
 
     // 3. 업데이트된 회원 정보 반환
