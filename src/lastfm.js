@@ -216,6 +216,11 @@ export const getTrackInfoAPI = (album_name, artist_name) => {
         if (err) {
           console.log("error", err);
           resolve(null);
+          return null;
+        }
+
+        if (!data || !data.tracks) {
+          resolve([]);
           return;
         }
 
