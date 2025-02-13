@@ -47,9 +47,7 @@ export const getBillboardAPI = async (date, first, last) => {
 
 export const extractBillboard = async (billboard) => {
   const values = Object.values(billboard).slice(0, 10);
-  const titles = values.map((item) =>
-    item.title.replace(/\(.*$/i, "").trim()
-  );
+  const titles = values.map((item) => item.title.replace(/\(.*$/i, "").trim());
   const artists = values.map((item) =>
     item.artist.replace(/( featuring| &| and).*$/i, "").trim()
   );
@@ -144,16 +142,16 @@ export const getAlbumAPI = async (artist_name, album_name) => {
     title: albumInfo
       ? albumInfo.name
       : albumItunes
-        ? albumItunes.collectionName
-        : album_name,
+      ? albumItunes.collectionName
+      : album_name,
     //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
     releaseTime: new Date(
       albumInfo
         ? albumInfo.wiki
           ? albumInfo.wiki.published
           : albumItunes
-            ? albumItunes.releaseDate
-            : "1970-01-01"
+          ? albumItunes.releaseDate
+          : "1970-01-01"
         : "1970-01-01"
     ),
     image: image ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
@@ -556,18 +554,31 @@ export const getTrackList = async (album_id) => {
   const artist_name = album.Musics[0].MusicArtists[0].artist.name;
   const artist_id = album.Musics[0].MusicArtists[0].artist.id;
 
+  console.log("album_name", album_name);
+  console.log("artist_name", artist_name);
+  console.log("artist_id", artist_id);
+
   // 2. 해당 앨범의 현재 수록곡 확인
   const dbTracks = await prisma.music.findMany({
     where: { albumId: album_id },
   });
-
   console.log("dbTracks", dbTracks);
 
   // API에서 전체 수록곡 목록 가져오기
   const apiTracks = await getTrackInfoAPI(album_name, artist_name);
+  let total = 0;
+  let count = 0;
   if (!apiTracks) {
     return [];
   }
+  for (const apiTrack of apiTracks) {
+    total += apiTrack.duration;
+    count++;
+  }
+
+  const minutes = Math.floor(total / 60);
+  const seconds = total % 60;
+  const roundedMinutes = seconds >= 30 ? minutes + 1 : minutes;
 
   // DB에 저장된 트랙 수가 API의 트랙 수보다 적을 때만 추가 작업 진행
   if (dbTracks.length < apiTracks.length) {
@@ -584,13 +595,15 @@ export const getTrackList = async (album_id) => {
           lyrics = "none";
         }
 
+        let music = await getAlbumItunes(apiTrack.title, artist_name);
+
         await prisma.music.create({
           data: {
             title: apiTrack.title,
             releaseTime: album.releaseTime,
             lyrics: lyrics,
             image: album.image,
-            music: apiTrack.url || "",
+            music: music?.previewUrl || "none",
             albumId: album.id,
             MusicArtists: {
               create: {
@@ -602,9 +615,7 @@ export const getTrackList = async (album_id) => {
       }
     }
   }
-
-  // 최종적으로 DB의 모든 트랙 반환
-  return await prisma.music.findMany({
+  const tracks = await prisma.music.findMany({
     where: { albumId: album_id },
     select: {
       id: true,
@@ -621,6 +632,8 @@ export const getTrackList = async (album_id) => {
       },
     },
   });
+
+  return { roundedMinutes, count, tracks };
 };
 
 export const getAlbum = async (album_id) => {
@@ -655,13 +668,15 @@ export const getMusicArtistByMusicIdArtistId = async (music_id, artist_id) => {
   const musicArtist = await prisma.musicArtist.findFirst({
     where: {
       musicId: music_id,
-      artistId: artist_id
+      artistId: artist_id,
     },
   });
   return musicArtist;
-}
+};
 
 export const getUserMusicsByUserId = async (user_id) => {
-  const userMusic = await prisma.userMusic.findMany({ where: { userId: user_id } })
-  return userMusic
-}
+  const userMusic = await prisma.userMusic.findMany({
+    where: { userId: user_id },
+  });
+  return userMusic;
+};

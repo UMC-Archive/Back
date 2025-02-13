@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import { } from "../dtos/music.dto.js";
+import {} from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -592,7 +592,7 @@ export const handleArtistsInfo = async (req, res, next) => {
       const statusCode = result.isSuccess ? 200 : "SIGNIN4002" ? 400 : 500;
       return res.status(statusCode).json(result);
     } else {
-      const result = await listSpecificArtistInfo(user_id, artist);
+      const result = await listSpecificArtistInfo(artist);
       const statusCode = result.isSuccess ? 200 : 500;
       return res.status(statusCode).json(result);
     }
@@ -1086,7 +1086,7 @@ export const handleArtistSimilar = async (req, res, next) => {
   } catch (err) {
     res.send(response(status.ARTIST_NOT_EXIST, null));
   }
-}
+};
 
 //이 아티스트의 다른 앨범
 export const handleDifferentAlbum = async (req, res, next) => {
@@ -1141,12 +1141,15 @@ export const handleDifferentAlbum = async (req, res, next) => {
   */
   try {
     console.log("이 아티스트의 다른 앨범을 요청했습니다!");
-    const albums = await listDifferentAlbum(req.params.artist_id, req.params.album_id);
+    const albums = await listDifferentAlbum(
+      req.params.artist_id,
+      req.params.album_id
+    );
     res.send(response(status.SUCCESS, albums));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
   }
-}
+};
 
 //모든 정보 불러오기
 export const handleAllInfo = async (req, res, next) => {
@@ -1360,19 +1363,21 @@ export const handleAllInfo = async (req, res, next) => {
       artist: artist,
     };
     if (music.name === false && album.name === false && artist.name === false) {
-      res.send(response(status.ALL_NAME_NOT_EXIST, data))
-    }
-    else if (music.value === false && album.value === false && artist.value === false) {
+      res.send(response(status.ALL_NAME_NOT_EXIST, data));
+    } else if (
+      music.value === false &&
+      album.value === false &&
+      artist.value === false
+    ) {
       res.send(response(status.ALL_VALUE_NOT_EXIST, data));
-    }
-    else {
+    } else {
       res.send(response(status.SUCCESS, data));
     }
   } catch (err) {
     console.log(err);
     res.send(response(BaseError));
   }
-}
+};
 
 //빠른 선곡
 export const handleMusicSelection = async (req, res, next) => {

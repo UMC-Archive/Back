@@ -222,6 +222,7 @@ export const getTrackInfoAPI = (album_name, artist_name) => {
         const tracks = data.tracks.track.map((track) => ({
           title: track.name,
           artist: track.artist.name,
+          duration: track.duration,
         }));
 
         resolve(tracks);
@@ -232,37 +233,46 @@ export const getTrackInfoAPI = (album_name, artist_name) => {
 
 export const getSimilarArtistsBymbid = async (artist_name, mbid) => {
   return new Promise((resolve, reject) => {
-    lastfm.artist.getSimilar({ artist: artist_name, mbid: mbid }, (err, data) => {
-      if (err) {
-        resolve(null);
+    lastfm.artist.getSimilar(
+      { artist: artist_name, mbid: mbid },
+      (err, data) => {
+        if (err) {
+          resolve(null);
+        }
+
+        const artist = data?.artist;
+        const result = artist; //{ name: artist.name };
+
+        resolve(result);
       }
-
-      const artist = data?.artist;
-      const result = artist//{ name: artist.name };
-
-      resolve(result);
-    });
+    );
   });
-}
+};
 export const getArtistTopAlbums = async (artist_name, limit) => {
   return new Promise((resolve, reject) => {
-    lastfm.artist.getTopAlbums({ artist: artist_name, limit: limit }, (err, artist) => {
-      if (err) {
-        resolve(null);
-      } else {
-        resolve(artist);
+    lastfm.artist.getTopAlbums(
+      { artist: artist_name, limit: limit },
+      (err, artist) => {
+        if (err) {
+          resolve(null);
+        } else {
+          resolve(artist);
+        }
       }
-    });
+    );
   });
-}
+};
 export const getArtistTopAlbumsBymbid = async (artist_name, mbid) => {
   return new Promise((resolve, reject) => {
-    lastfm.artist.getTopAlbums({ artist: artist_name, mbid: mbid }, (err, artist) => {
-      if (err) {
-        resolve(null);
-      } else {
-        resolve(artist);
+    lastfm.artist.getTopAlbums(
+      { artist: artist_name, mbid: mbid },
+      (err, artist) => {
+        if (err) {
+          resolve(null);
+        } else {
+          resolve(artist);
+        }
       }
-    });
+    );
   });
-}
+};
