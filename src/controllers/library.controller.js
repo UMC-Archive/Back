@@ -16,13 +16,6 @@ export const deleteMusicLibrary = async (req, res) => {
   /*
   #swagger.summary = '보관함에서 노래 삭제 API';
   #swagger.tags = ['Library']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: '액세스 토큰 (Bearer Token)',
-    required: true,
-    type: 'string',
-    example: 'Bearer <액세스_토큰>'
-  }
   #swagger.parameters['musicId'] = {
     in: 'path',
     description: '삭제할 노래의 ID',
@@ -95,13 +88,6 @@ export const deleteAlbumLibrary = async (req, res) => {
   /*
   #swagger.summary = '보관함에서 앨범 삭제 API';
   #swagger.tags = ['Library']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: '액세스 토큰 (Bearer Token)',
-    required: true,
-    type: 'string',
-    example: 'Bearer <액세스_토큰>'
-  }
   #swagger.parameters['albumId'] = {
     in: 'path',
     description: '삭제할 앨범의 ID',
@@ -174,13 +160,6 @@ export const deleteArtistLibrary = async (req, res) => {
   /*
   #swagger.summary = '보관함에서 아티스트 삭제 API';
   #swagger.tags = ['Library']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: '액세스 토큰 (Bearer Token)',
-    required: true,
-    type: 'string',
-    example: 'Bearer <액세스_토큰>'
-  }
   #swagger.parameters['artistId'] = {
     in: 'path',
     description: '삭제할 아티스트의 ID',
@@ -253,13 +232,6 @@ export const addMusicLibrary = async (req, res) =>{
 /*
   #swagger.summary = '보관함에 노래 추가 API';
   #swagger.tags = ['Library']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: '액세스 토큰 (Bearer Token)',
-    required: true,
-    type: 'string',
-    example: 'Bearer <액세스_토큰>'
-  }
   #swagger.parameters['musicId'] = {
     in: 'path',
     description: '추가할 노래의 ID',
@@ -343,13 +315,6 @@ export const addAllbumLibrary = async (req, res) =>{
   /*
   #swagger.summary = '보관함에 앨범 추가 API';
   #swagger.tags = ['Library']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: '액세스 토큰 (Bearer Token)',
-    required: true,
-    type: 'string',
-    example: 'Bearer <액세스_토큰>'
-  }
   #swagger.parameters['albumId'] = {
     in: 'path',
     description: '추가할 앨범의 ID',
@@ -432,13 +397,6 @@ export const addArtistLibrary = async (req, res) =>{
   /*
   #swagger.summary = '보관함에 아티스트 추가 API';
   #swagger.tags = ['Library']
-  #swagger.parameters['Authorization'] = {
-    in: 'header',
-    description: '액세스 토큰 (Bearer Token)',
-    required: true,
-    type: 'string',
-    example: 'Bearer <액세스_토큰>'
-  }
   #swagger.parameters['artistId'] = {
     in: 'path',
     description: '추가할 아티스트의 ID',
