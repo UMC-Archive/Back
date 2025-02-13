@@ -1029,11 +1029,22 @@ export const handleArtistSimilar = async (req, res, next) => {
             code: { type: "string", example: "200" },
             message: { type: "string", example: "success!" },
             result: {
-              type: "object",
-              properties: {
-                artists: {
-                  type: "array",
-                  items: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  album: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1" },
+                      title: { type: "string", example: "Love poem" },
+                      releaseTime: { type: "string", format: "date", example: "2025-01-01" },
+                      image: { type: "string", example: "https://example.com/album_image.jpg" },
+                      createdAt : { type: "string", format: "date", example: "2025-01-01" },
+                      updatedAt : { type: "string", format: "date", example: "2025-01-01" },
+                    }
+                  },
+                  artist: {
                     type: "object",
                     properties: {
                       id: { type: "string", example: "1" },
@@ -1042,7 +1053,7 @@ export const handleArtistSimilar = async (req, res, next) => {
                       createdAt : { type: "string", format: "date", example: "2025-01-01" },
                       updatedAt : { type: "string", format: "date", example: "2025-01-01" },
                     }
-                  }
+                  },
                 }
               }
             }

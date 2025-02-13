@@ -529,14 +529,15 @@ export const listSimilarArtists = async (artistId) => {
       })
     }
   }
-  let artists = [];
+  let artistAlbums = [];
   for (let sim in similars) {
     const all = await listAll(similars[sim].artist, similars[sim].album, similars[sim].music)
-    artists.push(all.artist);
+    artistAlbums.push({
+      album: all.album,
+      artist: all.artist
+    });
   }
-  return {
-    artists: artists
-  }
+  return artistAlbums;
 }
 
 export const listDifferentAlbum = async (artistId, albumId) => {
