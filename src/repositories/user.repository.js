@@ -121,7 +121,7 @@ export const changeImageRep = async (data) => {
     // 1. name과 email로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({
       where: {
-        name: data.name,
+        nickname: data.nickname,
         email: data.email,
       },
     });
