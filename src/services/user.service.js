@@ -150,10 +150,10 @@ export const loginService = async (req) => {
 export const userChangeImageService = async (req, res) => {
   // data) => {
   const { url, data } = await profileUploader(req, res);
-  const jdata = json.parse(data);
+  const jdata = JSON.parse(data);
   console.log("bodyService:", jdata);
   const ChangeImage = await changeImageRep({
-    name: jdata.name,
+    nickname: jdata.nickname,
     email: jdata.email,
     profileImage: url,
   });

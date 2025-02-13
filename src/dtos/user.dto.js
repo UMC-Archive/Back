@@ -45,7 +45,7 @@ export const loginRequestDTO = (req) => {
 // 유저 프로필 파일 변경 DTO
 export const bodyToImageDTO = (req) => {
   return {
-    name: req.name,
+    nickname: req.nickname,
     email: req.email,
     profileImage: req.profileImage,
   };
