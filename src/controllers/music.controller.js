@@ -944,8 +944,15 @@ export const handleAlbumTrackList = async (req, res, next) => {
                     type: "string", 
                     example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" 
                   },
+                  artistId: { type: "string", example: "1" },
                   artist: { type: "string", example: "IU" },
-                  releaseTime: { type: "number", example: 2019 }
+                  artistImage: { 
+                    type: "string", 
+                    example: "https://i.scdn.co/image/ab6761610000e5ebbd0642ff425698afac5caffd" 
+                  },
+                  releaseTime: { type: "number", example: 2019 },
+                  totalDuration: { type: "number", example: 25 },
+                  trackCount: { type: "number", example: 6 }
                 }
               },
               tracks: {
@@ -972,7 +979,7 @@ export const handleAlbumTrackList = async (req, res, next) => {
   }
 }
 #swagger.responses[400] = {
-  description: "앨범 상세 조회 실패 응답",
+  description: "음악 상세 조회 실패 응답",
   content: {
     "application/json": {
       schema: {

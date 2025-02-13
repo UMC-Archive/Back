@@ -554,22 +554,18 @@ export const getTrackList = async (album_id) => {
   const artist_name = album.Musics[0].MusicArtists[0].artist.name;
   const artist_id = album.Musics[0].MusicArtists[0].artist.id;
 
-  console.log("album_name", album_name);
-  console.log("artist_name", artist_name);
-  console.log("artist_id", artist_id);
-
   // 2. 해당 앨범의 현재 수록곡 확인
   const dbTracks = await prisma.music.findMany({
     where: { albumId: album_id },
   });
-  console.log("dbTracks", dbTracks);
 
   // API에서 전체 수록곡 목록 가져오기
   const apiTracks = await getTrackInfoAPI(album_name, artist_name);
   let total = 0;
   let count = 0;
+
   if (!apiTracks) {
-    return [];
+    return { roundedMinutes: 0, count: dbTracks.length, tracks: dbTracks };
   }
   for (const apiTrack of apiTracks) {
     total += apiTrack.duration;
