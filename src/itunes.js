@@ -47,14 +47,14 @@ export const getAlbumItunes = async (music_name, artist_name) => {
   return results[0];
 };
 const searchItunesEntity = async (query, entity) => {
-    const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=${encodeURIComponent(entity)}&limit=1`;
-    try {
-        const data = await requestPromise(url);
-        return data ? data.results : null; // 검색된 결과 반환
-    } catch (error) {
-        console.error('Error fetching data from iTunes API:', error);
-        return [];
-    }
+  const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=${encodeURIComponent(entity)}&limit=1`;
+  try {
+    const data = await requestPromise(url);
+    return data ? data.results : null; // 검색된 결과 반환
+  } catch (error) {
+    console.error('Error fetching data from iTunes API:', error);
+    return [];
+  }
 };
 export const getAlbumItunesEntity = async (album_name, artist_name, entity) => {
   const results = await searchItunesEntity(

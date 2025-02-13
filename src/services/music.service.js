@@ -226,11 +226,12 @@ const listAlbumSearch = async (music_name, artist_name) => {
       return album;
     }
   }
-  const albumApi = await getAlbumItunesAPI(music_name, artist_name);
-  if (!albumApi) {
-    console.log("error not album");
+  const itunesAlbums = await getAlbumItunesAPI(music_name, artist_name);
+  const albumApi = await getAlbumInfo(artist_name, itunesAlbums)
+  if (!albumApi?.tracks?.track) {
+    return null;
   }
-  const album = await listAlbum(artist_name, albumApi.title);
+  const album = await listAlbum(artist_name, albumApi.name);
   return album;
 };
 //앨범 정보 가져오기

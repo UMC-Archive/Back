@@ -123,53 +123,33 @@ export const getAlbumDB = async (album_name) => {
 //lastfm에서 정보 가저오기
 export const getAlbumAPI = async (artist_name, album_name) => {
   const albumInfo = await getAlbumInfo(artist_name, album_name);
-  const albumItunes = await getAlbumItunesEntity(
-    album_name,
-    artist_name,
-    "album"
-  );
-  //const description = await recommandCuration(`${artist_name} ${album_name}`) //앨범과 큐레이션 분리
-  if (!albumInfo && !albumItunes) {
+  if (!albumInfo?.tracks?.track) {
     return null;
   }
-  let image;
-  if (albumInfo) {
-    image = albumInfo.image[4]["#text"][0]
-      ? albumInfo.image[4]["#text"]
-      : false;
-  }
+  const image = albumInfo?.image[4]["#text"];
+  const releseTime = albumInfo?.wiki?.published;
   const data = {
-    title: albumInfo
-      ? albumInfo.name
-      : albumItunes
-      ? albumItunes.collectionName
-      : album_name,
-    //description: description ? description : albumInfo.wiki ? albumInfo.wiki.summary : "none",
-    releaseTime: new Date(
-      albumInfo
-        ? albumInfo.wiki
-          ? albumInfo.wiki.published
-          : albumItunes
-          ? albumItunes.releaseDate
-          : "1970-01-01"
-        : "1970-01-01"
-    ),
-    image: image ? image : albumItunes ? albumItunes.artworkUrl100 : "none",
+    title: albumInfo.name,
+    releaseTime: new Date(releseTime ? releseTime : "1970-01-01"),
+    image: image ? image : "none",
   };
   return data;
 };
 export const getAlbumItunesAPI = async (artist_name, music_name) => {
-  const albumInfo = await getAlbumItunes(music_name, artist_name);
-  //data에서 albumInfo.wiki가 없는 경우가 있음
-  if (!albumInfo) return null;
-
-  const data = {
-    title: albumInfo.collectionName,
-    //description: "none",
-    releaseTime: albumInfo.releaseDate,
-    image: albumInfo.artworkUrl100,
-  };
-  return data;
+  const url = await spotify(
+    {
+      q: `${artist_name}, ${music_name}`,
+      type: "albums",
+      offset: "0",
+      limit: "1",
+      numberOfTopResults: "1",
+    },
+    "search"
+  );
+  const album = url?.albums?.items[0]?.data?.name;
+  const artist = url?.albums?.items[0]?.data?.artists?.items[0]?.profile?.name.toLowerCase();
+  if (!album && !artist && artist_name.toLowerCase() !== artist) return null;
+  return album;
 };
 
 //prisma에 정보 추가하기
