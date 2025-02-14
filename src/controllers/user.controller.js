@@ -24,6 +24,7 @@ import {
   userChangeArtistService,
   userProfile,
   userPlay,
+  userPlayInfoService,
   userAddHistoryService,
   userHistoryInfoService,
   addRecentMusicService,
@@ -845,6 +846,90 @@ export const handleUserPlay = async (req, res, next) => {
     const genre = await getGenreForMusic(bodyToUserMusic(req.userId, req.body));
   } catch (err) {
     res.send(response(status.ALBUM_NOT_EXIST, null));
+  }
+};
+
+// 유저의 음악 청취기록 불러오기
+export const handleGetUserPlay = async (req,res,next) => {
+  /*
+    #swagger.summary = '유저의 음악 청취 기록 불러오기 API';
+    #swagger.tags = ['User']
+    #swagger.responses[200] = {
+      description: "유저의 청취 기록 조회 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    userId: { type: "string", example: "1" },
+                    musicId: { type: "string", example: "1" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "해당 유저의 청취 기록을 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "USER_NOT_FOUND" },
+              message: { type: "string", example: "해당 유저의 청취 기록을 찾을 수 없습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[401] = {
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+*/
+  try {
+    console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
+    console.log(req.get("Authorization"));
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test");
+    if (token !== null) {
+      // 토큰 이상없음
+      const userId = req.userId;
+      const userInfo = await userPlayInfoService(userId);
+      res.send(response(status.SUCCESS, userInfo));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
   }
 };
 

@@ -264,6 +264,39 @@ export const setMusicGenre = async (data) => {
   return created;
 };
 
+// 유저의 청취기록 불러오기 
+export const userPlayInfoRep = async (data) => {
+  console.log("bodyRep:", data);
+  try {
+    // 1. userId로 회원 존재 여부 확인
+    const existingUser = await prisma.userMusic.findFirst({
+      where: {
+        userId: data.userId,
+      },
+    });
+
+    if (!existingUser) {
+      throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
+    }
+
+    // 2. 청취 기록 불러오기
+    const userPlay = await prisma.userMusic.findMany({
+      where: { userId: data.userId },
+      //orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
+      take: 10, // 최대 10개 제한
+    });
+
+    if (!userPlay) {
+      throw new Error("청취 없습니다.");
+    }
+    // 3. 업데이트된 회원 정보 반환
+    return userPlay;
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};
 // 유저의 time 히스토리를 추가
 export const addHistoryRep = async (data) => {
   console.log("bodyRep:", data);
@@ -322,6 +355,7 @@ export const userHistoryInfoRep = async (data) => {
   }
 };
 
+// 유저가 최근에 추가한 노래 리스트
 export const addRecentMusicRep = async (userId) => {
   try {
     // 1. userId로 회원 존재 여부 확인

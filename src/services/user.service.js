@@ -16,6 +16,7 @@ import {
   setUserMusic,
   getUserMusic,
   addHistoryRep,
+  userPlayInfoRep,
   userHistoryInfoRep,
   getMusicGenreByMusicId,
   setMusicGenre,
@@ -224,6 +225,12 @@ export const userPlay = async (data) => {
   });
   const userMusic = await getUserMusic(userMusicId);
   return userMusic;
+};
+
+// 유저의 청취 기록을 불러오는 service
+export const userPlayInfoService = async (userId) => {
+  const userPlayInfo = await userPlayInfoRep(userId);
+  return userPlayInfo;
 };
 
 // 유저의 타임 히스토리를 저장하는 service
