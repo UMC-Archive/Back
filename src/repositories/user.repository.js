@@ -308,8 +308,9 @@ export const userHistoryInfoRep = async (data) => {
 
     // 2. 타임 히스토리 불러오기
     const userHistories = await prisma.timeHistory.findMany({
-      where: { userid: data.userId },
+      where: { userId: data.userId },
       orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
+      take: 10, // 최대 10개 제한
     });
 
     // 3. 업데이트된 회원 정보 반환
@@ -321,6 +322,61 @@ export const userHistoryInfoRep = async (data) => {
   }
 };
 
+export const addRecentMusicRep = async (userId) => {
+  try {
+    // 1. userId로 회원 존재 여부 확인
+    const library = await prisma.library.findFirst({
+      where: {
+        userId: userId,
+      },
+    });
+
+    if (!library) {
+      throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
+    }
+
+    // 2. 최근 추가한 노래 리스트 불러오기
+    const musics = await prisma.libraryMusic.findMany({
+      where: {
+        libraryId: library.id,
+      },
+      orderBy: {
+        music: { updatedAt: 'desc' }, 
+      },
+      take: 10, // 최대 10개 제한
+      select: {
+        music: {
+          select: {
+            id: true,
+            title: true,
+            releaseTime: true,
+            image: true,
+            updatedAt: true,
+            MusicArtists: {
+              select: {
+                artist: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!musics) {
+      return null;
+    }
+    // 3. 정보 반환
+    return musics;
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+}
 export const getUserRecapMusic = async (userId) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();

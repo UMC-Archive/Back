@@ -17,6 +17,7 @@ import {
   handleUserPlay,
   handleHistory,
   handleGetHistory,
+  handleAddRecentMusic,
   handleUserRecap,
   handleUserPreferGenre,
 } from "./controllers/user.controller.js";
@@ -167,6 +168,8 @@ app.post("/users/play", handleUserPlay);
 app.post("/users/history", handleHistory);
 //유저 time 히스토리 불러오는 api
 app.get("/users/history", handleGetHistory);
+//유저가 최근 추가한 노래 api
+app.get("/users/recent", handleAddRecentMusic);
 //recap 결산
 app.get("/users/recap", handleUserRecap);
 //장르 취향 반환

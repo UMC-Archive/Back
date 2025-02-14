@@ -26,11 +26,15 @@ import {
   userPlay,
   userAddHistoryService,
   userHistoryInfoService,
+  addRecentMusicService,
   getGenreForMusic,
   listReacapMusics,
   listUserPreferGenre,
 } from "../services/user.service.js";
 
+import { 
+  listLibraryMusics 
+} from "../services/library.service.js";
 //회원가입
 export const handleUserSignUp = async (req, res, next) => {
   /*
@@ -1082,6 +1086,27 @@ export const handleGetHistory = async (req, res, next) => {
       // 토큰 이상없음
       const userInfo = await userHistoryInfoService(req.userId);
       res.send(response(status.SUCCESS, userInfo));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
+  }
+};
+
+// 유저가 최근에 추가한 노래 불러오기
+export const handleAddRecentMusic = async (req,res,next) => {
+  try {
+    console.log("유저가 최근에 추가한 노래 정보를 요청했습니다!");
+    console.log(req.get("Authorization"));
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test");
+    if (token !== null) {
+      // 토큰 이상없음
+      const recentMusic = await addRecentMusicService(req.userId);
+      res.send(response(status.SUCCESS, recentMusic));
     } else {
       // 토큰 이상감지
       res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
