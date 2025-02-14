@@ -166,15 +166,14 @@ export const listMainMusics = async (user_id) => {
   const dates = await getUserHistory(user_id);
   const date = dates[0]?.history?.toISOString().split("T")[0];
   const first = 1;
-  const last = 3;
+  const last = 10;
   const billboardApi = await getBillboardAPI(date, first, last);
   const billboard = await extractBillboard(billboardApi);
 
   let historyImage = await getHistoryImage(date);
-
   if (!historyImage) {
     const imageUrl = billboardApi[1].image;
-    historyImage =  await historyUploader(data, imageUrl);
+    historyImage = await historyUploader(date, imageUrl)
   }
 
   let MainMusics = [];
