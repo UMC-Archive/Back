@@ -551,7 +551,6 @@ export const handleUserChangeImage = async (req, res, next) => {
       const changeImage = await userChangeImageService(
         req,
         res,
-        bodyToImageDTO(req.body)
       );
       res.send(response(status.SUCCESS, changeImage));
     } else {

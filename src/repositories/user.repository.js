@@ -121,18 +121,19 @@ export const changeImageRep = async (data) => {
     // 1. name과 email로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({
       where: {
-        nickname: data.nickname,
+        id: data.id,
       },
     });
 
     if (!existingUser) {
-      throw new Error("해당 이름과 이메일로 등록된 사용자가 없습니다.");
+      throw new Error("등록된 사용자가 없습니다.");
     }
 
     // 2. 프로필 정보 업데이트
     const updatedUser = await prisma.user.update({
       where: { id: existingUser.id },
       data: {
+        nickname: data.nickname,
         profileImage: data.profileImage,
         updatedAt: new Date(), // Prisma가 자동으로 처리 가능
       },
