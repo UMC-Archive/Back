@@ -69,7 +69,7 @@ const groupByGenre = async (files) => {
         // 장르별로 파일들을 묶을 객체 생성
         const groupedByGenre = files.reduce((acc, { fileName, url }) => {
             // 장르 이름 추출 (공백으로 분리한 후 첫 번째 부분) 후 소문자로 변환
-            const genre = fileName.split('_')[0].toLowerCase();
+            const genre = fileName.split('_')[0];
 
             // 장르별로 그룹화
             if (!acc[genre]) {
