@@ -24,6 +24,7 @@ import {
   userChangeArtistService,
   userProfile,
   userPlay,
+  userPlayInfoService,
   userAddHistoryService,
   userHistoryInfoService,
   addRecentMusicService,
@@ -846,6 +847,28 @@ export const handleUserPlay = async (req, res, next) => {
     const genre = await getGenreForMusic(bodyToUserMusic(req.userId, req.body));
   } catch (err) {
     res.send(response(status.ALBUM_NOT_EXIST, null));
+  }
+};
+
+// 유저의 음악 청취기록 불러오기
+export const handleGetUserPlay = async (req,res,next) => {
+  try {
+    console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
+    console.log(req.get("Authorization"));
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test");
+    if (token !== null) {
+      // 토큰 이상없음
+      const userId = req.userId;
+      const userInfo = await userPlayInfoService(userId);
+      res.send(response(status.SUCCESS, userInfo));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(response(BaseError));
   }
 };
 
