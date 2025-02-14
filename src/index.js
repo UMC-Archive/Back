@@ -41,6 +41,8 @@ import {
   handleDifferentAlbum,
   handleAllInfo,
   handleMusicSelection,
+  handleArtistAlbumTop,
+  handleArtistMusicTop,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -225,6 +227,10 @@ app.delete("/library/album/:albumId", deleteAlbumLibrary);
 app.delete("/library/artist/:artistId", deleteArtistLibrary);
 //수록곡 조회
 app.get("/album/:album_id/track-list", handleAlbumTrackList);
+// 아티스트의 인기곡
+app.get("/music/artist/:artist_id/toptracks", handleArtistMusicTop);
+// 아티스트의 인기 앨범
+app.get("/music/artist/:artist_id/topalbum", handleArtistAlbumTop);
 //이 아티스트와 비슷한 아티스트
 app.get("/music/artist/:artist_id/similar", handleArtistSimilar);
 //이 아티스트의 다른 앨범
@@ -245,16 +251,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-const option = {
-    ca: fs.readFileSync('./pem/fullchain.pem'),
-    key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
-    cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
-};
+// const option = {
+//     ca: fs.readFileSync('./pem/fullchain.pem'),
+//     key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
+//     cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
+// };
 
-HTTPS.createServer(option, app).listen(port, () => {
-    console.log(`[HTTPS] Server is runnig on port ${port}`);
-});
-
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`);
+// HTTPS.createServer(option, app).listen(port, () => {
+//     console.log(`[HTTPS] Server is runnig on port ${port}`);
 // });
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});

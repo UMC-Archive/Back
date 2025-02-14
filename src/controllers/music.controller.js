@@ -23,6 +23,8 @@ import {
   findAlbum,
   findArtist,
   listSelectionMusic,
+  listTopMusicArtists,
+  listTopAlbumArtists,
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -1463,5 +1465,27 @@ export const handleMusicSelection = async (req, res, next) => {
     res.send(response(status.SUCCESS, music));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+};
+
+// 아티스트의 가장 인기곡
+export const handleArtistMusicTop = async (req,res,next) => {
+  try {
+    console.log("아티스트의 가장 인기곡을 요청했습니다!");
+    const artists = await listTopMusicArtists(req.params.artist_id);
+    res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.ARTIST_NOT_EXIST, null));
+  }
+};
+
+// 아티스트의 가장 인기있는 앨범
+export const handleArtistAlbumTop = async (req,res,next) => {
+  try {
+    console.log("아티스트의 가장 인기 앨범을 요청했습니다!");
+    const artists = await listTopAlbumArtists(req.params.artist_id);
+    res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.ARTIST_NOT_EXIST, null));
   }
 };

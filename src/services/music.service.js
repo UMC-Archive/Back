@@ -687,3 +687,16 @@ export const listSelectionMusic = async (user_id) => {
     return statB - statA;
   });
 };
+
+// 아티스트의 가장 인기있는 곡 불러오는 service
+export const listTopMusicArtists = async (artistId) => {
+  const artist = await getArtistById(artistId);
+  const musicArtist = await getMusicArtistByArtistId(artistId);
+  const music = await getMusicById(musicArtist.musicId);
+  const musicInfo = await getMusicInfo(artist.name, music.title);
+};
+
+// 아티스트의 가장 인기있는 앨범 불러오는 service
+export const listTopAlbumArtists = async (artist_id) => {
+
+};
