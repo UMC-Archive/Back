@@ -53,6 +53,10 @@ import {
   deleteArtistLibrary
 } from "./controllers/library.controller.js";
 
+import fs from "fs";
+import path from "path";
+import HTTPS from "https";
+
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
@@ -238,6 +242,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+const option = {
+    ca: fs.readFileSync('./pem/fullchain.pem'),
+    key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
+    cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
+};
+
+HTTPS.createServer(option, app).listen(port, () => {
+    console.log(`[HTTPS] Server is runnig on port ${port}`);
 });
+
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
