@@ -240,6 +240,7 @@ export const getLibraryArtists = async (userId) => {
       select: {
         artist: {
           select: {
+            id: true,
             name: true,
             image: true,
           },
@@ -273,6 +274,7 @@ export const getLibraryAlbums = async (userId) => {
       select: {
         album: {
           select: {
+            id: true,
             title: true,
             image: true,
             Musics: {
