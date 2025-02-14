@@ -105,7 +105,7 @@ export const historyUploader = async (date, imageUrl) => {
             // S3 업로드 파라미터 설정
             const params = {
                 Bucket: process.env.BUCKET,
-                Key: `${folderName}/${fileName}`, // 폴더 경로 + 파일명
+                Key: `${folderName}/${fileName}.png`, // 폴더 경로 + 파일명
                 Body: response.data, // 다운로드한 이미지 데이터
                 ContentType: response.headers['content-type'], // Content-Type 자동 설정
                 ACL: 'public-read' // 권한 설정
