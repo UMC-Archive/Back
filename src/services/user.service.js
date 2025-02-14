@@ -21,6 +21,7 @@ import {
   setMusicGenre,
   getUserRecapMusic,
   getUserPreferGenre,
+  addRecentMusicRep,
 } from "../repositories/user.repository.js";
 import {
   responseFromUserRecap,
@@ -241,6 +242,12 @@ export const userAddHistoryService = async (data) => {
 export const userHistoryInfoService = async (userId) => {
   const userHistoryInfo = await userHistoryInfoRep(userId);
   return userHistoryInfo;
+};
+
+// 유저가 최근 추가한 노래 불러오는 service
+export const addRecentMusicService = async (userId) => {
+  const recentMusic = await addRecentMusicRep(userId);
+  return recentMusic;
 };
 
 export const listReacapMusics = async (userId) => {
