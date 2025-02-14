@@ -46,7 +46,6 @@ export const loginRequestDTO = (req) => {
 export const bodyToImageDTO = (req) => {
   return {
     nickname: req.nickname,
-    email: req.email,
     profileImage: req.profileImage,
   };
 };

@@ -382,9 +382,6 @@ export const handleUserInfo = async (req, res) => {
   /*
   #swagger.summary = '유저 정보 조회 API';
   #swagger.tags = ['User']
-  #swagger.security = [{
-    "BearerAuth": []
-  }]
   #swagger.description = '토큰을 사용하여 로그인한 사용자의 정보를 가져오는 API입니다.'
   #swagger.responses[200] = {
     description: "유저 정보 조회 성공 응답",
@@ -453,12 +450,9 @@ export const handleUserInfo = async (req, res) => {
 
 // 유저 프로필 이미지 변경
 export const handleUserChangeImage = async (req, res, next) => {
-  /*
+/*
     #swagger.summary = '유저 프로필 이미지 변경 API';
     #swagger.tags = ['User']
-    #swagger.security = [{
-      "BearerAuth": []
-    }]
     #swagger.requestBody = {
       required: true,
       content: {
@@ -474,8 +468,7 @@ export const handleUserChangeImage = async (req, res, next) => {
               data: {
                 type: "object",
                 properties: {
-                  name: { type: "string", example: "홍길동" },
-                  email: { type: "string", example: "user@example.com" }
+                  nickname: { type: "string", example: "닉네임" }
                 },
                 description: "사용자 정보(JSON 형태)"
               }
@@ -498,10 +491,18 @@ export const handleUserChangeImage = async (req, res, next) => {
                 type: "object",
                 properties: {
                   id: { type: "string", example: "1" },
-                  name: { type: "string", example: "홍길동" },
-                  email: { type: "string", example: "user@example.com" },
-                  profileImage: { type: "string", example: "https://example.com/new-profile.jpg" },
-                  updatedAt: { type: "string", format: "date" }
+                  nickname: { type: "string", example: "닉네임" },
+                  email: { type: "string", example: "example@email.com" },
+                  password: { type: "string", example: "$2b$10$I12yq02leVVPozyP1/sKQeSEf/9Tv.q1zUeuS8l5Q9tH.mMidzl8e" },
+                  profileImage: { 
+                    type: "string", 
+                    example: "https://music-archive-bucket.s3.ap-northeast-2.amazonaws.com/archive/1739500725587-MixGolem.png" 
+                  },
+                  status: { type: "string", example: "active" },
+                  socialType: { type: "string", example: "local" },
+                  inactiveDate: { type: "string", format: "date-time", example: "2025-02-13T00:00:00.000Z" },
+                  createdAt: { type: "string", format: "date-time", example: "2025-02-13T15:16:55.612Z" },
+                  updatedAt: { type: "string", format: "date-time", example: "2025-02-14T02:38:46.020Z" }
                 }
               }
             }
@@ -510,7 +511,7 @@ export const handleUserChangeImage = async (req, res, next) => {
       }
     };
     #swagger.responses[400] = {
-      description: "해당 이름과 이메일로 등록된 사용자가 없음",
+      description: "해당 닉네임으로 등록된 사용자가 없음",
       content: {
         "application/json": {
           schema: {
@@ -518,7 +519,7 @@ export const handleUserChangeImage = async (req, res, next) => {
             properties: {
               isSuccess: { type: "boolean", example: false },
               code: { type: "string", example: "USER_NOT_FOUND" },
-              message: { type: "string", example: "해당 이름과 이메일로 등록된 사용자가 없습니다." },
+              message: { type: "string", example: "해당 닉네임으로 등록된 사용자가 없습니다." },
               result: { type: "object", nullable: true, example: null }
             }
           }
@@ -541,7 +542,7 @@ export const handleUserChangeImage = async (req, res, next) => {
         }
       }
     };
-  */
+*/
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
     const token = await checkFormat(req.get("Authorization"));
@@ -568,7 +569,6 @@ export const handleUserGenre = async (req, res, next) => {
   /*
   #swagger.summary = '유저의 장르 선택/수정 API'
   #swagger.tags = ['User']
-  #swagger.security = [{ "BearerAuth": [] }]
   #swagger.requestBody = {
     required: true,
     content: {
@@ -651,7 +651,6 @@ export const handleUserArtist = async (req, res, next) => {
   /*
     #swagger.summary = '유저의 아티스트 선택/수정 API'
     #swagger.tags = ['User']
-    #swagger.security = [{ "BearerAuth": [] }]
     #swagger.requestBody = {
       required: true,
       content: {
@@ -1098,6 +1097,89 @@ export const handleGetHistory = async (req, res, next) => {
 
 // 유저가 최근에 추가한 노래 불러오기
 export const handleAddRecentMusic = async (req,res,next) => {
+  /*
+    #swagger.summary = '유저가 최근 추가한 노래 불러오기 API';
+    #swagger.tags = ['User']
+    #swagger.responses[200] = {
+      description: "유저가 최근에 추가한 노래 조회 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    music: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love Poem" },
+                        releaseTime: { type: "string", format: "date-time", example: "2021-05-05T19:46:00.000Z" },
+                        image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
+                        updatedAt: { type: "string", format: "date-time", example: "2025-02-13T15:16:24.461Z" },
+                        MusicArtists: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              artist: {
+                                type: "object",
+                                properties: {
+                                  name: { type: "string", example: "IU" }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "해당 유저의 음악 라이브러리를 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "USER_NOT_FOUND" },
+              message: { type: "string", example: "해당 유저의 음악 라이브러리를 찾을 수 없습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[401] = {
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+*/
   try {
     console.log("유저가 최근에 추가한 노래 정보를 요청했습니다!");
     console.log(req.get("Authorization"));
