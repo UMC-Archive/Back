@@ -494,6 +494,7 @@ export const handleLibraryMusic = async (req, res, next) => {
               items: {
                 type: "object",
                 properties: {
+                  id: { type: "string", example: "1"},
                   title: { type: "string", example: "Dance With Me" },
                   releaseTime: { type: "number", example: 2000 },
                   image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/c354ecbb79a91abeb79f7c53d46c05ca.jpg" },
@@ -571,6 +572,7 @@ export const handleLibraryArtist = async (req, res, next) => {
               items: {
                 type: "object",
                 properties: {
+                  id: { type: "string", example: "1"},
                   name: { type: "string", example: "Creed" },
                   image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png" }
                 }
@@ -648,9 +650,10 @@ export const handleLibraryAlbum = async (req, res, next) => {
            items: {
              type: "object",
              properties: {
-               title: { type: "string", example: "O-Town" },
-               image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/67836e68e0c230a44bf6d2cf9df1ae24.jpg" },
-               artist: { type: "string", example: "Creed" }
+              id: { type: "string", example: "1"},
+              title: { type: "string", example: "O-Town" },
+              image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/67836e68e0c230a44bf6d2cf9df1ae24.jpg" },
+              artist: { type: "string", example: "Creed" }
              }
            },
            description: "사용자가 보관함에 앨범을 추가하지 않았을 경우 null"
