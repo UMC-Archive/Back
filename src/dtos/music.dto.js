@@ -11,6 +11,9 @@ export const responseFromMusic = (music) => {
   return music;
 };
 
+export const responseFromMainMusics = (data) => {
+  return data;
+};
 export const responseFromHiddenMusics = (data) => {
   return data;
 };

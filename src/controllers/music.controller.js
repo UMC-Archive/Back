@@ -6,6 +6,7 @@ import {
   listMusic,
   listArtist,
   listAlbum,
+  listMainMusics,
   listHiddenMusics,
   listNominationAlbum,
   listNominationMusic,
@@ -167,6 +168,24 @@ export const handleAlbumNomination = async (req, res, next) => {
     res.send(response(status.SUCCESS, album));
   } catch (err) {
     res.send(response(status.ALBUM_NOT_EXIST, null));
+  }
+};
+// 메인 명곡
+export const handleMusicMain = async (req, res, next) => {
+  try {
+    console.log("메인 명곡 조회를 요청했습니다");
+    console.log(req.get("Authorization"));
+    const token = await checkFormat(req.get("Authorization"));
+    console.log(token, ":test");
+    if (token !== null) {
+      // 토큰 이상없음
+      res.send(response(status.SUCCESS, await listMainMusics(req.userId)));
+    } else {
+      // 토큰 이상감지
+      res.send(response(status.TOKEN_FORMAT_INCORRECT, null));
+    }
+  } catch (err) {
+    res.send(response(status.MUSIC_NOT_EXIST, null));
   }
 };
 //숨겨진 명곡

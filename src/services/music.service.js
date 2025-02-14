@@ -4,6 +4,7 @@ import {
   responseFromArtist,
   responseFromAlbum,
   responseFromMusic,
+  responseFromMainMusics,
   responseFromHiddenMusics,
   responseFromSpecificArtist,
   responseFromAllArtists,
@@ -53,7 +54,7 @@ import {
   getUserMusicsByUserId,
 } from "../repositories/music.repository.js";
 import { recommandArtist } from "../middleware/gpt.js";
-import { getGenrePngFiles } from "../repositories/s3.repository.js";
+import { getGenrePngFiles, historyUploader ,getHistoryImage} from "../repositories/s3.repository.js";
 import {
   getArtistTopAlbum,
   getArtistTopTrack,
@@ -160,6 +161,44 @@ export const listNominationAlbum = async (user_id) => {
   return recommendedAlbums;
 };
 
+// 메인 명곡
+export const listMainMusics = async (user_id) => {
+  const dates = await getUserHistory(user_id);
+  const date = dates[0]?.history?.toISOString().split("T")[0];
+  const first = 1;
+  const last = 3;
+  const billboardApi = await getBillboardAPI(date, first, last);
+  const billboard = await extractBillboard(billboardApi);
+
+  let historyImage = await getHistoryImage(date);
+
+  if (!historyImage) {
+    const imageUrl = billboardApi[1].image;
+    historyImage =  await historyUploader(data, imageUrl);
+  }
+
+  let MainMusics = [];
+  for (let i = 0; i < last - first + 1; i++) {
+    const album = await getAlbumSpotifyApi(
+      billboard.artists[i],
+      billboard.titles[i]
+    );
+    const albumApi = await getAlbumInfo(billboard.artists[i], album);
+    const musicApi = await getMusicInfo(billboard.artists[i], billboard.titles[i]);
+    if (albumApi?.tracks?.track[0]?.name && musicApi?.name) {
+      const artistName = albumApi.artist === musicApi.artist.name ? albumApi.artist : null;
+      const albumName = albumApi.name;
+      const musicName = musicApi?.name;
+      const all = await listAll(artistName, albumName, musicName);
+      MainMusics.push({
+        music: all.music,
+        album: all.album,
+        artist: all.artist.name,
+      });
+    }
+  }
+  return responseFromMainMusics(MainMusics);
+};
 //숨겨진 명곡
 export const listHiddenMusics = async (user_id) => {
   const dates = await getUserHistory(user_id);
