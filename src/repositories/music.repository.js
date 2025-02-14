@@ -135,19 +135,19 @@ export const getAlbumAPI = async (artist_name, album_name) => {
   };
   return data;
 };
-export const getAlbumSpotifyAPI = async (artist_name, music_name) => {
+export const getAlbumSpotifyApi = async (artist_name, music_name) => {
   const url = await spotify(
     {
       q: `${artist_name}, ${music_name}`,
-      type: "albums",
+      type: "tracks",
       offset: "0",
       limit: "1",
       numberOfTopResults: "1",
     },
     "search"
   );
-  const album = url?.albums?.items[0]?.data?.name;
-  const artist = url?.albums?.items[0]?.data?.artists?.items[0]?.profile?.name.toLowerCase();
+  const album = url?.tracks?.items[0]?.data?.albumOfTrack?.name;
+  const artist = url?.tracks?.items[0]?.data?.artists?.items[0]?.profile?.name.toLowerCase();
   if (!album && !artist && artist_name.toLowerCase() !== artist) return null;
   return album;
 };

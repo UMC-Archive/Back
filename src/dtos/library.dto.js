@@ -1,5 +1,6 @@
 export const responseFromAllMusics = (musics) => {
   return musics.map((data) => ({
+    id: data.music.id,
     title: data.music.title,
     releaseTime: new Date(data.music.releaseTime).getFullYear(),
     image: data.music.image,
@@ -9,6 +10,7 @@ export const responseFromAllMusics = (musics) => {
 
 export const responseFromAllArtists = (artists) => {
   return artists.map((data) => ({
+    id: data.artist.id,
     name: data.artist.name,
     image: data.artist.image,
   }));
@@ -17,6 +19,7 @@ export const responseFromAllArtists = (artists) => {
 export const responseFromAllAlbums = (albums) => {
   console.log("dto albums : " + JSON.stringify(albums, null, 2));
   return albums.map((data) => ({
+    id: data.album.id,
     title: data.album.title,
     image: data.album.image,
     artist: data.album.Musics[0].MusicArtists[0].artist.name,
