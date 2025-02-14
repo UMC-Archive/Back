@@ -715,7 +715,6 @@ export const listTopMusicArtists = async (artistId) => {
     }
   }
   return toplist;
-
 };
 
 // 아티스트의 가장 인기있는 앨범 불러오는 service
