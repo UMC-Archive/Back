@@ -251,16 +251,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-// const option = {
-//     ca: fs.readFileSync('./pem/fullchain.pem'),
-//     key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
-//     cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
-// };
+const option = {
+    ca: fs.readFileSync('./pem/fullchain.pem'),
+    key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
+    cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
+};
 
-// HTTPS.createServer(option, app).listen(port, () => {
-//     console.log(`[HTTPS] Server is runnig on port ${port}`);
-// });
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+HTTPS.createServer(option, app).listen(port, () => {
+    console.log(`[HTTPS] Server is runnig on port ${port}`);
 });
+
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
