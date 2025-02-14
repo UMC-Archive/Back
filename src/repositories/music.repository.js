@@ -211,19 +211,17 @@ const getArtistByIds = async (ids) => {
 };
 //lastfm에서 정보 가저오기
 export const getArtistAPI = async (artist_name, album_name) => {
-  album_name = album_name.replace(/\(.*$/, "");
-  const artistInfo = await getArtistInfo(artist_name);
-  const musicName = await getAlbumInfo(artist_name, album_name);
+  const album = await getAlbumInfo(artist_name, album_name);
+  const music = album.tracks?.track?.name;
   const ids = await getArtistIdsByMusic(
     artist_name,
-    musicName.tracks.track[0].name
+    music
   );
-  const image = await getArtistByIds(ids);
+  const artist = await getArtistByIds(ids);
+  const image = artist?.artists[0]?.images[0]?.url;
   const data = {
-    name: artistInfo.name,
-    image: image
-      ? image.artists[0].images[0].url
-      : artistInfo.image[4]["#text"],
+    name: album.artist,
+    image: image ? image : "none",
   };
   return data;
 };
