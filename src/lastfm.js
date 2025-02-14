@@ -270,7 +270,22 @@ export const getArtistTopAlbums = async (artist_name, limit) => {
 export const getArtistTopAlbumsBymbid = async (artist_name, mbid) => {
   return new Promise((resolve, reject) => {
     lastfm.artist.getTopAlbums(
-      { artist: artist_name, mbid: mbid },
+      { artist: artist_name, mbid: mbid, limit: 10 },
+      (err, artist) => {
+        if (err) {
+          resolve(null);
+        } else {
+          resolve(artist);
+        }
+      }
+    );
+  });
+};
+
+export const getArtistTopMusicsBymbid = async (artist_name, mbid) => {
+  return new Promise((resolve, reject) => {
+    lastfm.artist.getTopTracks(
+      { artist: artist_name, mbid: mbid , limit:10 },
       (err, artist) => {
         if (err) {
           resolve(null);

@@ -282,7 +282,7 @@ export const userPlayInfoRep = async (data) => {
     // 2. 청취 기록 불러오기
     const userPlay = await prisma.userMusic.findMany({
       where: { userId: data.userId },
-      //orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
+      orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
       take: 10, // 최대 10개 제한
     });
 

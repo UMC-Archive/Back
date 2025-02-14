@@ -24,6 +24,9 @@ import {
   findArtist,
   listSelectionMusic,
   listMainMusics,
+  listTopMusicArtists,
+  listTopAlbumArtists,
+
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -1543,5 +1546,177 @@ export const handleMusicSelection = async (req, res, next) => {
     res.send(response(status.SUCCESS, music));
   } catch (err) {
     res.send(response(status.MUSIC_NOT_EXIST, null));
+  }
+};
+
+// 아티스트의 가장 인기곡
+export const handleArtistMusicTop = async (req,res,next) => {
+  /*
+  #swagger.summary = '아티스트의 가장 인기곡을 가져오는 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "아티스트의 가장 인기곡 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  music: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "442" },
+                      albumId: { type: "string", example: "439" },
+                      title: { type: "string", example: "Super Shy" },
+                      releaseTime: { type: "string", example: "2023-10-10T14:56:00.000Z" },
+                      lyrics: { type: "string", example: "[00:54.26] I'm super shy, super shy..." },
+                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/55b73e13e3c3a49647b910111f18eb12.jpg" },
+                      music: { type: "string", example: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/f0/c3/73/f0c37318-0928-f8ce-c008-f671f6435067/mzaf_2056463446400078652.plus.aac.p.m4a" },
+                      createdAt: { type: "string", example: "2025-02-14T14:18:38.907Z" },
+                      updatedAt: { type: "string", example: "2025-02-14T14:18:38.907Z" }
+                    }
+                  },
+                  album: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "439" },
+                      title: { type: "string", example: "NewJeans 'Super Shy'" },
+                      releaseTime: { type: "string", example: "2023-10-10T14:56:00.000Z" },
+                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/55b73e13e3c3a49647b910111f18eb12.jpg" },
+                      createdAt: { type: "string", example: "2025-02-14T14:18:37.470Z" },
+                      updatedAt: { type: "string", example: "2025-02-14T14:18:37.470Z" }
+                    }
+                  },
+                  artist: { type: "string", example: "NewJeans" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "아티스트의 인기곡을 찾을 수 없음",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "ARTIST_NOT_FOUND" },
+            message: { type: "string", example: "해당 아티스트의 인기곡을 찾을 수 없습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "잘못된 아티스트 ID",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "ARTIST_ID_INVALID" },
+            message: { type: "string", example: "유효하지 않은 아티스트 ID입니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try {
+    console.log("아티스트의 가장 인기곡을 요청했습니다!");
+    const artists = await listTopMusicArtists(req.params.artist_id);
+    res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.ARTIST_NOT_EXIST, null));
+  }
+};
+
+// 아티스트의 가장 인기있는 앨범
+export const handleArtistAlbumTop = async (req,res,next) => {
+  /*
+  #swagger.summary = '아티스트의 가장 인기있는 앨범을 가져오는 API';
+  #swagger.tags = ['Music']
+  #swagger.responses[200] = {
+    description: "아티스트의 가장 인기있는 앨범 조회 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "string", example: "200" },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "439" },
+                  title: { type: "string", example: "NewJeans 'Super Shy'" },
+                  releaseTime: { type: "string", example: "2023-10-10T14:56:00.000Z" },
+                  image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/55b73e13e3c3a49647b910111f18eb12.jpg" },
+                  createdAt: { type: "string", example: "2025-02-14T14:18:37.470Z" },
+                  updatedAt: { type: "string", example: "2025-02-14T14:18:37.470Z" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "아티스트의 인기 앨범을 찾을 수 없음",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "ARTIST_NOT_EXIST" },
+            message: { type: "string", example: "해당 아티스트의 인기 앨범을 찾을 수 없습니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "잘못된 아티스트 ID",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "ARTIST_ID_INVALID" },
+            message: { type: "string", example: "유효하지 않은 아티스트 ID입니다." },
+            result: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+  try {
+    console.log("아티스트의 가장 인기 앨범을 요청했습니다!");
+    const artists = await listTopAlbumArtists(req.params.artist_id);
+    res.send(response(status.SUCCESS, artists));
+  } catch (err) {
+    res.send(response(status.ARTIST_NOT_EXIST, null));
   }
 };

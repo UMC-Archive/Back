@@ -62,6 +62,7 @@ import {
   getSimilarArtistsBymbid,
   getArtistTopAlbumsBymbid,
   getArtistTopAlbums,
+  getArtistTopMusicsBymbid,
 } from "../lastfm.js";
 
 // gpt api에서 선호 아티스트 배열로 집어넣기
@@ -717,4 +718,59 @@ export const listSelectionMusic = async (user_id) => {
     // 값이 큰 순으로 내림차순 정렬
     return statB - statA;
   });
+};
+
+// 아티스트의 가장 인기있는 곡 불러오는 service
+export const listTopMusicArtists = async (artistId) => {
+  const artist = await getArtistById(artistId);
+  const musicArtist = await getMusicArtistByArtistId(artistId);
+  const music = await getMusicById(musicArtist.musicId);
+  const musicInfo = await getMusicInfo(artist.name, music.title);
+  const tops = await getArtistTopMusicsBymbid(artist.name, musicInfo?.artist?.mbid);
+  const tracks = tops.track;
+  let toplist = [];
+  for (let top in tracks) {
+    const album = await getAlbumSpotifyApi(
+      artist.name,
+      tracks[top].name
+    );
+    const albumApi = await getAlbumInfo(artist.name, album);
+    if (albumApi?.tracks?.track[0]?.name) {
+      const albumName = albumApi.name;
+      const all = await listAll(artist.name, albumName, tracks[top].name);
+      toplist.push({
+        music: all.music,
+        album: all.album,
+        artist: all.artist.name,
+      });
+    }
+  }
+  return toplist;
+};
+
+// 아티스트의 가장 인기있는 앨범 불러오는 service
+export const listTopAlbumArtists = async (artistId) => {
+  const artist = await getArtistById(artistId);
+  const musicArtist = await getMusicArtistByArtistId(artistId);
+  const music = await getMusicById(musicArtist.musicId);
+  const musicInfo = await getMusicInfo(artist.name, music.title);
+  const tops = await getArtistTopAlbumsBymbid(artist.name, musicInfo?.artist?.mbid);
+  const albums = tops.album;
+  let toplist = [];
+
+  for (let top in albums) {
+    const albumName = albums[top].name;
+    if (albumName) {
+      const info = await getAlbumInfo(artist.name, albumName);
+      if (info?.tracks?.track[0]?.name) {
+        const all = await listAll(
+          artist.name,
+          info.name,
+          info.tracks.track[0].name
+        );
+        toplist.push(all.album);
+      }
+    }
+  }
+  return toplist;
 };
