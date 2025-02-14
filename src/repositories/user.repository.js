@@ -1,4 +1,5 @@
 import { prisma } from "../db.config.js";
+import { getHistoryImage } from "./s3.repository.js"
 export const addUser = async (data) => {
   const user = await prisma.user.findFirst({ where: { email: data.email } });
   if (user) {
@@ -345,9 +346,18 @@ export const userHistoryInfoRep = async (data) => {
       orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
       take: 10, // 최대 10개 제한
     });
-
+    let historys = [];
+    for (let userHistory of userHistories) {
+      const date = userHistory.history.toISOString().split("T")[0];
+      const historyImage = await getHistoryImage(date);
+      const data = {
+        userHistory,
+        historyImage
+      }
+      historys.push(data);
+    }
     // 3. 업데이트된 회원 정보 반환
-    return userHistories;
+    return historys;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`

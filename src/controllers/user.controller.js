@@ -1102,11 +1102,17 @@ export const handleGetHistory = async (req, res, next) => {
                 items: {
                   type: "object",
                   properties: {
-                    id: { type: "string", example: "1" },
-                    userId: { type: "string", example: "1" },
-                    history: { type: "string", example: "2024-01-01T00:00:00.000Z" },
-                    createdAt: { type: "string", format: "date-time" },
-                    updatedAt: { type: "string", format: "date-time" }
+                    userHistory: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        userId: { type: "string", example: "1" },
+                        history: { type: "string", example: "2024-01-01T00:00:00.000Z" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                      }
+                    },
+                    historyImage: { type: "string", example: "https://example.com/history_image" },
                   }
                 }
               }
@@ -1118,39 +1124,54 @@ export const handleGetHistory = async (req, res, next) => {
             message: "success!",
             result: [
               {
-                id: "16",
-                userId: "1",
-                history: "2010-02-02T00:00:00.000Z",
-                createdAt: "2025-02-11T06:59:16.830Z",
-                updatedAt: "2025-02-11T06:59:16.830Z"
+                userHistory: {
+                  id: "16",
+                  userId: "1",
+                  history: "2010-02-02T00:00:00.000Z",
+                  createdAt: "2025-02-11T06:59:16.830Z",
+                  updatedAt: "2025-02-11T06:59:16.830Z"
+                },
+                historyImage:"https://example.com/history_image",
               },
               {
-                id: "15",
-                userId: "1",
-                history: "1984-06-08T00:00:00.000Z",
-                createdAt: "2025-02-10T15:58:32.008Z",
-                updatedAt: "2025-02-10T15:58:32.008Z"
+                userHistory: {
+                  id: "15",
+                  userId: "1",
+                  history: "1984-06-08T00:00:00.000Z",
+                  createdAt: "2025-02-10T15:58:32.008Z",
+                  updatedAt: "2025-02-10T15:58:32.008Z"
+                },
+                historyImage:"https://example.com/history_image",
               },
               {
-                id: "14",
-                userId: "1",
-                history: "1986-12-22T00:00:00.000Z",
-                createdAt: "2025-02-10T15:58:00.421Z",
-                updatedAt: "2025-02-10T15:58:00.421Z"
+                userHistory: {
+                  id: "14",
+                  userId: "1",
+                  history: "1986-12-22T00:00:00.000Z",
+                  createdAt: "2025-02-10T15:58:00.421Z",
+                  updatedAt: "2025-02-10T15:58:00.421Z"
+                },
+                historyImage:"https://example.com/history_image",
               },
               {
-                id: "13",
-                userId: "1",
-                history: "1980-01-01T00:00:00.000Z",
-                createdAt: "2025-02-10T15:56:49.877Z",
-                updatedAt: "2025-02-10T15:56:49.877Z"
+                userHistory: {
+                  id: "13",
+                  userId: "1",
+                  history: "1980-01-01T00:00:00.000Z",
+                  createdAt: "2025-02-10T15:56:49.877Z",
+                  updatedAt: "2025-02-10T15:56:49.877Z"
+                },
+                historyImage:"https://example.com/history_image",
               },
               {
-                id: "12",
-                userId: "1",
-                history: "1980-01-01T00:00:00.000Z",
-                createdAt: "2025-02-10T06:00:27.027Z",
-                updatedAt: "2025-02-10T06:00:27.027Z"
+                userHistory: {
+                  id: "12",
+                  userId: "1",
+                  history: "1980-01-01T00:00:00.000Z",
+                  createdAt: "2025-02-10T06:00:27.027Z",
+                  updatedAt: "2025-02-10T06:00:27.027Z"
+                },
+                historyImage:"https://example.com/history_image",
               }
             ]
           }
