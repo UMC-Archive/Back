@@ -154,9 +154,11 @@ export const userChangeImageService = async (req, res) => {
   const jdata = JSON.parse(data);
   console.log("bodyService:", jdata);
   const ChangeImage = await changeImageRep({
+    id: req.userId,
     nickname: jdata.nickname,
     profileImage: url,
   });
+  console.log(data)
   if (ChangeImage == null) {
     throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
   }
