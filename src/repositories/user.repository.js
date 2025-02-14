@@ -122,7 +122,6 @@ export const changeImageRep = async (data) => {
     const existingUser = await prisma.user.findFirst({
       where: {
         nickname: data.nickname,
-        email: data.email,
       },
     });
 

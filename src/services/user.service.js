@@ -155,7 +155,6 @@ export const userChangeImageService = async (req, res) => {
   console.log("bodyService:", jdata);
   const ChangeImage = await changeImageRep({
     nickname: jdata.nickname,
-    email: jdata.email,
     profileImage: url,
   });
   if (ChangeImage == null) {
