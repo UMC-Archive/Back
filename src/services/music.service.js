@@ -53,7 +53,7 @@ import {
   getUserMusicsByUserId,
 } from "../repositories/music.repository.js";
 import { recommandArtist } from "../middleware/gpt.js";
-import { getGenrePngFiles } from "../repositories/s3.repository.js";
+import { getGenrePngFiles, getHistoryImage, historyUploader } from "../repositories/s3.repository.js";
 import {
   getArtistTopAlbum,
   getArtistTopTrack,
@@ -191,7 +191,41 @@ export const listHiddenMusics = async (user_id) => {
   }
   return responseFromHiddenMusics(hiddenMusics);
 };
+//메인 CD
+export const listMainMusics = async (user_id) => {
+  const dates = await getUserHistory(user_id);
+  const date = dates[0]?.history?.toISOString().split("T")[0];
+  const first = 1;
+  const last = 10;
+  const billboardApi = await getBillboardAPI(date, first, last);
+  const billboard = await extractBillboard(billboardApi);
 
+  let historyImage = await getHistoryImage(date);
+  if (!historyImage) {
+    const imageUrl = billboardApi[1].image;
+    historyImage = await historyUploader(date, imageUrl);
+  }
+  let artists = billboard.artists;
+  let titles = billboard.titles
+  let mainMusics = [];
+  for (let i in artists) {
+    const album = await getAlbumSpotifyApi(
+      artists[i],
+      titles[i]
+    );
+    const albumApi = await getAlbumInfo(artists[i], album);
+    const musicApi = await getMusicInfo(artists[i], titles[i]);
+    if (albumApi?.tracks?.track && musicApi?.name) {
+      const all = await listAll(albumApi?.artist, albumApi?.name, musicApi?.name);
+      mainMusics.push({
+        music: all.music,
+        album: all.album,
+        artist: all.artist.name,
+      });
+    }
+  };
+  return responseFromHiddenMusics(mainMusics);
+}
 //음악 정보 가져오기
 export const listMusic = async (artist_name, music_name) => {
   //DB에 음악이 저장 되어 있을 때
@@ -365,7 +399,6 @@ export const artistCuration = async (artist_id) => {
   const artist = await getArtistById(artist_id);
   const artistMusic = await getMusicArtistByArtistId(artist_id);
   const music = await getMusicById(artistMusic.musicId);
-  console.log(artist.name, music.title);
   artistCuration = await setArtistCuration(artist_id, artist.name, music.title);
   if (!artistCuration) {
     return null;
@@ -494,13 +527,11 @@ const listAll = async (artist_name, album_name, music_name) => {
     const data = await getArtistAPI(artist_name, album_name);
     artist = await addArtist(data);
   }
-
   let album = await getAlbumDB(album_name);
   if (!album) {
     const data = await getAlbumAPI(artist_name, album_name);
     album = await addAlbum(data);
   }
-
   let music = await getMusicDB(music_name);
   if (!music) {
     let lyrics = await getLyricsAPI(artist_name, music_name);

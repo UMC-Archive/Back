@@ -41,6 +41,7 @@ import {
   handleDifferentAlbum,
   handleAllInfo,
   handleMusicSelection,
+  handleMusicMain,
 } from "./controllers/music.controller.js";
 import {
   handleLibraryMusic,
@@ -192,6 +193,8 @@ app.get("/music/nomination", handleCommonMusicNomination);
 app.get("/album/nomination", handleCommonAlbumNomination);
 //숨겨진 명곡
 app.get("/music/hidden", handleMusicHidden);
+//메인 cd
+app.get("/music/main", handleMusicMain);
 //노래 정보 가져오기
 app.post("/music", handleMusicInfo);
 //앨범 정보 가져오기
@@ -245,16 +248,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-const option = {
-    ca: fs.readFileSync('./pem/fullchain.pem'),
-    key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
-    cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
-};
+// const option = {
+//   ca: fs.readFileSync('./pem/fullchain.pem'),
+//   key: fs.readFileSync(path.resolve(process.cwd(), './pem/privkey.pem'), 'utf8').toString(),
+//   cert: fs.readFileSync(path.resolve(process.cwd(), './pem/cert.pem'), 'utf8').toString(),
+// };
 
-HTTPS.createServer(option, app).listen(port, () => {
-    console.log(`[HTTPS] Server is runnig on port ${port}`);
-});
-
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`);
+// HTTPS.createServer(option, app).listen(port, () => {
+//   console.log(`[HTTPS] Server is runnig on port ${port}`);
 // });
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
