@@ -851,67 +851,97 @@ export const handleUserPlay = async (req, res, next) => {
 
 // 유저의 음악 청취기록 불러오기
 export const handleGetUserPlay = async (req,res,next) => {
-  /*
-    #swagger.summary = '유저의 음악 청취 기록 불러오기 API';
-    #swagger.tags = ['User']
-    #swagger.responses[200] = {
-      description: "유저의 청취 기록 조회 성공 응답",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              isSuccess: { type: "boolean", example: true },
-              code: { type: "number", example: 200 },
-              message: { type: "string", example: "success!" },
-              result: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    id: { type: "string", example: "1" },
-                    userId: { type: "string", example: "1" },
-                    musicId: { type: "string", example: "1" }
-                  }
+/*
+  #swagger.summary = '유저의 음악 청취 기록 불러오기 API';
+  #swagger.tags = ['User']
+  #swagger.responses[200] = {
+    description: '유저의 청취 기록 조회 성공 응답',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: true },
+            code: { type: "number", example: 200 },
+            message: { type: "string", example: "success!" },
+            result: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "1" },
+                  userId: { type: "string", example: "1" },
+                  musicId: { type: "string", example: "1" },
+                  createdAt: { type: "string", format: "date-time" },
+                  updatedAt: { type: "string", format: "date-time" }
                 }
               }
             }
           }
+        },
+        example: {
+          isSuccess: true,
+          code: 200,
+          message: "success!",
+          result: [
+            {
+              id: "34",
+              userId: "1",
+              musicId: "130",
+              createdAt: "2025-02-14T09:54:49.814Z",
+              updatedAt: "2025-02-14T09:54:49.814Z"
+            },
+            {
+              id: "33",
+              userId: "1",
+              musicId: "180",
+              createdAt: "2025-02-14T09:54:24.298Z",
+              updatedAt: "2025-02-14T09:54:24.298Z"
+            },
+            {
+              id: "32",
+              userId: "1",
+              musicId: "145",
+              createdAt: "2025-02-14T09:52:52.286Z",
+              updatedAt: "2025-02-14T09:52:52.286Z"
+            }
+          ]
         }
       }
-    };
-    #swagger.responses[400] = {
-      description: "해당 유저의 청취 기록을 찾을 수 없음",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              isSuccess: { type: "boolean", example: false },
-              code: { type: "string", example: "USER_NOT_FOUND" },
-              message: { type: "string", example: "해당 유저의 청취 기록을 찾을 수 없습니다." },
-              result: { type: "object", nullable: true, example: null }
-            }
+    }
+  };
+  #swagger.responses[400] = {
+    description: '해당 유저의 청취 기록을 찾을 수 없음',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "USER_NOT_FOUND" },
+            message: { type: "string", example: "해당 유저의 청취 기록을 찾을 수 없습니다." },
+            result: { type: "object", nullable: true, example: null }
           }
         }
       }
-    };
-    #swagger.responses[401] = {
-      description: "토큰이 올바르지 않거나 없음",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              isSuccess: { type: "boolean", example: false },
-              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
-              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
-              result: { type: "object", nullable: true, example: null }
-            }
+    }
+  };
+  #swagger.responses[401] = {
+    description: '토큰이 올바르지 않거나 없음',
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+            message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+            result: { type: "object", nullable: true, example: null }
           }
         }
       }
-    };
+    }
+  };
 */
   try {
     console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
