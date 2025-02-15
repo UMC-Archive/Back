@@ -229,8 +229,7 @@ export const userPlay = async (data) => {
 
 // 유저의 청취 기록을 불러오는 service
 export const userPlayInfoService = async (userId) => {
-  const userPlayInfo = await userPlayInfoRep(userId);
-  return userPlayInfo;
+  return await userPlayInfoRep({ userId });
 };
 
 // 유저의 타임 히스토리를 저장하는 service
