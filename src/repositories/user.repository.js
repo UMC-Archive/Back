@@ -265,33 +265,66 @@ export const setMusicGenre = async (data) => {
   return created;
 };
 
-// 유저의 청취기록 불러오기 
+// 유저의 청취기록 불러오기
 export const userPlayInfoRep = async (data) => {
   console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
-    const existingUser = await prisma.userMusic.findFirst({
-      where: {
-        userId: data.userId,
-      },
+    const existingUser = await prisma.user.findUnique({
+      where: { id: data.userId },
     });
 
     if (!existingUser) {
       throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
     }
 
-    // 2. 청취 기록 불러오기
+    // 2. 청취 기록 불러오기 + 음악 정보 & 아티스트 정보 포함
     const userPlay = await prisma.userMusic.findMany({
       where: { userId: data.userId },
-      orderBy: { updatedAt: "desc" }, // 추가된 정렬 옵션
+      orderBy: { updatedAt: "desc" }, // 최신순 정렬
       take: 10, // 최대 10개 제한
+      include: {
+        music: {
+          select: {
+            title: true,
+            image: true,
+            MusicArtists: {
+              include: {
+                artist: {
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
-    if (!userPlay) {
-      throw new Error("청취 없습니다.");
+    if (!userPlay.length) {
+      throw new Error("청취 기록이 없습니다.");
     }
-    // 3. 업데이트된 회원 정보 반환
-    return userPlay;
+
+    // 3. 데이터 가공
+    const formattedPlayHistory = userPlay.map((play) => ({
+      id: play.id,
+      userId: play.userId,
+      musicId: play.musicId,
+      musicTitle: play.music.title,
+      musicImage: play.music.image,
+      artists: play.music.MusicArtists.map((ma) => ({
+        artistId: ma.artist.id,
+        artistName: ma.artist.name,
+        artistImage: ma.artist.image,
+      })),
+      createdAt: play.createdAt,
+      updatedAt: play.updatedAt,
+    }));
+
+    return formattedPlayHistory;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
@@ -413,8 +446,21 @@ export const addRecentMusicRep = async (userId) => {
     if (!musics) {
       return null;
     }
+    // 3. 데이터 형식 변환
+    const formattedMusics = musics.map(item => ({
+      music: {
+        id: item.music.id,
+        title: item.music.title,
+        releaseTime: item.music.releaseTime,
+        image: item.music.image,
+        updatedAt: item.music.updatedAt,
+        artist: {
+          name: item.music.MusicArtists.length > 0 ? item.music.MusicArtists[0].artist.name : null
+        }
+      }
+    }));
     // 3. 정보 반환
-    return musics;
+    return formattedMusics;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
