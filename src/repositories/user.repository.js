@@ -282,7 +282,7 @@ export const userPlayInfoRep = async (data) => {
     const userPlay = await prisma.userMusic.findMany({
       where: { userId: data.userId },
       orderBy: { updatedAt: "desc" }, // 최신순 정렬
-      take: 3, // 최대 10개 제한
+      take: 10, // 최대 10개 제한
       include: {
         music: {
           select: {
