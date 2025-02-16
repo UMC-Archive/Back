@@ -883,6 +883,7 @@ export const handleGetUserPlay = async (req, res, next) => {
                       properties: {
                         id: { type: "string", example: "1" },
                         title: { type: "string", example: "Love Poem" },
+                        releaseTime: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" },
                         image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
                       }
                     },
@@ -891,6 +892,7 @@ export const handleGetUserPlay = async (req, res, next) => {
                       properties: {
                         id: { type: "string", example: "1" },
                         title: { type: "string", example: "Love Poem" },
+                        releaseTime: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" },
                         image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
                       }
                     },
@@ -924,11 +926,13 @@ export const handleGetUserPlay = async (req, res, next) => {
                 "music": {
                   "id": "1",
                   "title": "Love Poem",
+                  "releaseTime": "2021-05-05T19:46:00.000Z",
                   "image": "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg"
                 },
                 "album": {
                   "id": "1",
                   "title": "Love poem",
+                  "releaseTime": "2021-05-05T19:46:00.000Z",
                   "image": "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg"
                 },
                 "artist": {
@@ -947,11 +951,13 @@ export const handleGetUserPlay = async (req, res, next) => {
                 "music": {
                   "id": "130",
                   "title": "hey now",
+                  "releaseTime": "2024-11-11T07:50:00.000Z",
                   "image": "https://lastfm.freetls.fastly.net/i/u/300x300/a79564a9768d05272682b252deb02079.png"
                 },
                 "album": {
                   "id": "145",
                   "title": "GNX",
+                  "releaseTime": "2024-11-11T07:50:00.000Z",
                   "image": "https://lastfm.freetls.fastly.net/i/u/300x300/a79564a9768d05272682b252deb02079.png"
                 },
                 "artist": {
@@ -970,11 +976,13 @@ export const handleGetUserPlay = async (req, res, next) => {
                 "music": {
                   "id": "180",
                   "title": "Intro (Difference)",
+                  "releaseTime": "2018-11-11T15:50:00.000Z",
                   "image": "https://lastfm.freetls.fastly.net/i/u/300x300/7ab4f78932981481228761257599d1da.jpg"
                 },
                 "album": {
                   "id": "172",
                   "title": "T R A P S O U L",
+                  "releaseTime": "2018-11-11T15:50:00.000Z",
                   "image": "https://lastfm.freetls.fastly.net/i/u/300x300/7ab4f78932981481228761257599d1da.jpg"
                 },
                 "artist": {
@@ -982,53 +990,7 @@ export const handleGetUserPlay = async (req, res, next) => {
                   "name": "Bryson Tiller",
                   "image": "https://i.scdn.co/image/ab6761610000e5eb078fdd734b7f0aa782328428"
                 }
-              },
-              {
-                "userId": "1",
-                "play": {
-                  "id": "32",
-                  "createdAt": "2025-02-14T09:52:52.286Z",
-                  "updatedAt": "2025-02-14T09:52:52.286Z"
-                },
-                "music": {
-                  "id": "145",
-                  "title": "Start Me Up - 2009 Re-Mastered Digital Version",
-                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/f5c5de980e224db7990e2d60d39957ed.jpg"
-                },
-                "album": {
-                  "id": "153",
-                  "title": "Tattoo You (2009 Re-Mastered)",
-                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/f5c5de980e224db7990e2d60d39957ed.jpg"
-                },
-                "artist": {
-                  "id": "7",
-                  "name": "The Rolling Stones",
-                  "image": "https://i.scdn.co/image/ab6761610000e5ebe4cea917b68726aadb4854b8"
-                }
-              },
-              {
-                "userId": "1",
-                "play": {
-                  "id": "31",
-                  "createdAt": "2025-02-14T09:52:35.646Z",
-                  "updatedAt": "2025-02-14T09:52:35.646Z"
-                },
-                "music": {
-                  "id": "40",
-                  "title": "Money on My Mind",
-                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/1633f5b46006b64c7e9b2acce409bf64.png"
-                },
-                "album": {
-                  "id": "44",
-                  "title": "In the Lonely Hour",
-                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/1633f5b46006b64c7e9b2acce409bf64.png"
-                },
-                "artist": {
-                  "id": "17",
-                  "name": "Sam Smith",
-                  "image": "https://i.scdn.co/image/ab6761610000e5ebf057d1dce23e7f4d5d0f32e5"
-                }
-              },
+              }
             ]
           }
         }
