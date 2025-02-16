@@ -286,10 +286,19 @@ export const userPlayInfoRep = async (data) => {
       include: {
         music: {
           select: {
+            id: true,
             title: true,
             image: true,
+            album: {
+              select: {
+                id: true,
+                title: true,
+                releaseTime: true,
+                image: true,
+              }
+            },
             MusicArtists: {
-              include: {
+              select: {
                 artist: {
                   select: {
                     id: true,
@@ -303,25 +312,33 @@ export const userPlayInfoRep = async (data) => {
         },
       },
     });
-
     if (!userPlay.length) {
       throw new Error("청취 기록이 없습니다.");
     }
-
     // 3. 데이터 가공
     const formattedPlayHistory = userPlay.map((play) => ({
-      id: play.id,
       userId: play.userId,
-      musicId: play.musicId,
-      musicTitle: play.music.title,
-      musicImage: play.music.image,
-      artists: play.music.MusicArtists.map((ma) => ({
-        artistId: ma.artist.id,
-        artistName: ma.artist.name,
-        artistImage: ma.artist.image,
-      })),
-      createdAt: play.createdAt,
-      updatedAt: play.updatedAt,
+      play: {
+        id: play.id,
+        createdAt: play.createdAt,
+        updatedAt: play.updatedAt,
+      },
+      music: {
+        id: play.musicId,
+        title: play.music.title,
+        image: play.music.image,
+      },
+      album: {
+        id: play.music.album.id,
+        title: play.music.album.title,
+        releaseTime: play.music.releaseTime,
+        image: play.music.album.image,
+      },
+      artist: {
+        id: play.music.MusicArtists[0].artist.id,
+        name: play.music.MusicArtists[0].artist.name,
+        image: play.music.MusicArtists[0].artist.image,
+      },
     }));
 
     return formattedPlayHistory;
@@ -418,13 +435,21 @@ export const addRecentMusicRep = async (userId) => {
         libraryId: library.id,
       },
       orderBy: {
-        music: { updatedAt: 'desc' }, 
+        music: { updatedAt: 'desc' },
       },
       take: 10, // 최대 10개 제한
       select: {
         music: {
           select: {
             id: true,
+            album: {
+              select: {
+                id: true,
+                title: true,
+                releaseTime: true,
+                image: true,
+              }
+            },
             title: true,
             releaseTime: true,
             image: true,
@@ -454,9 +479,15 @@ export const addRecentMusicRep = async (userId) => {
         releaseTime: item.music.releaseTime,
         image: item.music.image,
         updatedAt: item.music.updatedAt,
-        artist: {
-          name: item.music.MusicArtists.length > 0 ? item.music.MusicArtists[0].artist.name : null
-        }
+      },
+      album: {
+        id: item.music.album.id,
+        title: item.music.album.title,
+        releaseTime: item.music.releaseTime,
+        image: item.music.album.image,
+      },
+      artist: {
+        name: item.music.MusicArtists.length > 0 ? item.music.MusicArtists[0].artist.name : null
       }
     }));
     // 3. 정보 반환
