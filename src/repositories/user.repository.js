@@ -288,6 +288,7 @@ export const userPlayInfoRep = async (data) => {
           select: {
             id: true,
             title: true,
+            releaseTime: true,
             image: true,
             album: {
               select: {
@@ -315,6 +316,7 @@ export const userPlayInfoRep = async (data) => {
     if (!userPlay.length) {
       throw new Error("청취 기록이 없습니다.");
     }
+    //return userPlay
     // 3. 데이터 가공
     const formattedPlayHistory = userPlay.map((play) => ({
       userId: play.userId,
@@ -326,6 +328,7 @@ export const userPlayInfoRep = async (data) => {
       music: {
         id: play.musicId,
         title: play.music.title,
+        releaseTime: play.music.releaseTime,
         image: play.music.image,
       },
       album: {
