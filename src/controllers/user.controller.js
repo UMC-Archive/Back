@@ -33,8 +33,8 @@ import {
   listUserPreferGenre,
 } from "../services/user.service.js";
 
-import { 
-  listLibraryMusics 
+import {
+  listLibraryMusics
 } from "../services/library.service.js";
 //회원가입
 export const handleUserSignUp = async (req, res, next) => {
@@ -451,99 +451,99 @@ export const handleUserInfo = async (req, res) => {
 
 // 유저 프로필 이미지 변경
 export const handleUserChangeImage = async (req, res, next) => {
-/*
-    #swagger.summary = '유저 프로필 이미지 변경 API';
-    #swagger.tags = ['User']
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "multipart/form-data": {
-          schema: {
-            type: "object",
-            properties: {
-              image: {
-                type: "string",
-                format: "binary",
-                description: "새로운 프로필 이미지 파일"
-              },
-              data: {
-                type: "object",
-                properties: {
-                  nickname: { type: "string", example: "닉네임" }
+  /*
+      #swagger.summary = '유저 프로필 이미지 변경 API';
+      #swagger.tags = ['User']
+      #swagger.requestBody = {
+        required: true,
+        content: {
+          "multipart/form-data": {
+            schema: {
+              type: "object",
+              properties: {
+                image: {
+                  type: "string",
+                  format: "binary",
+                  description: "새로운 프로필 이미지 파일"
                 },
-                description: "사용자 정보(JSON 형태)"
-              }
-            }
-          }
-        }
-      }
-    };
-    #swagger.responses[200] = {
-      description: "프로필 이미지 변경 성공 응답",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              isSuccess: { type: "boolean", example: true },
-              code: { type: "number", example: 200 },
-              message: { type: "string", example: "success!" },
-              result: {
-                type: "object",
-                properties: {
-                  id: { type: "string", example: "1" },
-                  nickname: { type: "string", example: "닉네임" },
-                  email: { type: "string", example: "example@email.com" },
-                  password: { type: "string", example: "$2b$10$I12yq02leVVPozyP1/sKQeSEf/9Tv.q1zUeuS8l5Q9tH.mMidzl8e" },
-                  profileImage: { 
-                    type: "string", 
-                    example: "https://music-archive-bucket.s3.ap-northeast-2.amazonaws.com/archive/1739500725587-MixGolem.png" 
+                data: {
+                  type: "object",
+                  properties: {
+                    nickname: { type: "string", example: "닉네임" }
                   },
-                  status: { type: "string", example: "active" },
-                  socialType: { type: "string", example: "local" },
-                  inactiveDate: { type: "string", format: "date-time", example: "2025-02-13T00:00:00.000Z" },
-                  createdAt: { type: "string", format: "date-time", example: "2025-02-13T15:16:55.612Z" },
-                  updatedAt: { type: "string", format: "date-time", example: "2025-02-14T02:38:46.020Z" }
+                  description: "사용자 정보(JSON 형태)"
                 }
               }
             }
           }
         }
-      }
-    };
-    #swagger.responses[400] = {
-      description: "해당 닉네임으로 등록된 사용자가 없음",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              isSuccess: { type: "boolean", example: false },
-              code: { type: "string", example: "USER_NOT_FOUND" },
-              message: { type: "string", example: "해당 닉네임으로 등록된 사용자가 없습니다." },
-              result: { type: "object", nullable: true, example: null }
+      };
+      #swagger.responses[200] = {
+        description: "프로필 이미지 변경 성공 응답",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                isSuccess: { type: "boolean", example: true },
+                code: { type: "number", example: 200 },
+                message: { type: "string", example: "success!" },
+                result: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "1" },
+                    nickname: { type: "string", example: "닉네임" },
+                    email: { type: "string", example: "example@email.com" },
+                    password: { type: "string", example: "$2b$10$I12yq02leVVPozyP1/sKQeSEf/9Tv.q1zUeuS8l5Q9tH.mMidzl8e" },
+                    profileImage: { 
+                      type: "string", 
+                      example: "https://music-archive-bucket.s3.ap-northeast-2.amazonaws.com/archive/1739500725587-MixGolem.png" 
+                    },
+                    status: { type: "string", example: "active" },
+                    socialType: { type: "string", example: "local" },
+                    inactiveDate: { type: "string", format: "date-time", example: "2025-02-13T00:00:00.000Z" },
+                    createdAt: { type: "string", format: "date-time", example: "2025-02-13T15:16:55.612Z" },
+                    updatedAt: { type: "string", format: "date-time", example: "2025-02-14T02:38:46.020Z" }
+                  }
+                }
+              }
             }
           }
         }
-      }
-    };
-    #swagger.responses[401] = {
-      description: "토큰이 올바르지 않거나 없음",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              isSuccess: { type: "boolean", example: false },
-              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
-              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
-              result: { type: "object", nullable: true, example: null }
+      };
+      #swagger.responses[400] = {
+        description: "해당 닉네임으로 등록된 사용자가 없음",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                isSuccess: { type: "boolean", example: false },
+                code: { type: "string", example: "USER_NOT_FOUND" },
+                message: { type: "string", example: "해당 닉네임으로 등록된 사용자가 없습니다." },
+                result: { type: "object", nullable: true, example: null }
+              }
             }
           }
         }
-      }
-    };
-*/
+      };
+      #swagger.responses[401] = {
+        description: "토큰이 올바르지 않거나 없음",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                isSuccess: { type: "boolean", example: false },
+                code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+                message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+                result: { type: "object", nullable: true, example: null }
+              }
+            }
+          }
+        }
+      };
+  */
   try {
     console.log("유저의 프로필 이미지 변경을 요청했습니다!");
     const token = await checkFormat(req.get("Authorization"));
@@ -850,141 +850,225 @@ export const handleUserPlay = async (req, res, next) => {
 };
 
 // 유저의 음악 청취기록 불러오기
-export const handleGetUserPlay = async (req,res,next) => {
-/*
-  #swagger.summary = '유저의 음악 청취 기록 불러오기 API';
-  #swagger.tags = ['User']
-  #swagger.responses[200] = {
-    description: '유저의 청취 기록 조회 성공 응답',
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: true },
-            code: { type: "number", example: 200 },
-            message: { type: "string", example: "success!" },
-            result: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  id: { type: "string", example: "35" },
-                  userId: { type: "string", example: "1" },
-                  musicId: { type: "string", example: "1" },
-                  musicTitle: { type: "string", example: "Love Poem" },
-                  musicImage: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
-                  artists: {
-                    type: "array",
-                    items: {
+export const handleGetUserPlay = async (req, res, next) => {
+  /*
+    #swagger.summary = '유저의 음악 청취 기록 불러오기 API';
+    #swagger.tags = ['User']
+    #swagger.responses[200] = {
+      description: '유저의 청취 기록 조회 성공 응답',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "number", example: 200 },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    userId: { type: "string", example: "1" },
+                    play: {
                       type: "object",
                       properties: {
-                        artistId: { type: "string", example: "1" },
-                        artistName: { type: "string", example: "IU" },
-                        artistImage: { type: "string", example: "https://i.scdn.co/image/ab6761610000e5ebbd0642ff425698afac5caffd" }
+                        id: { type: "string", example: "1" },
+                        createdAt: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" },
+                        updatedAt: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" }
                       }
-                    }
-                  },
-                  createdAt: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" },
-                  updatedAt: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" }
+                    },
+                    music: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love Poem" },
+                        image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
+                      }
+                    },
+                    album: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love Poem" },
+                        image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
+                      }
+                    },
+                    artist: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        name: { type: "string", example: "IU" },
+                        image: { type: "string", example: "https://i.scdn.co/image/ab6761610000e5ebbd0642ff425698afac5caffd" }
+                      }
+                    },
+                    createdAt: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" },
+                    updatedAt: { type: "string", format: "date-time", example: "2025-02-14T17:00:42.956Z" }
+                  }
                 }
               }
             }
+          },
+          example: {
+            "isSuccess": true,
+            "code": "200",
+            "message": "success!",
+            "result": [
+              {
+                "userId": "1",
+                "play": {
+                  "id": "35",
+                  "createdAt": "2025-02-14T17:00:42.956Z",
+                  "updatedAt": "2025-02-14T17:00:42.956Z"
+                },
+                "music": {
+                  "id": "1",
+                  "title": "Love Poem",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg"
+                },
+                "album": {
+                  "id": "1",
+                  "title": "Love poem",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg"
+                },
+                "artist": {
+                  "id": "1",
+                  "name": "IU",
+                  "image": "https://i.scdn.co/image/ab6761610000e5ebbd0642ff425698afac5caffd"
+                }
+              },
+              {
+                "userId": "1",
+                "play": {
+                  "id": "34",
+                  "createdAt": "2025-02-14T09:54:49.814Z",
+                  "updatedAt": "2025-02-14T09:54:49.814Z"
+                },
+                "music": {
+                  "id": "130",
+                  "title": "hey now",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/a79564a9768d05272682b252deb02079.png"
+                },
+                "album": {
+                  "id": "145",
+                  "title": "GNX",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/a79564a9768d05272682b252deb02079.png"
+                },
+                "artist": {
+                  "id": "47",
+                  "name": "Kendrick Lamar",
+                  "image": "https://i.scdn.co/image/ab6761610000e5eb39ba6dcd4355c03de0b50918"
+                }
+              },
+              {
+                "userId": "1",
+                "play": {
+                  "id": "33",
+                  "createdAt": "2025-02-14T09:54:24.298Z",
+                  "updatedAt": "2025-02-14T09:54:24.298Z"
+                },
+                "music": {
+                  "id": "180",
+                  "title": "Intro (Difference)",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/7ab4f78932981481228761257599d1da.jpg"
+                },
+                "album": {
+                  "id": "172",
+                  "title": "T R A P S O U L",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/7ab4f78932981481228761257599d1da.jpg"
+                },
+                "artist": {
+                  "id": "55",
+                  "name": "Bryson Tiller",
+                  "image": "https://i.scdn.co/image/ab6761610000e5eb078fdd734b7f0aa782328428"
+                }
+              },
+              {
+                "userId": "1",
+                "play": {
+                  "id": "32",
+                  "createdAt": "2025-02-14T09:52:52.286Z",
+                  "updatedAt": "2025-02-14T09:52:52.286Z"
+                },
+                "music": {
+                  "id": "145",
+                  "title": "Start Me Up - 2009 Re-Mastered Digital Version",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/f5c5de980e224db7990e2d60d39957ed.jpg"
+                },
+                "album": {
+                  "id": "153",
+                  "title": "Tattoo You (2009 Re-Mastered)",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/f5c5de980e224db7990e2d60d39957ed.jpg"
+                },
+                "artist": {
+                  "id": "7",
+                  "name": "The Rolling Stones",
+                  "image": "https://i.scdn.co/image/ab6761610000e5ebe4cea917b68726aadb4854b8"
+                }
+              },
+              {
+                "userId": "1",
+                "play": {
+                  "id": "31",
+                  "createdAt": "2025-02-14T09:52:35.646Z",
+                  "updatedAt": "2025-02-14T09:52:35.646Z"
+                },
+                "music": {
+                  "id": "40",
+                  "title": "Money on My Mind",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/1633f5b46006b64c7e9b2acce409bf64.png"
+                },
+                "album": {
+                  "id": "44",
+                  "title": "In the Lonely Hour",
+                  "image": "https://lastfm.freetls.fastly.net/i/u/300x300/1633f5b46006b64c7e9b2acce409bf64.png"
+                },
+                "artist": {
+                  "id": "17",
+                  "name": "Sam Smith",
+                  "image": "https://i.scdn.co/image/ab6761610000e5ebf057d1dce23e7f4d5d0f32e5"
+                }
+              },
+            ]
           }
-        },
-        example: {
-          isSuccess: true,
-          code: 200,
-          message: "success!",
-          result: [
-            {
-              id: "35",
-              userId: "1",
-              musicId: "1",
-              musicTitle: "Love Poem",
-              musicImage: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg",
-              artists: [
-                {
-                  artistId: "1",
-                  artistName: "IU",
-                  artistImage: "https://i.scdn.co/image/ab6761610000e5ebbd0642ff425698afac5caffd"
-                }
-              ],
-              createdAt: "2025-02-14T17:00:42.956Z",
-              updatedAt: "2025-02-14T17:00:42.956Z"
-            },
-            {
-              id: "34",
-              userId: "1",
-              musicId: "130",
-              musicTitle: "hey now",
-              musicImage: "https://lastfm.freetls.fastly.net/i/u/300x300/a79564a9768d05272682b252deb02079.png",
-              artists: [
-                {
-                  artistId: "47",
-                  artistName: "Kendrick Lamar",
-                  artistImage: "https://i.scdn.co/image/ab6761610000e5eb39ba6dcd4355c03de0b50918"
-                }
-              ],
-              createdAt: "2025-02-14T09:54:49.814Z",
-              updatedAt: "2025-02-14T09:54:49.814Z"
-            },
-            {
-              id: "33",
-              userId: "1",
-              musicId: "180",
-              musicTitle: "Intro (Difference)",
-              musicImage: "https://lastfm.freetls.fastly.net/i/u/300x300/7ab4f78932981481228761257599d1da.jpg",
-              artists: [
-                {
-                  artistId: "55",
-                  artistName: "Bryson Tiller",
-                  artistImage: "https://i.scdn.co/image/ab6761610000e5eb078fdd734b7f0aa782328428"
-                }
-              ],
-              createdAt: "2025-02-14T09:54:24.298Z",
-              updatedAt: "2025-02-14T09:54:24.298Z"
+        }
+      }
+    };
+  
+    #swagger.responses[400] = {
+      description: '해당 유저의 청취 기록을 찾을 수 없음',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "USER_NOT_FOUND" },
+              message: { type: "string", example: "해당 유저의 청취 기록을 찾을 수 없습니다." },
+              result: { type: "object", nullable: true, example: null }
             }
-          ]
-        }
-      }
-    }
-  };
-
-  #swagger.responses[400] = {
-    description: '해당 유저의 청취 기록을 찾을 수 없음',
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "USER_NOT_FOUND" },
-            message: { type: "string", example: "해당 유저의 청취 기록을 찾을 수 없습니다." },
-            result: { type: "object", nullable: true, example: null }
           }
         }
       }
-    }
-  };
-
-  #swagger.responses[401] = {
-    description: '토큰이 올바르지 않거나 없음',
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
-            message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
-            result: { type: "object", nullable: true, example: null }
+    };
+  
+    #swagger.responses[401] = {
+      description: '토큰이 올바르지 않거나 없음',
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-*/
+    };
+  */
   try {
     console.log("유저의 청취 기록을 요청했습니다!");
     console.log(req.get("Authorization"));
@@ -1273,38 +1357,48 @@ export const handleGetHistory = async (req, res, next) => {
 };
 
 // 유저가 최근에 추가한 노래 불러오기
-export const handleAddRecentMusic = async (req,res,next) => {
-/*
-  #swagger.summary = '유저가 최근 추가한 노래 불러오기 API';
-  #swagger.tags = ['User']
-  #swagger.responses[200] = {
-    description: "유저가 최근에 추가한 노래 조회 성공 응답",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: true },
-            code: { type: "number", example: 200 },
-            message: { type: "string", example: "success!" },
-            result: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  music: {
-                    type: "object",
-                    properties: {
-                      id: { type: "string", example: "1" },
-                      title: { type: "string", example: "Love Poem" },
-                      releaseTime: { type: "string", format: "date-time", example: "2021-05-05T19:46:00.000Z" },
-                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
-                      updatedAt: { type: "string", format: "date-time", example: "2025-02-13T15:16:24.461Z" },
-                      artist: {
-                        type: "object",
-                        properties: {
-                          name: { type: "string", example: "IU" }
-                        }
+export const handleAddRecentMusic = async (req, res, next) => {
+  /*
+    #swagger.summary = '유저가 최근 추가한 노래 불러오기 API';
+    #swagger.tags = ['User']
+    #swagger.responses[200] = {
+      description: "유저가 최근에 추가한 노래 조회 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: true },
+              code: { type: "string", example: "200" },
+              message: { type: "string", example: "success!" },
+              result: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    music: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love Poem" },
+                        releaseTime: { type: "string", format: "date-time", example: "2021-05-05T19:46:00.000Z" },
+                        image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
+                        updatedAt: { type: "string", format: "date-time", example: "2025-02-13T15:16:24.461Z" },
+                      }
+                    },
+                    album: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1" },
+                        title: { type: "string", example: "Love Poem" },
+                        releaseTime: { type: "string", format: "date-time", example: "2021-05-05T19:46:00.000Z" },
+                        image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
+                      }
+                    },
+                    artist: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string", example: "IU" }
                       }
                     }
                   }
@@ -1314,43 +1408,42 @@ export const handleAddRecentMusic = async (req,res,next) => {
           }
         }
       }
-    }
-  };
-
-  #swagger.responses[400] = {
-    description: "해당 유저의 음악 라이브러리를 찾을 수 없음",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "USER_NOT_FOUND" },
-            message: { type: "string", example: "해당 유저의 음악 라이브러리를 찾을 수 없습니다." },
-            result: { type: "object", nullable: true, example: null }
+    };
+  
+    #swagger.responses[400] = {
+      description: "해당 유저의 음악 라이브러리를 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "USER_NOT_FOUND" },
+              message: { type: "string", example: "해당 유저의 음악 라이브러리를 찾을 수 없습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-
-  #swagger.responses[401] = {
-    description: "토큰이 올바르지 않거나 없음",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
-            message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
-            result: { type: "object", nullable: true, example: null }
+    };
+  
+    #swagger.responses[401] = {
+      description: "토큰이 올바르지 않거나 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "TOKEN_FORMAT_INCORRECT" },
+              message: { type: "string", example: "토큰 형식이 올바르지 않습니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-*/
+    };
+  */
   try {
     console.log("유저가 최근에 추가한 노래 정보를 요청했습니다!");
     console.log(req.get("Authorization"));
