@@ -1,5 +1,5 @@
 import { prisma } from "../db.config.js";
-import { getHistoryImage } from "./s3.repository.js"
+import { getHistoryImage } from "./s3.repository.js";
 export const addUser = async (data) => {
   const user = await prisma.user.findFirst({ where: { email: data.email } });
   if (user) {
@@ -296,7 +296,7 @@ export const userPlayInfoRep = async (data) => {
                 title: true,
                 releaseTime: true,
                 image: true,
-              }
+              },
             },
             MusicArtists: {
               select: {
@@ -405,8 +405,8 @@ export const userHistoryInfoRep = async (data) => {
       const historyImage = await getHistoryImage(date);
       const data = {
         userHistory,
-        historyImage
-      }
+        historyImage,
+      };
       historys.push(data);
     }
     // 3. 업데이트된 회원 정보 반환
@@ -438,7 +438,7 @@ export const addRecentMusicRep = async (userId) => {
         libraryId: library.id,
       },
       orderBy: {
-        music: { updatedAt: 'desc' },
+        music: { updatedAt: "desc" },
       },
       take: 10, // 최대 10개 제한
       select: {
@@ -451,7 +451,7 @@ export const addRecentMusicRep = async (userId) => {
                 title: true,
                 releaseTime: true,
                 image: true,
-              }
+              },
             },
             title: true,
             releaseTime: true,
@@ -475,7 +475,7 @@ export const addRecentMusicRep = async (userId) => {
       return null;
     }
     // 3. 데이터 형식 변환
-    const formattedMusics = musics.map(item => ({
+    const formattedMusics = musics.map((item) => ({
       music: {
         id: item.music.id,
         title: item.music.title,
@@ -490,8 +490,11 @@ export const addRecentMusicRep = async (userId) => {
         image: item.music.album.image,
       },
       artist: {
-        name: item.music.MusicArtists.length > 0 ? item.music.MusicArtists[0].artist.name : null
-      }
+        name:
+          item.music.MusicArtists.length > 0
+            ? item.music.MusicArtists[0].artist.name
+            : null,
+      },
     }));
     // 3. 정보 반환
     return formattedMusics;
@@ -500,7 +503,7 @@ export const addRecentMusicRep = async (userId) => {
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
     );
   }
-}
+};
 export const getUserRecapMusic = async (userId) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -600,7 +603,7 @@ export const getUserPreferGenre = async (userId) => {
     endDate = new Date(currentYear, 11, 31, 23, 59, 59, 999);
   }
 
-  const genreCounts = await prisma.genre.findMany({
+  const preferredGenres = await prisma.genre.findMany({
     select: {
       id: true,
       name: true,
@@ -645,7 +648,31 @@ export const getUserPreferGenre = async (userId) => {
     take: 5,
   });
 
-  return genreCounts.map((genre) => ({
+  if (preferredGenres.length < 5) {
+    const selectedGenreIds = preferredGenres.map((genre) => genre.id);
+    const remainingGenres = await prisma.genre.findMany({
+      where: {
+        id: {
+          notIn: selectedGenreIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const neededCount = 5 - preferredGenres.length;
+    const shuffledGenres = remainingGenres.sort(() => Math.random() - 0.5);
+    const randomGenres = shuffledGenres.slice(0, neededCount);
+
+    return [...preferredGenres, ...randomGenres].map((genre) => ({
+      id: genre.id,
+      name: genre.name,
+    }));
+  }
+
+  return preferredGenres.map((genre) => ({
     id: genre.id,
     name: genre.name,
   }));

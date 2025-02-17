@@ -159,7 +159,7 @@ export const userChangeImageService = async (req, res) => {
     nickname: jdata.nickname,
     profileImage: url,
   });
-  console.log(data)
+  console.log(data);
   if (ChangeImage == null) {
     throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
   }
