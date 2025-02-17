@@ -147,7 +147,8 @@ export const getAlbumSpotifyApi = async (artist_name, music_name) => {
     "search"
   );
   const album = url?.tracks?.items[0]?.data?.albumOfTrack?.name;
-  const artist = url?.tracks?.items[0]?.data?.artists?.items[0]?.profile?.name.toLowerCase();
+  const artist =
+    url?.tracks?.items[0]?.data?.artists?.items[0]?.profile?.name.toLowerCase();
   if (!album && !artist && artist_name.toLowerCase() !== artist) return null;
   return album;
 };
@@ -213,10 +214,7 @@ const getArtistByIds = async (ids) => {
 export const getArtistAPI = async (artist_name, album_name) => {
   const album = await getAlbumInfo(artist_name, album_name);
   const music = album.tracks?.track?.name;
-  const ids = await getArtistIdsByMusic(
-    artist_name,
-    music
-  );
+  const ids = await getArtistIdsByMusic(artist_name, music);
   const artist = await getArtistByIds(ids);
   const image = artist?.artists[0]?.images[0]?.url;
   const data = {
@@ -245,41 +243,68 @@ export const getSpecificArtistAPI = async (artist_name) => {
       return existingArtist;
     }
 
-    // 2. DB에 없는 경우 API에서 아티스트 정보 가져오기
-    const specificArtist = await searchArtist(artist_name);
+    // 2. iTunes API를 통해 아티스트의 곡 검색
+    const artistTrack = await getAlbumItunesEntity(
+      artist_name,
+      artist_name,
+      "song"
+    );
+    let spotifyData;
 
-    if (!specificArtist) {
-      return null;
+    if (artistTrack) {
+      // iTunes에서 곡을 찾은 경우
+      spotifyData = await spotify(
+        {
+          q: `artist:"${artist_name}" track:"${artistTrack.trackName}"`,
+          type: "artists",
+          offset: "0",
+          limit: "1",
+          numberOfTopResults: "1",
+        },
+        "search"
+      );
     }
 
-    // 3. Spotify에서 이미지 URL 가져오기
-    const spotifyData = await spotify(
-      {
-        q: artist_name,
-        type: "artists",
-        offset: "0",
-        limit: "1",
-        numberOfTopResults: "1",
-      },
-      "search"
-    );
+    // 3. iTunes 검색 실패 또는 Spotify 검색 실패 시 이름으로 재검색
+    if (!spotifyData?.artists?.items?.length) {
+      spotifyData = await spotify(
+        {
+          q: artist_name,
+          type: "artists",
+          offset: "0",
+          limit: "10",
+          numberOfTopResults: "10",
+        },
+        "search"
+      );
+
+      // 정확한 이름 매칭 시도
+      const items = spotifyData?.artists?.items || [];
+      const exactMatches = items.filter(
+        (artist) =>
+          artist.data.profile.name.toLowerCase() === artist_name.toLowerCase()
+      );
+
+      // 정확히 일치하는 결과가 있으면 사용, 없으면 첫 번째 결과 사용
+      spotifyData.artists.items =
+        exactMatches.length > 0 ? exactMatches : [items[0]];
+    }
 
     const imageUrl =
       spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
         ?.url || null;
 
-    // 4. DB에 새 아티스트 추가
+    // 4. DB에 아티스트 정보 저장
     const artistData = {
       name: artist_name,
       image: imageUrl,
-      ...specificArtist, // searchArtist에서 가져온 추가 정보가 있다면 포함
     };
 
     const newArtist = await addArtist(artistData);
     return newArtist;
   } catch (error) {
     console.error(`Error processing artist ${artist_name}:`, error);
-    throw error; // 에러를 상위로 전파하여 적절한 에러 처리 가능하도록 함
+    throw error;
   }
 };
 
@@ -311,7 +336,6 @@ export const getallArtistsAPI = async (user_id) => {
   const artistsByGenre = await Promise.all(artistsPromises);
   const allArtists = artistsByGenre.flat().filter((artist) => artist !== null);
 
-  // 각 아티스트 처리
   const processedArtists = await Promise.all(
     allArtists.map(async (artist) => {
       try {
@@ -322,17 +346,53 @@ export const getallArtistsAPI = async (user_id) => {
           return existingArtist;
         }
 
-        // DB에 없는 경우 Spotify에서 정보 가져오기
-        const spotifyData = await spotify(
-          {
-            q: artist.name,
-            type: "artists",
-            offset: "0",
-            limit: "1",
-            numberOfTopResults: "1",
-          },
-          "search"
+        // iTunes API를 통해 아티스트의 곡 검색
+        const artistTrack = await getAlbumItunesEntity(
+          artist.name,
+          artist.name,
+          "song"
         );
+        let spotifyData;
+
+        if (artistTrack) {
+          // iTunes에서 곡을 찾은 경우
+          spotifyData = await spotify(
+            {
+              q: `artist:"${artist.name}" track:"${artistTrack.trackName}"`,
+              type: "artists",
+              offset: "0",
+              limit: "1",
+              numberOfTopResults: "1",
+            },
+            "search"
+          );
+        }
+
+        // iTunes 검색 실패 또는 Spotify 검색 실패 시 이름으로 재검색
+        if (!spotifyData?.artists?.items?.length) {
+          spotifyData = await spotify(
+            {
+              q: artist.name,
+              type: "artists",
+              offset: "0",
+              limit: "10",
+              numberOfTopResults: "10",
+            },
+            "search"
+          );
+
+          // 정확한 이름 매칭 시도
+          const items = spotifyData?.artists?.items || [];
+          const exactMatches = items.filter(
+            (artistItem) =>
+              artistItem.data.profile.name.toLowerCase() ===
+              artist.name.toLowerCase()
+          );
+
+          // 정확히 일치하는 결과가 있으면 사용, 없으면 첫 번째 결과 사용
+          spotifyData.artists.items =
+            exactMatches.length > 0 ? exactMatches : [items[0]];
+        }
 
         const imageUrl =
           spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
@@ -407,7 +467,8 @@ export const getAlbumById = async (album_id) => {
   const album = await prisma.album.findFirst({ where: { id: album_id } });
   return album;
 };
-export const getArtistByAlbum = async (album) => { // 현재 미사용
+export const getArtistByAlbum = async (album) => {
+  // 현재 미사용
   let albumApi = await getAlbumSearch(album.title);
   let artist;
   if (albumApi) {
@@ -428,7 +489,9 @@ export const getAlbumCuration = async (album_id) => {
 
 //앨범 큐레이션 생성
 export const setAlbumCuration = async (album_id, album_name, artist_name) => {
-  const description = await recommandCuration(`${artist_name}의 앨범인 ${album_name}`);
+  const description = await recommandCuration(
+    `${artist_name}의 앨범인 ${album_name}`
+  );
   const data = {
     albumId: album_id,
     description: description,
