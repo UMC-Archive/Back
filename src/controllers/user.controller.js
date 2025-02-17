@@ -33,9 +33,7 @@ import {
   listUserPreferGenre,
 } from "../services/user.service.js";
 
-import {
-  listLibraryMusics
-} from "../services/library.service.js";
+import { listLibraryMusics } from "../services/library.service.js";
 //회원가입
 export const handleUserSignUp = async (req, res, next) => {
   /*
@@ -549,10 +547,7 @@ export const handleUserChangeImage = async (req, res, next) => {
     const token = await checkFormat(req.get("Authorization"));
     if (token !== null) {
       // 토큰 이상없음
-      const changeImage = await userChangeImageService(
-        req,
-        res,
-      );
+      const changeImage = await userChangeImageService(req, res);
       res.send(response(status.SUCCESS, changeImage));
     } else {
       // 토큰 이상감지
@@ -1445,6 +1440,7 @@ export const handleUserRecap = async (req, res, next) => {
                   type: "object",
                   properties: {
                     id: { type: "string", example: "1" },
+                    albumTitle: { type: "string", example: "Love Poem" },
                     title: { type: "string", example: "unlucky" },
                     image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg" },
                     releaseYear: { type: "number", example: 2019 },
@@ -1462,6 +1458,7 @@ export const handleUserRecap = async (req, res, next) => {
             result: [
               {
                 id: "1",
+                "albumTitle": "Love Poem",
                 title: "unlucky",
                 image: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg",
                 releaseYear: 2019,
@@ -1470,6 +1467,7 @@ export const handleUserRecap = async (req, res, next) => {
               },
               {
                 id: "2",
+                "albumTitle": "Love Poem",
                 title: "Love Poem",
                 image: "https://lastfm.freetls.fastly.net/i/u/300x300/ccd4b26844f8cc08d0dbff410e264533.jpg",
                 releaseYear: 2019,
@@ -1478,6 +1476,7 @@ export const handleUserRecap = async (req, res, next) => {
               },
               {
                 id: "3",
+                "albumTitle": "LAbbey Road",
                 title: "Come Together - Remastered 2009",
                 image: "https://lastfm.freetls.fastly.net/i/u/300x300/a4bbf73ba62024be279364e867b0ca20.jpg",
                 releaseYear: 2022,
