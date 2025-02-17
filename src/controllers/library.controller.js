@@ -72,14 +72,14 @@ export const deleteMusicLibrary = async (req, res) => {
     }
   };
 */
-  try{
+  try {
     console.log("보관함에서 노래를 삭제합니다.");
     const musicId = req.params.musicId;
     // console.log(req.userId);
     // console.log(musicId);
     const result = await deleteMusicLibraryService(req.userId, musicId);
     return res.json(result);
-  }catch(err){
+  } catch (err) {
     return res.json(result);
   }
 }
@@ -144,14 +144,14 @@ export const deleteAlbumLibrary = async (req, res) => {
     }
   };
 */
-  try{
+  try {
     console.log("보관함에서 앨범을 삭제합니다.");
     const albumId = req.params.albumId;
     // console.log(req.userId);
     // console.log(musicId);
     const result = await deleteAlbumLibraryService(req.userId, albumId);
     return res.json(result);
-  }catch(err){
+  } catch (err) {
     return res.json(result);
   }
 }
@@ -216,89 +216,89 @@ export const deleteArtistLibrary = async (req, res) => {
     }
   };
 */
-  try{
+  try {
     console.log("보관함에서 아티스트를 삭제합니다.");
     const artistId = req.params.artistId;
     // console.log(req.userId);
     // console.log(musicId);
     const result = await deleteArtistLibraryService(req.userId, artistId);
     return res.json(result);
-  }catch(err){
+  } catch (err) {
     return res.json(result);
   }
 }
 
-export const addMusicLibrary = async (req, res) =>{
-/*
-  #swagger.summary = '보관함에 노래 추가 API';
-  #swagger.tags = ['Library']
-  #swagger.parameters['musicId'] = {
-    in: 'path',
-    description: '추가할 노래의 ID',
-    required: true,
-    type: 'integer',
-    example: 44
-  }
-  #swagger.responses[200] = {
-    description: "노래 추가 성공 응답",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-             isSuccess: { type: "boolean", example: true },
-             code: { type: "string", example: "200" },
-             message: { type: "string", example: "success!" },
-             result: {
-               type: "object",
-               properties: {
-                id: { type: "string", example: "24" },
-                libraryId: { type: "string", example: "1" },
-                musicId: { type: "string", example: "44" },
-                createdAt: { type: "string", format: "date-time", example: "2025-02-06T08:07:10.950Z" },
-                updatedAt: { type: "string", format: "date-time", example: "2025-02-06T08:07:10.950Z" }
-             }
-            } 
+export const addMusicLibrary = async (req, res) => {
+  /*
+    #swagger.summary = '보관함에 노래 추가 API';
+    #swagger.tags = ['Library']
+    #swagger.parameters['musicId'] = {
+      in: 'path',
+      description: '추가할 노래의 ID',
+      required: true,
+      type: 'integer',
+      example: 44
+    }
+    #swagger.responses[200] = {
+      description: "노래 추가 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+               isSuccess: { type: "boolean", example: true },
+               code: { type: "string", example: "200" },
+               message: { type: "string", example: "success!" },
+               result: {
+                 type: "object",
+                 properties: {
+                  id: { type: "string", example: "24" },
+                  libraryId: { type: "string", example: "1" },
+                  musicId: { type: "string", example: "44" },
+                  createdAt: { type: "string", format: "date-time", example: "2025-02-06T08:07:10.950Z" },
+                  updatedAt: { type: "string", format: "date-time", example: "2025-02-06T08:07:10.950Z" }
+               }
+              } 
+            }
           }
         }
       }
-    }
-  };
-  #swagger.responses[400] = {
-    description: "보관함에 이미 음악이 존재할 경우",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "MUSIC004" },
-            message: { type: "string", example: "보관함에 음악이 이미 존재합니다." },
-            result: { type: "object", nullable: true, example: null }
+    };
+    #swagger.responses[400] = {
+      description: "보관함에 이미 음악이 존재할 경우",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "MUSIC004" },
+              message: { type: "string", example: "보관함에 음악이 이미 존재합니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-  #swagger.responses[500] = {
-    description: "서버 오류 발생",
-    content: {
-      "application/json": {
-        schema: {
-          type: "object",
-          properties: {
-            isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "COMMON000" },
-            message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
-            result: { type: "object", nullable: true, example: null }
+    };
+    #swagger.responses[500] = {
+      description: "서버 오류 발생",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              isSuccess: { type: "boolean", example: false },
+              code: { type: "string", example: "COMMON000" },
+              message: { type: "string", example: "서버 에러, 관리자에게 문의 바랍니다." },
+              result: { type: "object", nullable: true, example: null }
+            }
           }
         }
       }
-    }
-  };
-*/
+    };
+  */
 
-  try{
+  try {
     console.log('보관함에 노래를 추가합니다.');
     const token = await checkFormat(req.get("Authorization"));
     const musicId = req.params.musicId;
@@ -306,12 +306,12 @@ export const addMusicLibrary = async (req, res) =>{
     // console.log(musicId);
     const result = await addMusicLibraryService(req.userId, musicId);
     return res.json(result);
-  }catch(err){
+  } catch (err) {
     return res.json(result);
   }
 }
 
-export const addAllbumLibrary = async (req, res) =>{
+export const addAllbumLibrary = async (req, res) => {
   /*
   #swagger.summary = '보관함에 앨범 추가 API';
   #swagger.tags = ['Library']
@@ -380,7 +380,7 @@ export const addAllbumLibrary = async (req, res) =>{
     }
   };
 */
-  try{
+  try {
     console.log('보관함에 앨범을 추가합니다.');
     const token = await checkFormat(req.get("Authorization"));
     const albumId = req.params.albumId;
@@ -388,12 +388,12 @@ export const addAllbumLibrary = async (req, res) =>{
     const result = await addAlbumLibraryService(req.userId, albumId);
     // console.log(result);
     return res.json(result);
-  }catch(err){
+  } catch (err) {
     return res.json(result);
   }
 }
 
-export const addArtistLibrary = async (req, res) =>{
+export const addArtistLibrary = async (req, res) => {
   /*
   #swagger.summary = '보관함에 아티스트 추가 API';
   #swagger.tags = ['Library']
@@ -462,7 +462,7 @@ export const addArtistLibrary = async (req, res) =>{
     }
   };
 */
-  try{
+  try {
     console.log('보관함에 아티스트를를 추가합니다.');
     const token = await checkFormat(req.get("Authorization"));
     const artistId = req.params.artistId;
@@ -470,7 +470,7 @@ export const addArtistLibrary = async (req, res) =>{
     const result = await addArtistLibraryService(req.userId, artistId);
     // console.log(result);
     return res.json(result);
-  }catch(err){
+  } catch (err) {
     return res.json(result);
   }
 }
@@ -494,10 +494,24 @@ export const handleLibraryMusic = async (req, res, next) => {
               items: {
                 type: "object",
                 properties: {
-                  id: { type: "string", example: "1"},
-                  title: { type: "string", example: "Dance With Me" },
-                  releaseTime: { type: "number", example: 2000 },
-                  image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/c354ecbb79a91abeb79f7c53d46c05ca.jpg" },
+                  music: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1"},
+                      title: { type: "string", example: "Dance With Me" },
+                      releaseTime: { type: "number", example: 2000 },
+                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/c354ecbb79a91abeb79f7c53d46c05ca.jpg" },
+                    }
+                  },
+                  album: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "1"},
+                      title: { type: "string", example: "Dance With Me" },
+                      releaseTime: { type: "number", example: 2000 },
+                      image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/c354ecbb79a91abeb79f7c53d46c05ca.jpg" },
+                    }
+                  },
                   artist: { type: "string", example: "Mya" }
                 }
               }
@@ -572,9 +586,26 @@ export const handleLibraryArtist = async (req, res, next) => {
               items: {
                 type: "object",
                 properties: {
-                  id: { type: "string", example: "1"},
-                  name: { type: "string", example: "Creed" },
-                  image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png" }
+                  artist: {
+                    type: "object",
+                    properties: {
+                    id: { type: "string", example: "1"},
+                    name: { type: "string", example: "IU" },
+                    image: { type: "string", example: "https://i.scdn.co/image/ab6761610000e5ebbd0642ff425698afac5caffd" }
+                    }
+                  },
+                  album: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "1"},
+                        title: { type: "string", example: "Love poem" },
+                        releaseTime: { type: "number", example: 2021 },
+                        image: { type: "string", example: "https://lastfm.freetls.fastly.net/i/u/300x300/44953e1dc0a798c04d3fe871cebf20f6.jpg" },
+                      }
+                    }
+                  }
                 }
               },
               description: "사용자가 보관함에 아티스트를 추가하지 않았을 경우 null"
