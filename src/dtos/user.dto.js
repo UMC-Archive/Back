@@ -87,6 +87,7 @@ export const bodyToHistoryDTO = (userId, req) => {
 export const responseFromUserRecap = (recap) => {
   return recap.map((music) => ({
     id: music.id.toString(),
+    albumTitle: music.albumTitle,
     title: music.title,
     image: music.image,
     releaseYear: music.releaseYear,

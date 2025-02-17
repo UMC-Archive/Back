@@ -555,6 +555,11 @@ export const getUserRecapMusic = async (userId) => {
       title: true,
       image: true,
       releaseTime: true,
+      album: {
+        select: {
+          title: true,
+        },
+      },
       MusicArtists: {
         select: {
           artist: {
@@ -574,6 +579,7 @@ export const getUserRecapMusic = async (userId) => {
           .musicId ?? 0;
       return {
         id: music.id,
+        albumTitle: music.album.title,
         title: music.title,
         image: music.image,
         releaseYear: new Date(music.releaseTime).getFullYear(),
