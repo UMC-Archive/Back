@@ -54,7 +54,7 @@ model Artist {
   updatedAt DateTime? @default(now()) @map("updated_at") @db.DateTime(6)
 
   UserArtists     UserArtist[]
-  MusicArtist     MusicArtist[]
+  MusicArtists    MusicArtist[]
   LibraryArtists  LibraryArtist[]
   ArtistCurations ArtistCuration[]
 
