@@ -203,14 +203,15 @@ export const listMainMusics = async (user_id) => {
   const last = 10;
   const billboardApi = await getBillboardAPI(date, first, last);
   const billboard = await extractBillboard(billboardApi);
+  let artists = billboard.artists;
+  let titles = billboard.titles;
 
   let historyImage = await getHistoryImage(date);
   if (!historyImage) {
-    const imageUrl = billboardApi[1].image;
-    historyImage = await historyUploader(date, imageUrl);
+    const imageUrl = await getMusicInfo(artists[0], titles[0]);
+    historyImage = await historyUploader(date, imageUrl.album.image[0]["#text"]);
   }
-  let artists = billboard.artists;
-  let titles = billboard.titles;
+  
   let mainMusics = [];
   for (let i in artists) {
     const album = await getAlbumSpotifyApi(artists[i], titles[i]);
