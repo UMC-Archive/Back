@@ -241,7 +241,8 @@ export const listMusic = async (artist_name, music_name) => {
   //DB에 음악이 저장 되어 있을 때
   const musicDB = await getMusicDB(music_name);
   if (musicDB) {
-    return responseFromMusic(musicDB);
+    const artist = await getArtistDB(artist_name);
+    return responseFromMusic({ music: musicDB, artist });
   }
   //DB에 음악이 저장 되어 있지 않을 때
   //앨범 정보
@@ -259,7 +260,7 @@ export const listMusic = async (artist_name, music_name) => {
   const apiInfo = await getMusicAPI(album, lyrics, artist_name, music_name);
   const music = await addMusic(apiInfo);
   if (artist && music) await addMusicArtist(artist, music);
-  return responseFromMusic(music);
+  return responseFromMusic({ music, artist });
 };
 // 앨범 정보 검색하기
 const listAlbumSearch = async (music_name, artist_name) => {
