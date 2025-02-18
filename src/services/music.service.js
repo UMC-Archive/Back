@@ -93,10 +93,10 @@ const listRecommandArtist = async (user_history, preferArtists) => {
     while (invalidArtists.includes(recommend[0]) || !recommend[2]) {
       recommend = await recommandArtist(`${user_history} ${prefer}`);
     }
-
     artists.push(...recommend);
   }
-  return artists;
+
+  return [...new Set(artists)];
 };
 //추천곡 (연도)
 export const listNominationMusic = async (user_id) => {
@@ -108,11 +108,10 @@ export const listNominationMusic = async (user_id) => {
   let recommendedMusics = [];
 
   const artists = await listRecommandArtist(userHistory, preferArtists);
-
   // 아티스트로 검색
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albums = await getArtistTopAlbums(artists[num], 4);
+    const albums = await getArtistTopAlbums(artists[num], parseInt(20/artists.length));
     for (let album of albums?.album) {
       // 검증된 앨범 값 검색하여 음악 찾기
       if (album?.name && album?.name !== "(null)") {
@@ -481,7 +480,7 @@ const listRecommandBasicArtist = async (preferArtists) => {
 
     artists.push(...recommend);
   }
-  return artists;
+  return [...new Set(artists)];
 };
 
 export const listNomAlbums = async (user_id) => {
@@ -491,10 +490,9 @@ export const listNomAlbums = async (user_id) => {
   let recommendedAlbums = [];
 
   const artists = await listRecommandBasicArtist(preferArtists);
-
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albums = await getArtistTopAlbums(artists[num], 4);
+    const albums = await getArtistTopAlbums(artists[num], parseInt(20/artists.length));
     for (let album of albums?.album) {
       // 검증된 앨범 값 검색하여 음악 찾기
       if (album?.name && album?.name !== "(null)") {
