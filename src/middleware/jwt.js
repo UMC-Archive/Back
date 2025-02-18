@@ -24,10 +24,11 @@ export const verify = (req, res, next) => {
     "/music/album",
     "/music",
     "/music/genre/info",
+    "/music/artist/info",
     "/music/artist/1/similar",
     "/music/artist/1/album/1",
     "/music/all/info",
-    "album/:album_id/track-list",
+    "/album/:album_id/track-list",
   ];
   // 현재 요청 URL이 제외할 경로에 포함되는지 확인
   if (excludedPaths.includes(req.path)) {

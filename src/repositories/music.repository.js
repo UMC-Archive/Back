@@ -308,22 +308,13 @@ export const getSpecificArtistAPI = async (artist_name) => {
   }
 };
 
-export const getallArtistsAPI = async (user_id) => {
-  const userGenres = await prisma.userGenre.findMany({
-    where: { userId: user_id },
-    select: { genreId: true },
-  });
-
-  if (!userGenres || userGenres.length === 0) {
-    return null;
-  }
-
-  const genreIds = userGenres.map((ug) => ug.genreId);
+export const getallArtistsAPI = async (genre_id) => {
+  const genreIdArray = Array.isArray(genre_id) ? genre_id : [genre_id];
 
   const genreInfos = await prisma.genre.findMany({
     where: {
       id: {
-        in: genreIds,
+        in: genreIdArray,
       },
     },
     select: {
@@ -417,7 +408,6 @@ export const getallArtistsAPI = async (user_id) => {
   const uniqueArtists = Array.from(
     new Map(processedArtists.map((artist) => [artist.name, artist])).values()
   );
-  //console.log("uniqueArtists", uniqueArtists);
 
   return uniqueArtists;
 };
