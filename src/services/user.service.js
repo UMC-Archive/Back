@@ -247,7 +247,7 @@ export const userAddHistoryService = async (data) => {
 
 // 유저의 타임 히스토리를 불러오는 service
 export const userHistoryInfoService = async (userId) => {
-  const userHistoryInfo = await userHistoryInfoRep(userId);
+  const userHistoryInfo = await userHistoryInfoRep({userId});
   return userHistoryInfo;
 };
 
