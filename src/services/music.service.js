@@ -334,12 +334,15 @@ export const listSpecificArtistInfo = async (artist_name) => {
   }
 };
 
-export const listAllArtistInfo = async (user_id) => {
+export const listAllArtistInfo = async (genre_id) => {
   try {
-    const AllArtists = await getallArtistsAPI(user_id);
+    if (!genre_id) {
+      return response(status.PARAMETER_IS_WRONG, null);
+    }
+    const AllArtists = await getallArtistsAPI(genre_id);
 
     if (!AllArtists) {
-      return response(status.LOGIN_ID_NOT_EXIST, null);
+      return response(status.ARTIST_NOT_EXIST, null);
     }
 
     return response(status.SUCCESS, responseFromAllArtists({ AllArtists }));

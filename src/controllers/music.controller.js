@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import { } from "../dtos/music.dto.js";
+import {} from "../dtos/music.dto.js";
 import {
   listMusic,
   listArtist,
@@ -26,7 +26,6 @@ import {
   listMainMusics,
   listTopMusicArtists,
   listTopAlbumArtists,
-
 } from "../services/music.service.js";
 import { BaseError } from "../errors.js";
 //추천곡 (연도)
@@ -667,12 +666,18 @@ export const handleArtistsInfo = async (req, res, next) => {
 */
   try {
     console.log("아티스트 정보 가져오기를 요청했습니다!");
-    const user_id = req.user_id;
     const artist = req.query.artist_name;
+    const genre_id = req.body.genre_id;
 
     if (!artist) {
-      const result = await listAllArtistInfo(user_id);
-      const statusCode = result.isSuccess ? 200 : "SIGNIN4002" ? 400 : 500;
+      const result = await listAllArtistInfo(genre_id);
+      const statusCode = result.isSuccess
+        ? 200
+        : "SIGNIN4002"
+        ? 400
+        : "DATABASE4001"
+        ? 401
+        : 500;
       return res.status(statusCode).json(result);
     } else {
       const result = await listSpecificArtistInfo(artist);
@@ -1551,7 +1556,7 @@ export const handleMusicSelection = async (req, res, next) => {
 };
 
 // 아티스트의 가장 인기곡
-export const handleArtistMusicTop = async (req,res,next) => {
+export const handleArtistMusicTop = async (req, res, next) => {
   /*
   #swagger.summary = '아티스트의 가장 인기곡을 가져오는 API';
   #swagger.tags = ['Music']
@@ -1647,7 +1652,7 @@ export const handleArtistMusicTop = async (req,res,next) => {
 };
 
 // 아티스트의 가장 인기있는 앨범
-export const handleArtistAlbumTop = async (req,res,next) => {
+export const handleArtistAlbumTop = async (req, res, next) => {
   /*
   #swagger.summary = '아티스트의 가장 인기있는 앨범을 가져오는 API';
   #swagger.tags = ['Music']
