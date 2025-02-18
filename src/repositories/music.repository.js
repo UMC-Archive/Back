@@ -417,7 +417,7 @@ export const getallArtistsAPI = async (user_id) => {
   const uniqueArtists = Array.from(
     new Map(processedArtists.map((artist) => [artist.name, artist])).values()
   );
-  console.log("uniqueArtists", uniqueArtists);
+  //console.log("uniqueArtists", uniqueArtists);
 
   return uniqueArtists;
 };

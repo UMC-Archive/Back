@@ -440,7 +440,7 @@ export const handleMusicAlbumInfo = async (req, res, next) => {
  */
   try {
     console.log("앨범 정보 가져오기를 요청했습니다!");
-    console.log(req.userId);
+    //console.log(req.userId);
     const album = await listAlbum(req.query.artist_name, req.query.album_name);
     res.send(response(status.SUCCESS, album));
   } catch (err) {
@@ -993,7 +993,8 @@ export const handleGenreImage = async (req, res, next) => {
     if (urls) {
       res.send(response(status.SUCCESS, urls));
     } else {
-      console.log(urls);
+      //console.log(urls);
+      res.send(response(status.ALL_VALUE_NOT_EXIST, null));
     }
   } catch (err) {
     console.error(err);

@@ -111,13 +111,13 @@ export const findUser = async (email) => {
     throw new Error(`User with email ${email} not found`);
   }
 
-  console.log("findUser: 조회된 유저 정보:", user);
+  //console.log("findUser: 조회된 유저 정보:", user);
   return user; // 유저 객체 반환
 };
 
 //유저의 프로필 이미지 변경
 export const changeImageRep = async (data) => {
-  console.log("bodyRep:", data);
+  //console.log("bodyRep:", data);
   try {
     // 1. id로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({
@@ -150,7 +150,7 @@ export const changeImageRep = async (data) => {
 };
 // 유저의 장르 변경
 export const changeGenreRep = async (data) => {
-  console.log("bodyRep:", data);
+  //console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({
@@ -162,7 +162,7 @@ export const changeGenreRep = async (data) => {
     if (!existingUser) {
       throw new Error("해당 이름과 이메일로 등록된 사용자가 없습니다.");
     }
-    console.log(existingUser);
+    //console.log(existingUser);
 
     //const userId = Number(existingUser.id);
 
@@ -174,7 +174,7 @@ export const changeGenreRep = async (data) => {
     if (!existingUserGenre) {
       throw new Error("해당 userId로 등록된 UserGenre를 찾을 수 없습니다.");
     }
-    console.log("existingUserGenre:", existingUserGenre);
+    //console.log("existingUserGenre:", existingUserGenre);
 
     // 3. 장르 정보 업데이트
     const updatedUserGenre = await prisma.userGenre.update({
@@ -196,7 +196,7 @@ export const changeGenreRep = async (data) => {
 
 //유저의 아티스트 변경
 export const changeArtistRep = async (data) => {
-  console.log("bodyRep:", data);
+  //console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({
@@ -208,7 +208,7 @@ export const changeArtistRep = async (data) => {
     if (!existingUser) {
       throw new Error("해당 이름과 이메일로 등록된 사용자가 없습니다.");
     }
-    console.log(existingUser);
+    //console.log(existingUser);
 
     //const userId = Number(existingUser.id);
 
@@ -220,7 +220,7 @@ export const changeArtistRep = async (data) => {
     if (!existingUserArtist) {
       throw new Error("해당 userId로 등록된 UserArtist를 찾을 수 없습니다.");
     }
-    console.log("existingUserArtist:", existingUserArtist);
+    //console.log("existingUserArtist:", existingUserArtist);
 
     // 3. 아티스트 정보 업데이트
     const updatedUserArtist = await prisma.userArtist.update({
@@ -267,7 +267,7 @@ export const setMusicGenre = async (data) => {
 
 // 유저의 청취기록 불러오기
 export const userPlayInfoRep = async (data) => {
-  console.log("bodyRep:", data);
+  //console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
     const existingUser = await prisma.user.findUnique({
@@ -353,7 +353,7 @@ export const userPlayInfoRep = async (data) => {
 };
 // 유저의 time 히스토리를 추가
 export const addHistoryRep = async (data) => {
-  console.log("bodyRep:", data);
+  //console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({
@@ -380,7 +380,7 @@ export const addHistoryRep = async (data) => {
 
 //유저의 time 히스토리를 불러오기
 export const userHistoryInfoRep = async (data) => {
-  console.log("bodyRep:", data);
+  //console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
     const existingUser = await prisma.user.findFirst({

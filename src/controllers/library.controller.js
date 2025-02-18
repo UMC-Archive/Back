@@ -75,8 +75,7 @@ export const deleteMusicLibrary = async (req, res) => {
   try {
     console.log("보관함에서 노래를 삭제합니다.");
     const musicId = req.params.musicId;
-    // console.log(req.userId);
-    // console.log(musicId);
+
     const result = await deleteMusicLibraryService(req.userId, musicId);
     return res.json(result);
   } catch (err) {

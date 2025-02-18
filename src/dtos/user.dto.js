@@ -76,7 +76,6 @@ export const bodyToUserMusic = (userId, body) => {
 
 // 유저의 히스토리 추가하는 DTO
 export const bodyToHistoryDTO = (userId, req) => {
-  console.log("bodyDTO:", req);
   const history = new Date(req.history);
   return {
     userId: BigInt(userId),

@@ -54,12 +54,9 @@ export const verify = (req, res, next) => {
 };
 // Check jwt token format
 export const checkFormat = (req) => {
-  console.log("check1");
   if (req.startsWith("Bearer")) {
-    console.log("check2");
     return req.split(" ")[1];
   } else {
-    console.log("check3");
     return null;
   }
 };
