@@ -173,24 +173,19 @@ export const listHiddenMusics = async (user_id) => {
   const last = 100;
   const billboardApi = await getBillboardAPI(date, first, last);
   const billboard = await extractBillboard(billboardApi);
-
+  let artists = billboard.artists;
+  let titles = billboard.titles;
   let hiddenMusics = [];
-  for (let i = 0; i < last - first + 1; i++) {
-    const album = await getAlbumSpotifyApi(
-      billboard.artists[i],
-      billboard.titles[i]
-    );
-    const albumApi = await getAlbumInfo(billboard.artists[i], album);
-    const musicApi = await getMusicInfo(
-      billboard.artists[i],
-      billboard.titles[i]
-    );
-    if (albumApi?.tracks?.track[0]?.name && musicApi?.name) {
-      const artistName =
-        albumApi.artist === musicApi.artist.name ? albumApi.artist : null;
-      const albumName = albumApi.name;
-      const musicName = musicApi?.name;
-      const all = await listAll(artistName, albumName, musicName);
+  for (let i in artists) {
+    const album = await getAlbumSpotifyApi(artists[i], titles[i]);
+    const albumApi = await getAlbumInfo(artists[i], album);
+    const musicApi = await getMusicInfo(artists[i], titles[i]);
+    if (albumApi?.tracks?.track && musicApi?.name) {
+      const all = await listAll(
+        albumApi?.artist,
+        albumApi?.name,
+        musicApi?.name
+      );
       hiddenMusics.push({
         music: all.music,
         album: all.album,
