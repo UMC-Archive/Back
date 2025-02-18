@@ -658,7 +658,13 @@ export const getUserPreferGenre = async (userId) => {
     name: genre.name,
   }));
 
-  if (genres.length === 4) {
+  if (genres.length === 3) {
+    return [
+      ...genres,
+      { id: "15", name: "Others" },
+      { id: "15", name: "Others" },
+    ];
+  } else if (genres.length === 4) {
     return [...genres, { id: "15", name: "Others" }];
   }
 
