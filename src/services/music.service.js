@@ -206,12 +206,7 @@ export const listMainMusics = async (user_id) => {
   let artists = billboard.artists;
   let titles = billboard.titles;
 
-  let historyImage = await getHistoryImage(date);
-  if (!historyImage) {
-    const imageUrl = await getMusicInfo(artists[0], titles[0]);
-    historyImage = await historyUploader(date, imageUrl.album.image[0]["#text"]);
-  }
-  
+  let historyImage; 
   let mainMusics = [];
   for (let i in artists) {
     const album = await getAlbumSpotifyApi(artists[i], titles[i]);
@@ -228,6 +223,13 @@ export const listMainMusics = async (user_id) => {
         album: all.album,
         artist: all.artist.name,
       });
+      if (!historyImage) {
+        historyImage = await getHistoryImage(date);
+        if (!historyImage) {
+          const imageUrl = await getMusicInfo(artists[i], titles[i]);
+          historyImage = await historyUploader(date, imageUrl.album.image[0]["#text"]);
+        }
+      }
     }
   }
   return responseFromHiddenMusics(mainMusics);
