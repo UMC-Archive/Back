@@ -206,7 +206,7 @@ export const listMainMusics = async (user_id) => {
   let artists = billboard.artists;
   let titles = billboard.titles;
 
-  let historyImage; 
+  let historyImage;
   let mainMusics = [];
   for (let i in artists) {
     const album = await getAlbumSpotifyApi(artists[i], titles[i]);
@@ -227,7 +227,10 @@ export const listMainMusics = async (user_id) => {
         historyImage = await getHistoryImage(date);
         if (!historyImage) {
           const imageUrl = await getMusicInfo(artists[i], titles[i]);
-          historyImage = await historyUploader(date, imageUrl.album.image[3]["#text"]);
+          historyImage = await historyUploader(
+            date,
+            imageUrl.album.image[3]["#text"]
+          );
         }
       }
     }
@@ -326,7 +329,9 @@ export const listArtist = async (artist_name, album_name) => {
 export const listSpecificArtistInfo = async (artist_name) => {
   try {
     const specificArtist = await getSpecificArtistAPI(artist_name);
-    return response(status.SUCCESS, responseFromSpecificArtist(specificArtist));
+    return response(status.SUCCESS, [
+      responseFromSpecificArtist(specificArtist),
+    ]);
   } catch (error) {
     return response(status.INTERNAL_SERVER_ERROR, null);
   }

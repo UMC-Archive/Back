@@ -96,7 +96,7 @@ export const getGenreArtist = async (genre) => {
   return new Promise((resolve, reject) => {
     const genreName = genre.name;
 
-    lastfm.tag.getTopArtists({ tag: genreName, limit: 10 }, (err, data) => {
+    lastfm.tag.getTopArtists({ tag: genreName, limit: 15 }, (err, data) => {
       if (err) {
         resolve(null);
       }
@@ -108,6 +108,7 @@ export const getGenreArtist = async (genre) => {
 
       const results = artists.map((artist) => ({
         name: artist.name,
+        mbid: artist.mbid,
       }));
 
       resolve(results);
@@ -285,7 +286,7 @@ export const getArtistTopAlbumsBymbid = async (artist_name, mbid) => {
 export const getArtistTopMusicsBymbid = async (artist_name, mbid) => {
   return new Promise((resolve, reject) => {
     lastfm.artist.getTopTracks(
-      { artist: artist_name, mbid: mbid , limit:10 },
+      { artist: artist_name, mbid: mbid, limit: 10 },
       (err, artist) => {
         if (err) {
           resolve(null);

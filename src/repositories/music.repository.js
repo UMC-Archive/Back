@@ -13,6 +13,7 @@ import {
   getArtistTopTrack,
   getArtistTopAlbum,
   getTrackInfoAPI,
+  getArtistTopMusicsBymbid,
 } from "../lastfm.js";
 import { getTrackReleaseYear } from "../itunes.js";
 import { prisma } from "../db.config.js";
@@ -236,36 +237,36 @@ export const addArtist = async (artist) => {
 
 export const getSpecificArtistAPI = async (artist_name) => {
   try {
-    // 1. DB에서 아티스트 검색
     const existingArtist = await getArtistDB(artist_name);
 
     if (existingArtist) {
       return existingArtist;
     }
 
-    // 2. iTunes API를 통해 아티스트의 곡 검색
-    const artistTrack = await getAlbumItunesEntity(
-      artist_name,
-      artist_name,
-      "song"
-    );
+    const artistInfo = await searchArtist(artist_name);
     let spotifyData;
 
-    if (artistTrack) {
-      // iTunes에서 곡을 찾은 경우
-      spotifyData = await spotify(
-        {
-          q: `artist:"${artist_name}" track:"${artistTrack.trackName}"`,
-          type: "artists",
-          offset: "0",
-          limit: "1",
-          numberOfTopResults: "1",
-        },
-        "search"
+    if (artistInfo) {
+      const topTracks = await getArtistTopMusicsBymbid(
+        artist_name,
+        artistInfo.mbid
       );
+
+      if (topTracks?.track?.length) {
+        const topTrack = topTracks.track[0];
+        spotifyData = await spotify(
+          {
+            q: `artist:"${artist_name}" track:"${topTrack.name}"`,
+            type: "artists",
+            offset: "0",
+            limit: "1",
+            numberOfTopResults: "1",
+          },
+          "search"
+        );
+      }
     }
 
-    // 3. iTunes 검색 실패 또는 Spotify 검색 실패 시 이름으로 재검색
     if (!spotifyData?.artists?.items?.length) {
       spotifyData = await spotify(
         {
@@ -277,24 +278,24 @@ export const getSpecificArtistAPI = async (artist_name) => {
         },
         "search"
       );
+    }
 
-      // 정확한 이름 매칭 시도
-      const items = spotifyData?.artists?.items || [];
+    if (spotifyData?.artists?.items?.length) {
+      const items = spotifyData.artists.items;
       const exactMatches = items.filter(
         (artist) =>
           artist.data.profile.name.toLowerCase() === artist_name.toLowerCase()
       );
 
-      // 정확히 일치하는 결과가 있으면 사용, 없으면 첫 번째 결과 사용
-      spotifyData.artists.items =
-        exactMatches.length > 0 ? exactMatches : [items[0]];
+      if (exactMatches.length > 0) {
+        spotifyData.artists.items = exactMatches;
+      }
     }
 
     const imageUrl =
-      spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
-        ?.url || null;
+      spotifyData?.artists?.items?.[0]?.data?.visuals?.avatarImage?.sources?.[0]
+        ?.url || artistInfo?.image; //검색의 경우 아티스트 이미지가 없으면 lastfm에서 가져온 이미지 사용(기본 이미지)
 
-    // 4. DB에 아티스트 정보 저장
     const artistData = {
       name: artist_name,
       image: imageUrl,
@@ -311,7 +312,7 @@ export const getSpecificArtistAPI = async (artist_name) => {
 export const getallArtistsAPI = async (genre_id) => {
   const genreIdArray = Array.isArray(genre_id) ? genre_id : [genre_id];
 
-  const genreInfos = await prisma.genre.findMany({
+  const genres = await prisma.genre.findMany({
     where: {
       id: {
         in: genreIdArray,
@@ -323,43 +324,43 @@ export const getallArtistsAPI = async (genre_id) => {
     },
   });
 
-  const artistsPromises = genreInfos.map((genre) => getGenreArtist(genre));
+  const artistsPromises = genres.map((genre) => getGenreArtist(genre));
   const artistsByGenre = await Promise.all(artistsPromises);
   const allArtists = artistsByGenre.flat().filter((artist) => artist !== null);
 
   const processedArtists = await Promise.all(
     allArtists.map(async (artist) => {
       try {
-        // DB에서 아티스트 검색
         const existingArtist = await getArtistDB(artist.name);
 
         if (existingArtist) {
           return existingArtist;
         }
 
-        // iTunes API를 통해 아티스트의 곡 검색
-        const artistTrack = await getAlbumItunesEntity(
+        // Last.fm에서 아티스트의 mbid로 대표곡 검색
+        const topTracks = await getArtistTopMusicsBymbid(
           artist.name,
-          artist.name,
-          "song"
+          artist.mbid
         );
-        let spotifyData;
 
-        if (artistTrack) {
-          // iTunes에서 곡을 찾은 경우
-          spotifyData = await spotify(
-            {
-              q: `artist:"${artist.name}" track:"${artistTrack.trackName}"`,
-              type: "artists",
-              offset: "0",
-              limit: "1",
-              numberOfTopResults: "1",
-            },
-            "search"
-          );
+        if (!topTracks || !topTracks.track || !topTracks.track.length) {
+          return null;
         }
 
-        // iTunes 검색 실패 또는 Spotify 검색 실패 시 이름으로 재검색
+        const topTrack = topTracks.track[0];
+        let spotifyData;
+
+        spotifyData = await spotify(
+          {
+            q: `artist:"${artist.name}" track:"${topTrack.name}"`,
+            type: "artists",
+            offset: "0",
+            limit: "1",
+            numberOfTopResults: "1",
+          },
+          "search"
+        );
+
         if (!spotifyData?.artists?.items?.length) {
           spotifyData = await spotify(
             {
@@ -372,7 +373,6 @@ export const getallArtistsAPI = async (genre_id) => {
             "search"
           );
 
-          // 정확한 이름 매칭 시도
           const items = spotifyData?.artists?.items || [];
           const exactMatches = items.filter(
             (artistItem) =>
@@ -380,14 +380,18 @@ export const getallArtistsAPI = async (genre_id) => {
               artist.name.toLowerCase()
           );
 
-          // 정확히 일치하는 결과가 있으면 사용, 없으면 첫 번째 결과 사용
           spotifyData.artists.items =
             exactMatches.length > 0 ? exactMatches : [items[0]];
         }
 
         const imageUrl =
           spotifyData?.artists?.items[0]?.data?.visuals?.avatarImage?.sources[0]
-            ?.url || null;
+            ?.url;
+
+        // 에러 발생 시 null 반환, 나중에 필터링 진행
+        if (!imageUrl) {
+          return null;
+        }
 
         const newArtist = await addArtist({
           name: artist.name,
@@ -396,17 +400,15 @@ export const getallArtistsAPI = async (genre_id) => {
 
         return newArtist;
       } catch (error) {
-        console.error(`Error processing artist ${artist.name}:`, error);
-        return {
-          name: artist.name,
-          image: null,
-        };
+        return null; // 에러 발생 시 null 반환, 나중에 필터링 진행
       }
     })
   );
 
+  // null 값 필터링 & 중복 제거
+  const validArtists = processedArtists.filter((artist) => artist !== null);
   const uniqueArtists = Array.from(
-    new Map(processedArtists.map((artist) => [artist.name, artist])).values()
+    new Map(validArtists.map((artist) => [artist.name, artist])).values()
   );
 
   return uniqueArtists;
