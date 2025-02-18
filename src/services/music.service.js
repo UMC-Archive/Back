@@ -227,7 +227,7 @@ export const listMainMusics = async (user_id) => {
         historyImage = await getHistoryImage(date);
         if (!historyImage) {
           const imageUrl = await getMusicInfo(artists[i], titles[i]);
-          historyImage = await historyUploader(date, imageUrl.album.image[4]["#text"]);
+          historyImage = await historyUploader(date, imageUrl.album.image[3]["#text"]);
         }
       }
     }
