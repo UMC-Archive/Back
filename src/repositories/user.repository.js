@@ -314,10 +314,6 @@ export const userPlayInfoRep = async (data) => {
       },
     });
 
-    if (!userPlay.length) {
-      throw new Error("청취 기록이 없습니다.");
-    }
-
     // 3. 데이터 가공
     const formattedPlayHistory = userPlay.map((play) => ({
       userId: play.userId,
