@@ -654,32 +654,14 @@ export const getUserPreferGenre = async (userId) => {
     take: 5,
   });
 
-  if (preferredGenres.length < 5) {
-    const selectedGenreIds = preferredGenres.map((genre) => genre.id);
-    const remainingGenres = await prisma.genre.findMany({
-      where: {
-        id: {
-          notIn: selectedGenreIds,
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    const neededCount = 5 - preferredGenres.length;
-    const shuffledGenres = remainingGenres.sort(() => Math.random() - 0.5);
-    const randomGenres = shuffledGenres.slice(0, neededCount);
-
-    return [...preferredGenres, ...randomGenres].map((genre) => ({
-      id: genre.id,
-      name: genre.name,
-    }));
-  }
-
-  return preferredGenres.map((genre) => ({
+  const genres = preferredGenres.map((genre) => ({
     id: genre.id,
     name: genre.name,
   }));
+
+  if (genres.length === 4) {
+    return [...genres, { id: "15", name: "Others" }];
+  }
+
+  return genres;
 };
