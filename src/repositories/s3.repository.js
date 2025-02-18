@@ -135,7 +135,7 @@ export const getHistoryImage = async (fileName) => {
         // headObject 메서드를 사용해 파일이 존재하는지 확인
         await s3.headObject(params).promise();
         // 파일이 존재하는 경우 URL을 반환
-        const url = `https://${process.env.BUCKET}.s3.amazonaws.com/${fileName}.png`;
+        const url = `https://${process.env.BUCKET}.s3.amazonaws.com/history/${fileName}.png`;
         return url;
     } catch (err) {
         return null; // 파일이 존재하지 않으면 null 반환
