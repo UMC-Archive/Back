@@ -267,7 +267,6 @@ export const setMusicGenre = async (data) => {
 
 // 유저의 청취기록 불러오기
 export const userPlayInfoRep = async (data) => {
-  //console.log("bodyRep:", data);
   try {
     // 1. userId로 회원 존재 여부 확인
     const existingUser = await prisma.user.findUnique({
@@ -278,10 +277,11 @@ export const userPlayInfoRep = async (data) => {
       throw new Error("해당 이름으로 등록된 사용자가 없습니다.");
     }
 
-    // 2. 청취 기록 불러오기 + 음악 정보 & 아티스트 정보 포함
+    // 2. 최신 청취 기록만 가져오기 (각 musicId당 가장 최근 기록 1개)
     const userPlay = await prisma.userMusic.findMany({
       where: { userId: data.userId },
-      orderBy: { updatedAt: "desc" }, // 최신순 정렬
+      orderBy: [{ musicId: "asc" }, { updatedAt: "desc" }], // musicId별 최신 updatedAt 정렬
+      distinct: ["musicId"], // 각 musicId별 가장 최신 1개만 남김
       take: 10, // 최대 10개 제한
       include: {
         music: {
@@ -313,10 +313,11 @@ export const userPlayInfoRep = async (data) => {
         },
       },
     });
+
     if (!userPlay.length) {
       throw new Error("청취 기록이 없습니다.");
     }
-    //return userPlay
+
     // 3. 데이터 가공
     const formattedPlayHistory = userPlay.map((play) => ({
       userId: play.userId,
@@ -338,17 +339,15 @@ export const userPlayInfoRep = async (data) => {
         image: play.music.album.image,
       },
       artist: {
-        id: play.music.MusicArtists[0].artist.id,
-        name: play.music.MusicArtists[0].artist.name,
-        image: play.music.MusicArtists[0].artist.image,
+        id: play.music.MusicArtists[0]?.artist.id || null,
+        name: play.music.MusicArtists[0]?.artist.name || "Unknown Artist",
+        image: play.music.MusicArtists[0]?.artist.image || null,
       },
     }));
 
     return formattedPlayHistory;
   } catch (err) {
-    throw new Error(
-      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
-    );
+    throw new Error(`오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`);
   }
 };
 // 유저의 time 히스토리를 추가
