@@ -292,7 +292,7 @@ export const sendEmail = async (req, res) => {
 
     if (encryptedCode !== null) {
       // if email doesn't exists
-      console.log(encryptedCode);
+      //console.log(encryptedCode);
 
       // res.status(StatusCodes.OK);
       res.send(response(status.SUCCESS, encryptedCode));
@@ -431,9 +431,9 @@ export const handleUserInfo = async (req, res) => {
 */
   try {
     console.log("유저 정보를 불러옵니다.");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       res.send(response(status.SUCCESS, await userInfoService(req.userId)));
@@ -622,9 +622,9 @@ export const handleUserGenre = async (req, res, next) => {
 
   try {
     console.log("유저가 장르 변경을 요청했습니다!");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const changeGenre = await userChangeGenreService(
@@ -703,9 +703,9 @@ export const handleUserArtist = async (req, res, next) => {
     */
   try {
     console.log("유저가 아티스트 변경을 요청했습니다!");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const changeArtist = await userChangeArtistService(
@@ -1028,9 +1028,9 @@ export const handleGetUserPlay = async (req, res, next) => {
   */
   try {
     console.log("유저의 청취 기록을 요청했습니다!");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const userId = req.userId;
@@ -1146,9 +1146,9 @@ export const handleHistory = async (req, res, next) => {
 */
   try {
     console.log("유저의 연도 타임 히스토리 추가를 요청했습니다!");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const addHistory = await userAddHistoryService(
@@ -1296,9 +1296,9 @@ export const handleGetHistory = async (req, res, next) => {
   */
   try {
     console.log("유저의 연도 타임 히스토리 정보를 요청했습니다!");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const userInfo = await userHistoryInfoService(req.userId);
@@ -1403,9 +1403,9 @@ export const handleAddRecentMusic = async (req, res, next) => {
   */
   try {
     console.log("유저가 최근에 추가한 노래 정보를 요청했습니다!");
-    console.log(req.get("Authorization"));
+    //console.log(req.get("Authorization"));
     const token = await checkFormat(req.get("Authorization"));
-    console.log(token, ":test");
+    //console.log(token, ":test");
     if (token !== null) {
       // 토큰 이상없음
       const recentMusic = await addRecentMusicService(req.userId);

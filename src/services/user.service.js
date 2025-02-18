@@ -126,7 +126,7 @@ export const userInfoService = async (userId) => {
 
 // 로그인 전송 service
 export const loginService = async (req) => {
-  console.log("loginService 요청 데이터:", req);
+  //console.log("loginService 요청 데이터:", req);
   if (await findEmailAlreadyExists(req.email)) {
     // 이메일이 존재하면
     const user = await findUser(req.email);
@@ -153,13 +153,13 @@ export const userChangeImageService = async (req, res) => {
   // data) => {
   const { url, data } = await profileUploader(req, res);
   const jdata = JSON.parse(data);
-  console.log("bodyService:", jdata);
+  //console.log("bodyService:", jdata);
   const ChangeImage = await changeImageRep({
     id: req.userId,
     nickname: jdata.nickname,
     profileImage: url,
   });
-  console.log(data);
+  //console.log(data);
   if (ChangeImage == null) {
     throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
   }
@@ -168,7 +168,7 @@ export const userChangeImageService = async (req, res) => {
 
 // 유저 장르 변경 service
 export const userChangeGenreService = async (data) => {
-  console.log("bodyService:", data);
+  //console.log("bodyService:", data);
   const ChangeGenre = await changeGenreRep({
     userId: data.userId,
     genreId: data.genreId,
@@ -181,7 +181,7 @@ export const userChangeGenreService = async (data) => {
 
 // 유저 아티스트 변경 service
 export const userChangeArtistService = async (data) => {
-  console.log("bodyService:", data);
+  //console.log("bodyService:", data);
   const ChangeArtist = await changeArtistRep({
     userId: data.userId,
     artistId: data.artistId,
@@ -212,10 +212,10 @@ export const getGenreForMusic = async (data) => {
       genreId: genre.id,
     };
     musicGenre = await setMusicGenre(genreData);
-    console.log(musicGenre);
+    //console.log(musicGenre);
     return genre;
   }
-  console.log(musicGenre);
+  //console.log(musicGenre);
   return null;
 };
 export const userPlay = async (data) => {
@@ -234,7 +234,7 @@ export const userPlayInfoService = async (userId) => {
 
 // 유저의 타임 히스토리를 저장하는 service
 export const userAddHistoryService = async (data) => {
-  console.log("bodyService:", data);
+  //console.log("bodyService:", data);
   const addHistory = await addHistoryRep({
     userId: data.userId,
     history: data.history,

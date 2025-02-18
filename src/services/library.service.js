@@ -81,7 +81,7 @@ export const addAlbumLibraryService = async(userId, albumId)=>{
       return response(status.ALBUM_NOT_EXIST, null);
     }
     const result = await addAlbumLibraryRepo(userId, albumId);
-    console.log(result);
+    //console.log(result);
     return result;
 
   }catch(err){
@@ -97,7 +97,7 @@ export const addArtistLibraryService = async(userId, artistId)=>{
       return response(status.ARTIST_NOT_EXIST, null);
     }
     const result = await addArtistLibraryRepo(userId, artistId);
-    console.log(result);
+    //console.log(result);
     return result;
 
   }catch(err){
@@ -121,12 +121,12 @@ export const listLibraryMusics = async (userId) => {
 
 export const listLibraryArtists = async (userId) => {
   try {
-    console.log("userId : " + userId);
+    //console.log("userId : " + userId);
     if (!userId) {
       return response(status.LOGIN_ID_NOT_EXIST, null);
     }
     const artists = await getLibraryArtists(userId);
-    console.log("service artists : " + JSON.stringify(artists, null, 2));
+    //console.log("service artists : " + JSON.stringify(artists, null, 2));
 
     return response(status.SUCCESS, responseFromAllArtists(artists));
   } catch (err) {
@@ -140,7 +140,7 @@ export const listLibraryAlbums = async (userId) => {
       return response(status.LOGIN_ID_NOT_EXIST, null);
     }
     const albums = await getLibraryAlbums(userId);
-    console.log("service albums : " + JSON.stringify(albums, null, 2));
+    //console.log("service albums : " + JSON.stringify(albums, null, 2));
 
     return response(status.SUCCESS, responseFromAllAlbums(albums));
   } catch (err) {

@@ -47,7 +47,7 @@ export const responseFromAllArtists = (artists) => {
 
 
 export const responseFromAllAlbums = (albums) => {
-  console.log("dto albums : " + JSON.stringify(albums, null, 2));
+  //console.log("dto albums : " + JSON.stringify(albums, null, 2));
   return albums.map((data) => ({
     id: data.album.id,
     title: data.album.title,

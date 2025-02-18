@@ -39,7 +39,7 @@ export const deleteAlbumLibraryRepo = async (userId, albumId) => {
         albumId: albumId,
       },
     });
-    console.log(existingAlbum);
+    //console.log(existingAlbum);
 
     if (!existingAlbum) {
       return response(status.ALBUM_NOT_LIBRARY, null);
@@ -66,7 +66,7 @@ export const deleteArtistLibraryRepo = async (userId, artistId) => {
         artistId: artistId,
       },
     });
-    console.log(existingArtist);
+    //console.log(existingArtist);
 
     if (!existingArtist) {
       return response(status.ARTIST_NOT_LIBRARY, null);
@@ -116,7 +116,7 @@ export const addAlbumLibraryRepo = async (userId, albumId) => {
     let library = await prisma.library.findFirst({
       where: { userId: userId },
     });
-    console.log(library);
+    //console.log(library);
 
     const existingAlbum = await prisma.libraryAlbum.findFirst({
       where: {
@@ -124,7 +124,7 @@ export const addAlbumLibraryRepo = async (userId, albumId) => {
         albumId: albumId,
       },
     });
-    console.log(existingAlbum);
+    //console.log(existingAlbum);
 
     if (existingAlbum) {
       return response(status.ALBUM_IS_EXIST, null);
@@ -136,7 +136,7 @@ export const addAlbumLibraryRepo = async (userId, albumId) => {
         albumId: albumId,
       },
     });
-    console.log(newAlbum);
+    //console.log(newAlbum);
     return response(status.SUCCESS, newAlbum);
   } catch (err) {
     console.log(err);
@@ -150,7 +150,7 @@ export const addArtistLibraryRepo = async (userId, artistId) => {
     let library = await prisma.library.findFirst({
       where: { userId: userId },
     });
-    console.log(library);
+    //console.log(library);
 
     const existingArtist = await prisma.libraryArtist.findFirst({
       where: {
@@ -158,7 +158,7 @@ export const addArtistLibraryRepo = async (userId, artistId) => {
         artistId: artistId,
       },
     });
-    console.log(existingArtist);
+    //console.log(existingArtist);
 
     if (existingArtist) {
       return response(status.ARTIST_IS_EXIST, null);
@@ -170,7 +170,7 @@ export const addArtistLibraryRepo = async (userId, artistId) => {
         artistId: artistId,
       },
     });
-    console.log(newArtist);
+    //console.log(newArtist);
     return response(status.SUCCESS, newArtist);
   } catch (err) {
     console.log(err);
@@ -287,7 +287,7 @@ export const getLibraryAlbums = async (userId) => {
     const library = await prisma.library.findFirst({
       where: { userId: userId },
     });
-    console.log("library : " + JSON.stringify(library, null, 2));
+    //console.log("library : " + JSON.stringify(library, null, 2));
 
     if (!library) {
       return null;
