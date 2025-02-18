@@ -158,7 +158,7 @@ app.post("/users/signup/email/check-verification-code", checkVerification);
 // 장르 정보 조회
 app.get("/music/genre/info", handleGenreImage);
 // 아티스트 정보 조회
-app.get("/music/artist/info", handleArtistsInfo);
+app.post("/music/artist/info", handleArtistsInfo);
 
 //유저 정보를 불러오는 api
 app.get("/users/info", handleUserInfo);
