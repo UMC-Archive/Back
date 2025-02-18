@@ -12,11 +12,11 @@
 ## 기술 스택
 |이름|소개|
 |-----|:-----:|
-|![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)||
-|![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)||
-|![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)|S3, EC2, rds|
-|![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)||
-|![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)||
+|![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)| * 서버 사이드 JavaScript 환경으로, 비동기식 이벤트 기반 아키텍처를 통해 높은 성능의 웹 애플리케이션을 구축합니다.|
+|![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)| * Node.js를 위한 웹 애플리케이션 프레임워크로, RESTful API 개발에 최적화되어 있습니다.|
+|![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)| * Ec2: 가상 서버 인스턴스를 제공하는 AWS 서비스로, 애플리케이션 실행을 위한 컴퓨팅 자원을 유연하게 관리하고 확장할 수 있습니다. <br> * S3: 대용량 데이터를 안전하게 저장하고 관리할 수 있는 객체 스토리지 서비스입니다. 파일 업로드, 백업 및 정적 콘텐츠 호스팅에 사용됩니다. <br> * RDS: 관리형 관계형 데이터베이스 서비스로, MySQL, PostgreSQL, MariaDB, Oracle, SQL Server 등의 데이터베이스를 쉽게 설정하고 운영할 수 있습니다.|
+|![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)|오픈 소스 관계형 데이터베이스 관리 시스템(RDBMS)으로, 트랜잭션 처리, SQL 쿼리 및 데이터 무결성을 제공하며, 대규모 데이터 처리와 고성능의 웹 애플리케이션에서 널리 사용됩니다.|
+|![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)|Node.js와 TypeScript를 위한 현대적인 ORM(Object-Relational Mapping) 라이브러리로, SQL 데이터베이스(MySQL, PostgreSQL, SQLite 등)와의 상호작용을 쉽게 하고, 타입 안전성 및 자동화된 마이그레이션을 제공합니다.|
 
 ## 개요
 
