@@ -587,7 +587,13 @@ export const handleArtistsInfo = async (req, res, next) => {
        description: '아티스트 이름',
        required: false,
        type: 'string'
-   }
+   };
+  #swagger.parameters['genre_id'] = {
+        in: 'body',
+        description: '장르 아이디',
+        required: false,
+        type: 'string'
+    };
    #swagger.responses[200] = {
      description: "아티스트 정보 조회 성공 응답",
      content: {
@@ -639,8 +645,24 @@ export const handleArtistsInfo = async (req, res, next) => {
           type: "object",
           properties: {
             isSuccess: { type: "boolean", example: false },
-            code: { type: "string", example: "SIGNIN4002" },
-            message: { type: "string", example: "아이디를 찾을 수 없습니다." },
+            code: { type: "string", example: "MUSIC4003" },
+            message: { type: "string", example: "아티스트가 존재하지 않습니다." },
+            result: { type: "null", example: null }
+          }
+        }
+      }
+    }
+  };
+    #swagger.responses[400] = {
+    description: "파라미터 값 오류",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            isSuccess: { type: "boolean", example: false },
+            code: { type: "string", example: "DATABASE4001" },
+            message: { type: "string", example: "쿼리 실행 시 전달되는 파라미터가 잘못되었습니다. 파라미터 개수 혹은 파라미터 형식을 확인해주세요." },
             result: { type: "null", example: null }
           }
         }
