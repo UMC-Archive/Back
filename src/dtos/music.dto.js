@@ -24,13 +24,11 @@ export const responseFromSpecificArtist = (artist) => {
 };
 
 export const responseFromAllArtists = ({ AllArtists }) => {
-  return {
-    artists: AllArtists.map((artist) => ({
-      id: artist.id.toString(),
-      name: artist.name,
-      image: artist.image,
-    })),
-  };
+  return AllArtists.map((artist) => ({
+    id: artist.id.toString(),
+    name: artist.name,
+    image: artist.image,
+  }));
 };
 
 export const responseFromAlbumTrackList = ({
