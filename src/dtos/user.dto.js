@@ -67,18 +67,18 @@ export const bodyToArtistDTO = (uid, req) => {
 };
 
 // 유저의 음악 재생 시 기록하기
-export const bodyToUserMusic = (userId, body) => {
+export const bodyToUserMusic = (user_id, body) => {
   return {
-    userId: userId,
+    userId: user_id,
     musicId: body.musicId,
   };
 };
 
 // 유저의 히스토리 추가하는 DTO
-export const bodyToHistoryDTO = (userId, req) => {
+export const bodyToHistoryDTO = (user_id, req) => {
   const history = new Date(req.history);
   return {
-    userId: BigInt(userId),
+    userId: BigInt(user_id),
     history: history,
   };
 };
@@ -95,8 +95,8 @@ export const responseFromUserRecap = (recap) => {
   }));
 };
 
-export const responseFropUserPreferGenre = (userGenre) => {
-  return userGenre.map((genre) => ({
+export const responseFropUserPreferGenre = (user_genre) => {
+  return user_genre.map((genre) => ({
     id: genre.id.toString(),
     name: genre.name,
   }));

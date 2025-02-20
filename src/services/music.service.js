@@ -9,7 +9,6 @@ import {
   responseFromAllArtists,
   responseFromAlbumTrackList,
 } from "../dtos/music.dto.js";
-import { getAlbumItunes, getAlbumItunesEntity } from "../itunes.js";
 import {
   getBillboardAPI,
   extractBillboard,
@@ -70,7 +69,7 @@ import {
 } from "../lastfm.js";
 
 // gpt api에서 선호 아티스트 배열로 집어넣기
-const listRecommandArtist = async (user_history, preferArtists) => {
+const listRecommandArtist = async (user_history, prefer_artists) => {
   let artists = [];
   const invalidArtists = [
     "Artist 1 Name",
@@ -86,7 +85,7 @@ const listRecommandArtist = async (user_history, preferArtists) => {
     "object1",
   ];
 
-  for (const prefer of preferArtists) {
+  for (const prefer of prefer_artists) {
     let recommend = await recommandArtist(`${user_history}, ${prefer}`);
 
     // AI 에러 값 검출
@@ -111,7 +110,7 @@ export const listNominationMusic = async (user_id) => {
   // 아티스트로 검색
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albums = await getArtistTopAlbums(artists[num], parseInt(20/artists.length));
+    const albums = await getArtistTopAlbums(artists[num], parseInt(20 / artists.length));
     for (let album of albums?.album) {
       // 검증된 앨범 값 검색하여 음악 찾기
       if (album?.name && album?.name !== "(null)") {
@@ -175,6 +174,7 @@ export const listHiddenMusics = async (user_id) => {
   let artists = billboard.artists;
   let titles = billboard.titles;
   let hiddenMusics = [];
+
   for (let i in artists) {
     const album = await getAlbumSpotifyApi(artists[i], titles[i]);
     const albumApi = await getAlbumInfo(artists[i], album);
@@ -342,13 +342,13 @@ export const listAllArtistInfo = async (genre_id) => {
     if (!genre_id) {
       return response(status.PARAMETER_IS_WRONG, null);
     }
-    const AllArtists = await getallArtistsAPI(genre_id);
+    const allArtists = await getallArtistsAPI(genre_id);
 
-    if (!AllArtists) {
+    if (!allArtists) {
       return response(status.ARTIST_NOT_EXIST, null);
     }
 
-    return response(status.SUCCESS, responseFromAllArtists({ AllArtists }));
+    return response(status.SUCCESS, responseFromAllArtists({ allArtists }));
   } catch (error) {
     return response(status.INTERNAL_SERVER_ERROR, null);
   }
@@ -460,7 +460,7 @@ export const genreImage = async () => {
   return genreImages;
 };
 
-const listRecommandBasicArtist = async (preferArtists) => {
+const listRecommandBasicArtist = async (prefer_artists) => {
   let artists = [];
   const invalidArtists = [
     "Artist 1 Name",
@@ -476,7 +476,7 @@ const listRecommandBasicArtist = async (preferArtists) => {
     "object1",
   ];
 
-  for (const prefer of preferArtists) {
+  for (const prefer of prefer_artists) {
     let recommend = await recommandArtist(`${prefer}`);
 
     // AI 에러 값 검출
@@ -498,7 +498,7 @@ export const listNomAlbums = async (user_id) => {
   const artists = await listRecommandBasicArtist(preferArtists);
   for (const num in artists) {
     // Top Album 가져오기 (Top Track으로 하였을 때 안나오는 경우가 있음)
-    const albums = await getArtistTopAlbums(artists[num], parseInt(20/artists.length));
+    const albums = await getArtistTopAlbums(artists[num], parseInt(20 / artists.length));
     for (let album of albums?.album) {
       // 검증된 앨범 값 검색하여 음악 찾기
       if (album?.name && album?.name !== "(null)") {
@@ -519,13 +519,13 @@ export const listNomAlbums = async (user_id) => {
 };
 
 export const listAlbumTrackList = async (album_id) => {
-  const album_info = await getAlbum(album_id);
-  if (!album_info) {
+  const albumInfo = await getAlbum(album_id);
+  if (!albumInfo) {
     return response(status.ALBUM_NOT_EXIST, null);
   }
   const { roundedMinutes, count, tracks } = await getTrackList(album_id);
 
-  const artist = await getSpecificArtistAPI(album_info.artist);
+  const artist = await getSpecificArtistAPI(albumInfo.artist);
 
   if (!tracks || tracks.length === 0) {
     return response(status.MUSIC_NOT_EXIST, null);
@@ -534,7 +534,7 @@ export const listAlbumTrackList = async (album_id) => {
   return response(
     status.SUCCESS,
     responseFromAlbumTrackList({
-      album_info,
+      albumInfo,
       tracks,
       artist,
       roundedMinutes,
@@ -574,9 +574,9 @@ const listAll = async (artist_name, album_name, music_name) => {
   };
 };
 
-export const listSimilarArtists = async (artistId) => {
-  const artist = await getArtistById(artistId);
-  const musicArtist = await getMusicArtistByArtistId(artistId);
+export const listSimilarArtists = async (artist_id) => {
+  const artist = await getArtistById(artist_id);
+  const musicArtist = await getMusicArtistByArtistId(artist_id);
   const music = await getMusicById(musicArtist.musicId);
   const musicInfo = await getMusicInfo(artist.name, music.title);
   const similar = await getSimilarArtistsBymbid(
@@ -618,9 +618,9 @@ export const listSimilarArtists = async (artistId) => {
   return artistAlbums;
 };
 
-export const listDifferentAlbum = async (artistId, albumId) => {
-  const artist = await getArtistById(artistId);
-  const album = await getAlbumById(albumId);
+export const listDifferentAlbum = async (artist_id, album_id) => {
+  const artist = await getArtistById(artist_id);
+  const album = await getAlbumById(album_id);
   const api = await getAlbumInfo(artist.name, album.title);
   const ambid = api?.tracks?.track[0]?.artist?.mbid;
   const mbid = ambid !== "" ? ambid : null;
@@ -645,9 +645,9 @@ export const listDifferentAlbum = async (artistId, albumId) => {
 };
 
 //정보 불러오기
-export const findMusic = async (musicName) => {
-  if (musicName) {
-    const music = await getMusicDB(musicName);
+export const findMusic = async (music_name) => {
+  if (music_name) {
+    const music = await getMusicDB(music_name);
     if (music) {
       return { name: true, value: true, info: music };
     }
@@ -656,9 +656,9 @@ export const findMusic = async (musicName) => {
   return { name: false, value: false, info: {} };
 };
 
-export const findAlbum = async (albumName) => {
-  if (albumName) {
-    const album = await getAlbumDB(albumName);
+export const findAlbum = async (album_name) => {
+  if (album_name) {
+    const album = await getAlbumDB(album_name);
     if (album) {
       return { name: true, value: true, info: album };
     }
@@ -667,9 +667,9 @@ export const findAlbum = async (albumName) => {
   return { name: false, value: false, info: {} };
 };
 
-export const findArtist = async (artistName) => {
-  if (artistName) {
-    const artist = await getArtistDB(artistName);
+export const findArtist = async (artist_name) => {
+  if (artist_name) {
+    const artist = await getArtistDB(artist_name);
     if (artist) {
       return { name: true, value: true, info: artist };
     }
@@ -679,11 +679,11 @@ export const findArtist = async (artistName) => {
 };
 
 //빠른 선곡
-const getMusicStatistics = (userMusics) => {
+const getMusicStatistics = (user_musics) => {
   const stats = {};
 
   // userMusics 배열을 순회하면서 musicId별로 개수를 세는 방식
-  userMusics.forEach((music) => {
+  user_musics.forEach((music) => {
     const { musicId } = music;
 
     if (stats[musicId]) {
@@ -742,9 +742,9 @@ export const listSelectionMusic = async (user_id) => {
 };
 
 // 아티스트의 가장 인기있는 곡 불러오는 service
-export const listTopMusicArtists = async (artistId) => {
-  const artist = await getArtistById(artistId);
-  const musicArtist = await getMusicArtistByArtistId(artistId);
+export const listTopMusicArtists = async (artist_id) => {
+  const artist = await getArtistById(artist_id);
+  const musicArtist = await getMusicArtistByArtistId(artist_id);
   const music = await getMusicById(musicArtist.musicId);
   const musicInfo = await getMusicInfo(artist.name, music.title);
   const tops = await getArtistTopMusicsBymbid(
@@ -770,9 +770,9 @@ export const listTopMusicArtists = async (artistId) => {
 };
 
 // 아티스트의 가장 인기있는 앨범 불러오는 service
-export const listTopAlbumArtists = async (artistId) => {
-  const artist = await getArtistById(artistId);
-  const musicArtist = await getMusicArtistByArtistId(artistId);
+export const listTopAlbumArtists = async (artist_id) => {
+  const artist = await getArtistById(artist_id);
+  const musicArtist = await getMusicArtistByArtistId(artist_id);
   const music = await getMusicById(musicArtist.musicId);
   const musicInfo = await getMusicInfo(artist.name, music.title);
   const tops = await getArtistTopAlbumsBymbid(

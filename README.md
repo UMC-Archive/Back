@@ -3,7 +3,7 @@
 # Archive-Backend
 
 ## 인원
-<img width="160px" src="https://avatars.githubusercontent.com/u/84651690?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/115306845?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/144078121?v=4"/> |  <img width="160px" src="https://avatars.githubusercontent.com/u/132264125?v=4"/> | 
+<img width="160px" src="https://avatars.githubusercontent.com/u/84651690?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/115306845?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/144078121?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/132264125?v=4"/> | 
 |:-----:|:-----:|:-----:|:-----:|
 |[박수현 / 노코](https://github.com/strfunctionk)|[권상훈 / 후니](https://github.com/sunsetdust)|[남병준 / 치멘](https://github.com/dlrtmxmflaqudwnsdl)|[최지은 / 웰시](https://github.com/chlwldms)|
 |팀장|팀원|팀원|팀원|
@@ -12,9 +12,9 @@
 ## 기술 스택
 | 이름 | 소개 |
 | ---- | ---- |
-| ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) | * 서버 사이드 JavaScript 환경입니다.                                |
+| ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) | * 서버 사이드 JavaScript 환경입니다. |
 | ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) | * Node.js를 위한 웹 애플리케이션 프레임워크입니다. |
-| ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) | * Ec2: 가상 서버 인스턴스를 제공하는 AWS 서비스입니다. <br> * S3: 객체 스토리지 서비스입니다. <br> * RDS: 관리형 관계형 데이터베이스 서비스입니다.  |
+| ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) | * EC2: 가상 서버 인스턴스를 제공하는 AWS 서비스입니다. <br> * S3: 객체 스토리지 서비스입니다. <br> * RDS: 관리형 관계형 데이터베이스 서비스입니다. |
 | ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white) | * 관계형 데이터베이스 서비스입니다. |
 | ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white) | * ORM(Object-Relational Mapping) 라이브러리입니다. |
 
@@ -28,7 +28,8 @@
 * 주요기능 : MVP1 - 시대별 음악 탐색 기능, MVP2 - 큐레이션 서비스, MVP3 - 플레이리스트 복사 기능
 
 ## 코딩 컨벤션
-- **변수:** 카멜케이스 (예: `userName`)
+- **변수, 함수:** 카멜케이스 (예: `userName`)
+- **매개변수:** 스네이크케이스 (예: `user_name`)
 
 ## Commit
 - `feature` : 새로운 기능이 추가되는 경우

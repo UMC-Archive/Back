@@ -23,38 +23,32 @@ export const responseFromSpecificArtist = (artist) => {
   };
 };
 
-export const responseFromAllArtists = ({ AllArtists }) => {
-  return AllArtists.map((artist) => ({
+export const responseFromAllArtists = (data) => {
+  return data.allArtists.map((artist) => ({
     id: artist.id.toString(),
     name: artist.name,
     image: artist.image,
   }));
 };
 
-export const responseFromAlbumTrackList = ({
-  album_info,
-  tracks,
-  artist,
-  roundedMinutes,
-  count,
-}) => {
+export const responseFromAlbumTrackList = (data) => {
   return {
     album: {
-      id: album_info.id.toString(),
-      title: album_info.title,
-      image: album_info.image,
-      artistId: artist.id,
-      artist: album_info.Musics[0].MusicArtists[0].artist.name,
-      artistImage: artist.image,
-      releaseTime: new Date(album_info.releaseTime).getFullYear(),
-      totalDuration: roundedMinutes,
-      trackCount: count,
+      id: data.albumInfo.id.toString(),
+      title: data.albumInfo.title,
+      image: data.albumInfo.image,
+      artistId: data.artist.id,
+      artist: data.albumInfo.Musics[0].MusicArtists[0].artist.name,
+      artistImage: data.artist.image,
+      releaseTime: new Date(data.albumInfo.releaseTime).getFullYear(),
+      totalDuration: data.roundedMinutes,
+      trackCount: data.count,
     },
-    tracks: tracks.map((track) => ({
+    tracks: data.tracks.map((track) => ({
       id: track.id,
       title: track.title,
       artist: track.MusicArtists[0].artist.name,
-      image: album_info.image,
+      image: data.albumInfo.image,
       releaseTime: new Date(track.releaseTime).getFullYear(),
     })),
   };
