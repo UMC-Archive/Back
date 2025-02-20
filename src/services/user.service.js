@@ -118,8 +118,8 @@ export const checkVerificationCode = async (req) => {
   return bcrypt.compareSync(code, req.cipherCode);
 };
 // 유저 정보 불러오는 service
-export const userInfoService = async (userId) => {
-  const userInfo = await userInfoRep(userId);
+export const userInfoService = async (user_id) => {
+  const userInfo = await userInfoRep(user_id);
   userInfo.password = "hidden";
   return userInfo;
 };
@@ -154,42 +154,42 @@ export const userChangeImageService = async (req, res) => {
   const { url, data } = await profileUploader(req, res);
   const jdata = JSON.parse(data);
   //console.log("bodyService:", jdata);
-  const ChangeImage = await changeImageRep({
+  const changeImage = await changeImageRep({
     id: req.userId,
     nickname: jdata.nickname,
     profileImage: url,
   });
   //console.log(data);
-  if (ChangeImage == null) {
+  if (changeImage == null) {
     throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
   }
-  return ChangeImage;
+  return changeImage;
 };
 
 // 유저 장르 변경 service
 export const userChangeGenreService = async (data) => {
   //console.log("bodyService:", data);
-  const ChangeGenre = await changeGenreRep({
+  const changeGenre = await changeGenreRep({
     userId: data.userId,
     genreId: data.genreId,
   });
-  if (ChangeGenre == null) {
+  if (changeGenre == null) {
     throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
   }
-  return ChangeGenre;
+  return changeGenre;
 };
 
 // 유저 아티스트 변경 service
 export const userChangeArtistService = async (data) => {
   //console.log("bodyService:", data);
-  const ChangeArtist = await changeArtistRep({
+  const changeArtist = await changeArtistRep({
     userId: data.userId,
     artistId: data.artistId,
   });
-  if (ChangeArtist == null) {
+  if (changeArtist == null) {
     throw new DuplicateUpdateError("입력 된적이 없는 데이터 입니다.", data);
   }
-  return ChangeArtist;
+  return changeArtist;
 };
 
 // 유저의 사진을 업로드 하는 api
@@ -247,7 +247,7 @@ export const userAddHistoryService = async (data) => {
 
 // 유저의 타임 히스토리를 불러오는 service
 export const userHistoryInfoService = async (userId) => {
-  const userHistoryInfo = await userHistoryInfoRep({userId});
+  const userHistoryInfo = await userHistoryInfoRep({ userId });
   return userHistoryInfo;
 };
 

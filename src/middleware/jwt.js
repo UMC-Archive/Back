@@ -25,8 +25,6 @@ export const verify = (req, res, next) => {
     "/music",
     "/music/genre/info",
     "/music/artist/info",
-    "/music/artist/1/similar",
-    "/music/artist/1/album/1",
     "/music/all/info",
     "/album/:album_id/track-list",
   ];

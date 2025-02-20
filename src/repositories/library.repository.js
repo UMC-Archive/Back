@@ -3,15 +3,15 @@ import { prisma } from "../db.config.js";
 import { status } from "../../config/response.status.js";
 
 //보관함에서 음악 삭제
-export const deleteMusicLibraryRepo = async (userId, musicId) => {
+export const deleteMusicLibraryRepo = async (user_id, music_id) => {
   try {
     let library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     const existingMusic = await prisma.libraryMusic.findFirst({
       where: {
         libraryId: library.id,
-        musicId: musicId,
+        musicId: music_id,
       },
     });
     if (!existingMusic) {
@@ -28,15 +28,15 @@ export const deleteMusicLibraryRepo = async (userId, musicId) => {
 }
 
 //보관함에서 앨범 삭제
-export const deleteAlbumLibraryRepo = async (userId, albumId) => {
+export const deleteAlbumLibraryRepo = async (user_id, album_id) => {
   try {
     let library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     const existingAlbum = await prisma.libraryAlbum.findFirst({
       where: {
         libraryId: library.id,
-        albumId: albumId,
+        albumId: album_id,
       },
     });
     //console.log(existingAlbum);
@@ -55,15 +55,15 @@ export const deleteAlbumLibraryRepo = async (userId, albumId) => {
 }
 
 //보관함에서 아티스트 삭제
-export const deleteArtistLibraryRepo = async (userId, artistId) => {
+export const deleteArtistLibraryRepo = async (user_id, artist_id) => {
   try {
     let library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     const existingArtist = await prisma.libraryArtist.findFirst({
       where: {
         libraryId: library.id,
-        artistId: artistId,
+        artistId: artist_id,
       },
     });
     //console.log(existingArtist);
@@ -83,15 +83,15 @@ export const deleteArtistLibraryRepo = async (userId, artistId) => {
 }
 
 //보관함에 음악 추가
-export const addMusicLibraryRepo = async (userId, musicId) => {
+export const addMusicLibraryRepo = async (user_id, music_id) => {
   try {
     let library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     const existingMusic = await prisma.libraryMusic.findFirst({
       where: {
         libraryId: library.id,
-        musicId: musicId,
+        musicId: music_id,
       },
     });
     if (existingMusic) {
@@ -101,7 +101,7 @@ export const addMusicLibraryRepo = async (userId, musicId) => {
     const newMusic = await prisma.libraryMusic.create({
       data: {
         libraryId: library.id,
-        musicId: musicId,
+        musicId: music_id,
       },
     });
     return response(status.SUCCESS, newMusic);
@@ -111,17 +111,17 @@ export const addMusicLibraryRepo = async (userId, musicId) => {
 }
 
 //보관함에 앨범 추가
-export const addAlbumLibraryRepo = async (userId, albumId) => {
+export const addAlbumLibraryRepo = async (user_id, album_id) => {
   try {
     let library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     //console.log(library);
 
     const existingAlbum = await prisma.libraryAlbum.findFirst({
       where: {
         libraryId: library.id,
-        albumId: albumId,
+        albumId: album_id,
       },
     });
     //console.log(existingAlbum);
@@ -133,7 +133,7 @@ export const addAlbumLibraryRepo = async (userId, albumId) => {
     const newAlbum = await prisma.libraryAlbum.create({
       data: {
         libraryId: library.id,
-        albumId: albumId,
+        albumId: album_id,
       },
     });
     //console.log(newAlbum);
@@ -145,17 +145,17 @@ export const addAlbumLibraryRepo = async (userId, albumId) => {
 }
 
 //보관함에 아티스트 추가
-export const addArtistLibraryRepo = async (userId, artistId) => {
+export const addArtistLibraryRepo = async (user_id, artist_id) => {
   try {
     let library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     //console.log(library);
 
     const existingArtist = await prisma.libraryArtist.findFirst({
       where: {
         libraryId: library.id,
-        artistId: artistId,
+        artistId: artist_id,
       },
     });
     //console.log(existingArtist);
@@ -167,7 +167,7 @@ export const addArtistLibraryRepo = async (userId, artistId) => {
     const newArtist = await prisma.libraryArtist.create({
       data: {
         libraryId: library.id,
-        artistId: artistId,
+        artistId: artist_id,
       },
     });
     //console.log(newArtist);
@@ -178,10 +178,10 @@ export const addArtistLibraryRepo = async (userId, artistId) => {
   }
 }
 
-export const getLibraryMusics = async (userId) => {
+export const getLibraryMusics = async (user_id) => {
   try {
     const library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
 
     if (!library) {
@@ -231,10 +231,10 @@ export const getLibraryMusics = async (userId) => {
   }
 };
 
-export const getLibraryArtists = async (userId) => {
+export const getLibraryArtists = async (user_id) => {
   try {
     const library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
 
     if (!library) {
@@ -282,10 +282,10 @@ export const getLibraryArtists = async (userId) => {
   }
 };
 
-export const getLibraryAlbums = async (userId) => {
+export const getLibraryAlbums = async (user_id) => {
   try {
     const library = await prisma.library.findFirst({
-      where: { userId: userId },
+      where: { userId: user_id },
     });
     //console.log("library : " + JSON.stringify(library, null, 2));
 

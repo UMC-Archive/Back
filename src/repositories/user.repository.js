@@ -9,30 +9,30 @@ export const addUser = async (data) => {
   return created.id;
 };
 
-export const getUser = async (userId) => {
-  const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+export const getUser = async (user_id) => {
+  const user = await prisma.user.findFirstOrThrow({ where: { id: user_id } });
   return user;
 };
 
-export const setLibrary = async (userId) => {
-  const library = await prisma.library.create({ data: userId });
+export const setLibrary = async (user_id) => {
+  const library = await prisma.library.create({ data: user_id });
   return library;
 };
 
-export const setUserArtist = async (userId, artistId) => {
-  const artist = await prisma.artist.findFirst({ where: { id: artistId } });
+export const setUserArtist = async (user_id, artist_id) => {
+  const artist = await prisma.artist.findFirst({ where: { id: artist_id } });
   if (!artist) {
     return null;
   }
   await prisma.userArtist.create({
     data: {
-      userId: userId,
-      artistId: artistId,
+      userId: user_id,
+      artistId: artist_id,
     },
   });
 };
 
-export const getUserArtistId = async (userId) => {
+export const getUserArtistId = async (user_id) => {
   const preferences = await prisma.userArtist.findMany({
     select: {
       id: true,
@@ -41,26 +41,26 @@ export const getUserArtistId = async (userId) => {
       artistId: true,
       artist: true,
     },
-    where: { userId: userId },
+    where: { userId: user_id },
     orderBy: { artistId: "asc" },
   });
   return preferences;
 };
 
-export const setUserGenre = async (userId, genreId) => {
-  const genre = await prisma.genre.findFirst({ where: { id: genreId } });
+export const setUserGenre = async (user_id, genre_id) => {
+  const genre = await prisma.genre.findFirst({ where: { id: genre_id } });
   if (!genre) {
     return null;
   }
   await prisma.userGenre.create({
     data: {
-      userId: userId,
-      genreId: genreId,
+      userId: user_id,
+      genreId: genre_id,
     },
   });
 };
 
-export const getUserGenreId = async (userId) => {
+export const getUserGenreId = async (user_id) => {
   const preferences = await prisma.userGenre.findMany({
     select: {
       id: true,
@@ -69,7 +69,7 @@ export const getUserGenreId = async (userId) => {
       genreId: true,
       genre: true,
     },
-    where: { userId: userId },
+    where: { userId: user_id },
     orderBy: { genreId: "asc" },
   });
   return preferences;
@@ -88,8 +88,8 @@ export const findEmail = async (req) => {
   }
 };
 // 유저 정보 불러오는 기능
-export const userInfoRep = async (userId) => {
-  const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
+export const userInfoRep = async (user_id) => {
+  const user = await prisma.user.findFirstOrThrow({ where: { id: user_id } });
   return user;
 };
 
@@ -246,16 +246,16 @@ export const setUserMusic = async (data) => {
   return created.id;
 };
 
-export const getUserMusic = async (userMusicId) => {
+export const getUserMusic = async (user_music_id) => {
   const userMusic = await prisma.userMusic.findFirstOrThrow({
-    where: { id: userMusicId },
+    where: { id: user_music_id },
   });
   return userMusic;
 };
 
-export const getMusicGenreByMusicId = async (musicId) => {
+export const getMusicGenreByMusicId = async (music_id) => {
   const musicGenre = await prisma.musicGenre.findFirst({
-    where: { musicId: musicId },
+    where: { musicId: music_id },
   });
   return musicGenre;
 };
@@ -414,12 +414,12 @@ export const userHistoryInfoRep = async (data) => {
 };
 
 // 유저가 최근에 추가한 노래 리스트
-export const addRecentMusicRep = async (userId) => {
+export const addRecentMusicRep = async (user_id) => {
   try {
     // 1. userId로 회원 존재 여부 확인
     const library = await prisma.library.findFirst({
       where: {
-        userId: userId,
+        userId: user_id,
       },
     });
 
@@ -499,7 +499,7 @@ export const addRecentMusicRep = async (userId) => {
     );
   }
 };
-export const getUserRecapMusic = async (userId) => {
+export const getUserRecapMusic = async (user_id) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -522,7 +522,7 @@ export const getUserRecapMusic = async (userId) => {
   const userRecapMusic = await prisma.userMusic.groupBy({
     by: ["musicId"],
     where: {
-      userId: userId,
+      userId: user_id,
       createdAt: {
         gte: startDate,
         lte: endDate,
@@ -587,7 +587,7 @@ export const getUserRecapMusic = async (userId) => {
   return result;
 };
 
-export const getUserPreferGenre = async (userId) => {
+export const getUserPreferGenre = async (user_id) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -613,7 +613,7 @@ export const getUserPreferGenre = async (userId) => {
           music: {
             UserMusics: {
               some: {
-                userId,
+                userId: user_id,
                 createdAt: {
                   gte: startDate,
                   lte: endDate,
@@ -630,7 +630,7 @@ export const getUserPreferGenre = async (userId) => {
           music: {
             UserMusics: {
               some: {
-                userId,
+                userId: user_id,
                 createdAt: {
                   gte: startDate,
                   lte: endDate,

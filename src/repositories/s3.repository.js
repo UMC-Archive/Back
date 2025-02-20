@@ -91,8 +91,8 @@ const groupByGenre = async (files) => {
     }
 };
 
-export const historyUploader = async (date, imageUrl) => {
-    if (!imageUrl) {
+export const historyUploader = async (date, image_url) => {
+    if (!image_url) {
         return null; // 이미지 URL이 없으면 null 반환
     } else {
         const folderName = 'history'; // 업로드할 폴더명
@@ -100,7 +100,7 @@ export const historyUploader = async (date, imageUrl) => {
 
         try {
             // 이미지 다운로드
-            const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+            const response = await axios.get(image_url, { responseType: 'arraybuffer' });
 
             // S3 업로드 파라미터 설정
             const params = {
@@ -125,17 +125,17 @@ export const historyUploader = async (date, imageUrl) => {
     }
 };
 
-export const getHistoryImage = async (fileName) => {
+export const getHistoryImage = async (file_name) => {
     const params = {
         Bucket: process.env.BUCKET, // S3 버킷 이름
-        Key: `history/${fileName}.png` // S3 파일 경로 및 이름
+        Key: `history/${file_name}.png` // S3 파일 경로 및 이름
     };
 
     try {
         // headObject 메서드를 사용해 파일이 존재하는지 확인
         await s3.headObject(params).promise();
         // 파일이 존재하는 경우 URL을 반환
-        const url = `https://${process.env.BUCKET}.s3.amazonaws.com/history/${fileName}.png`;
+        const url = `https://${process.env.BUCKET}.s3.amazonaws.com/history/${file_name}.png`;
         return url;
     } catch (err) {
         return null; // 파일이 존재하지 않으면 null 반환

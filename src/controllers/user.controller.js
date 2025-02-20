@@ -33,7 +33,6 @@ import {
   listUserPreferGenre,
 } from "../services/user.service.js";
 
-import { listLibraryMusics } from "../services/library.service.js";
 //회원가입
 export const handleUserSignUp = async (req, res, next) => {
   /*
