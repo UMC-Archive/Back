@@ -1,5 +1,6 @@
 <div align=center>
-  
+<img width="1920" alt="아카이브" src="https://github.com/user-attachments/assets/4e587b02-0431-41cc-a43e-886fa351907b" />
+
 # Archive-Backend
 
 ## 인원
